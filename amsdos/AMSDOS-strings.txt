@@ -1,0 +1,87 @@
+;----
+;db "CPM RO"
+0xc072,0xc078,s,S_c072
+;----
+;db "DISC.I"
+0xc080,0xc086,s,S_c080
+;----
+;db "DISC.OU"
+0xc087,0xc08e,s,S_c087
+;----
+;db "TAPE.I"
+0xc093,0xc099,s,S_c093
+;----
+;db "TAPE.OU"
+0xc09a,0xc0a1,s,S_c09a
+;----
+;db "DRIV"
+0xc0a4,0xc0a8,s,S_c0a4
+;----
+;----
+;db " free"
+0xcb92,0xcb97,s,S_cb92
+;----
+;db "Bad command"
+0xcb9a,0xcba5,s,S_cb9a
+;----
+;db "already exists"
+0xcba8,0xcbb6,s,S_cba8
+;----
+;db "not found"
+0xcbb9,0xcbc2,s,S_cbb9
+;----
+;db "directory "
+0xcbc5,0xcbcf,s,S_cbc5
+;----
+;db "changed, closing "
+0xcbd5,0xcbe6,s,S_cbd5
+;----
+;db " only"
+0xcbee,0xcbf3,s,S_cbee
+;----
+;db "user"
+0xcbf8,0xcbfc,s,S_cbf8
+;----
+;db "...^C"
+0xcbff,0xcc04,s,S_cbff
+;----
+;db "CP/M"
+0xcc06,0xcc0a,s,S_cc06
+;----
+;db "boot sector"
+0xcc0d,0xcc18,s,S_cc0d
+;----
+;db " protected"
+0xcc27,0xcc31,s,S_cc27
+;----
+;db "missing"
+0xcc34,0xcc3b,s,S_cc34
+;----
+;db "Retry, Ignore or Cancel? "
+0xcc3e,0xcc57,s,S_cc3e
+;----
+;db "Drive "
+0xcc59,0xcc5f,s,S_cc59
+;----
+;db "Failed to load "
+0xcc64,0xcc73,s,S_cc64
+;----
+;db "disc "
+0xcc78,0xcc7d,s,S_cc78
+;----
+;db " fail"
+0xcc7e,0xcc83,s,S_cc7e
+;----
+;db "full"
+0xcc85,0xcc89,s,S_cc85
+;----
+;db "write"
+0xcc8f,0xcc94,s,S_cc8f
+;----
+;db "read"
+0xcc95,0xcc99,s,S_cc95
+;----
+;----
+;db "   $$$BAKBASBIN"
+0xd299,0xd2a8,s,S_d299
+;----
