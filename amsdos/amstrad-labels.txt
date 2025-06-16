@@ -1,30 +1,65 @@
 ;A list of Amstrad CPC BIOS calls.
 ;Recorded here for use with the disassembler
 
-BAR_CPM equ 0xc1b2
-BAR_DISC equ 0xccd1
-BAR_DISC_IN equ 0xccd5
-BAR_DISC_OUT equ 0xcce4
-BAR_TAPE equ 0xccfd
-BAR_TAPE_IN equ 0xcd01
-BAR_TAPE_OUT equ 0xcd18
-BAR_A equ 0xcdda
-BAR_B equ 0xcddd
-BAR_DRIVE equ 0xcde4
-BAR_USER equ 0xcdfe
-BAR_DIR equ 0xd42e
-BAR_ERA equ 0xd48a
-BAR_REN equ 0xd4c4
-BAR_1 equ 0xca72
-BAR_2 equ 0xc60d
-BAR_3 equ 0xc581
-BAR_4 equ 0xc666
-BAR_5 equ 0xc64e
-BAR_6 equ 0xc652
-BAR_7 equ 0xc763
-BAR_8 equ 0xc630
-BAR_9 equ 0xc603
+BAR_CPM             equ 0xc1b2
+BAR_DISC            equ 0xccd1
+BAR_DISC_IN         equ 0xccd5
+BAR_DISC_OUT        equ 0xcce4
+BAR_TAPE            equ 0xccfd
+BAR_TAPE_IN         equ 0xcd01
+BAR_TAPE_OUT        equ 0xcd18
+BAR_A               equ 0xcdda
+BAR_B               equ 0xcddd
+BAR_DRIVE           equ 0xcde4
+BAR_USER            equ 0xcdfe
+BAR_DIR             equ 0xd42e
+BAR_ERA             equ 0xd48a
+BAR_REN             equ 0xd4c4
+EXTENDED_JUMPBLOCK  equ 0xc033
+EXT_SET_MESSAGE     equ 0xca72
+EXT_SETUP_DISC      equ 0xc60d
+EXT_SELECT_FORMAT   equ 0xc581
+EXT_READ_SECTOR     equ 0xc666
+EXT_WRITE_SECTOR    equ 0xc64e
+EXT_FORMAT_TRACK    equ 0xc652
+EXT_MOVE_TRACK      equ 0xc763
+EXT_GET_DRIVE_STATUS equ 0xc630
+EXT_SET_RETRY_COUNT equ 0xc603
+ENTER_FIRMWARE      equ 0xc168
+SET_REG_SAVE        equ 0xc0db
+SET_SIO             equ 0xc389
+SET_CMD_BUFFER      equ 0xc301
+D0_IN_STATUS        equ 0xc3db
+D0_IN               equ 0xc3f7
+D0_OUT_STATUS       equ 0xc435
+D0_OUT              equ 0xc445
+D1_IN_STATUS        equ 0xc3e3
+D1_IN               equ 0xc3ff
+D1_OUT_STATUS       equ 0xc43a
+D1_OUT              equ 0xc44b
 
+;Other labels
+SETUP_VECTOR    equ 0xc0f5
+CPM_BIOS_CALLS  equ 0xc17f
+CPM_WBOOT       equ 0xc2be
+CPM_CONST       equ 0xc2e1
+CPM_CONIN       equ 0xc2c3
+CPM_CONOUT      equ 0xc2c8
+CPM_LIST        equ 0xc2d2
+CPM_PUNCH       equ 0xc2d7
+CPM_READER      equ 0xc2dc
+CPM_HOME        equ 0xc2e9
+CPM_SELDSK      equ 0xc2f2
+CPM_SETTRK      equ 0xc524
+CPM_SETSEC      equ 0xc529
+CPM_SETDMA      equ 0xc51a
+CPM_READ        equ 0xc2f7
+CPM_WRITE       equ 0xc2fc
+CPM_LSTST       equ 0xc2cd
+CPM_SECTRAN     equ 0xc55a
+
+
+;BIOS Calls
 KL_ROM_SELECT      equ 0xb90f
 KL_CURR_SELECTION  equ 0xb912
 KL_PROBE_ROM       equ 0xb915
