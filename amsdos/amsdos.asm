@@ -28,16 +28,16 @@ MC_BUSY_PRINTER   equ 0xbd2e
 
 ;--------------------------------------
 ROM_TYPE:                      ;          XREF: 0xC13A 0xC1DC 0xC105 
-    x9 DEFB 0x1                ;0xc000:   0x1
+    DEFB 0x1                   ;0xc000:   0x1
 ;--------------------------------------
 ROM_MAJOR:                     ;          XREF: 
-    x9 DEFB 0x0                ;0xc001:   0x0
+    DEFB 0x0                   ;0xc001:   0x0
 ;--------------------------------------
 ROM_MARK:                      ;          XREF: 
-    x9 DEFB 0x5                ;0xc002:   0x5
+    DEFB 0x5                   ;0xc002:   0x5
 ;--------------------------------------
 ROM_MOD:                       ;          XREF: 
-    x9 DEFB 0x0                ;0xc003:   0x0
+    DEFB 0x0                   ;0xc003:   0x0
 ;--------------------------------------
 CMD_TABLE_PTR:                 ;          XREF: 
     DEFB S_c072                ;0xc004:   Pointer to S_c072 (0xc072)
@@ -83,41 +83,49 @@ EXTENDED_JUMPBLOCK:            ;          XREF: 0xC1F9
     JP D1_OUT                  ;0xc06f:   c3 4b c4  ".K." 
 ;--------------------------------------
 S_c072:                        ;          XREF: 
-    x1 DEFB "CPM RO", 'M' + 0x80  ;0xc072:   0xc072 to 0xc07b
-    x4 DEFB "CP", 'M' + 0x80   ;0xc079:   0xc079 to 0xc07c
-    x1 DEFB "DIS", 'C' + 0x80  ;0xc07c:   0xc07c to 0xc082
+    DEFB "CPM RO", 'M' + 0x80  ;0xc072:   0xc072 to 0xc07b
+    DEFB 0x43                  ;0xc079:   
+    DEFB 0x50                  ;0xc07a:   
+    DEFB 0xcd                  ;0xc07b:   
+    DEFB "DIS", 'C' + 0x80     ;0xc07c:   0xc07c to 0xc082
 ;--------------------------------------
 S_c080:                        ;          XREF: 
-    x1 DEFB "DISC.I", 'N' + 0x80  ;0xc080:   0xc080 to 0xc089
+    DEFB "DISC.I", 'N' + 0x80  ;0xc080:   0xc080 to 0xc089
 ;--------------------------------------
 S_c087:                        ;          XREF: 
-    x1 DEFB "DISC.OU", 'T' + 0x80  ;0xc087:   0xc087 to 0xc091
-    x1 DEFB "TAP", 'E' + 0x80  ;0xc08f:   0xc08f to 0xc095
+    DEFB "DISC.OU", 'T' + 0x80  ;0xc087:   0xc087 to 0xc091
+    DEFB "TAP", 'E' + 0x80     ;0xc08f:   0xc08f to 0xc095
 ;--------------------------------------
 S_c093:                        ;          XREF: 
-    x1 DEFB "TAPE.I", 'N' + 0x80  ;0xc093:   0xc093 to 0xc09c
+    DEFB "TAPE.I", 'N' + 0x80  ;0xc093:   0xc093 to 0xc09c
 ;--------------------------------------
 S_c09a:                        ;          XREF: 
-    x1 DEFB "TAPE.OU", 'T' + 0x80  ;0xc09a:   0xc09a to 0xc0a4
-    x7 DEFB 0xc1               ;0xc0a2:   
-    x7 DEFB 0xc2               ;0xc0a3:   
+    DEFB "TAPE.OU", 'T' + 0x80  ;0xc09a:   0xc09a to 0xc0a4
+    DEFB 0xc1                  ;0xc0a2:   
+    DEFB 0xc2                  ;0xc0a3:   
 ;--------------------------------------
 S_c0a4:                        ;          XREF: 
-    x1 DEFB "DRIV", 'E' + 0x80  ;0xc0a4:   0xc0a4 to 0xc0ab
-    x1 DEFB "USE", 'R' + 0x80  ;0xc0a9:   0xc0a9 to 0xc0af
-    x4 DEFB "DI", 'R' + 0x80   ;0xc0ad:   0xc0ad to 0xc0b0
-    x4 DEFB "ER", 'A' + 0x80   ;0xc0b0:   0xc0b0 to 0xc0b3
-    x4 DEFB "RE", 'N' + 0x80   ;0xc0b3:   0xc0b3 to 0xc0b6
-    x6 DEFB  0x81              ;0xc0b6:   
-    x6 DEFB  0x82              ;0xc0b7:   
-    x6 DEFB  0x83              ;0xc0b8:   
-    x6 DEFB  0x84              ;0xc0b9:   
-    x6 DEFB  0x85              ;0xc0ba:   
-    x6 DEFB  0x86              ;0xc0bb:   
-    x6 DEFB  0x87              ;0xc0bc:   
-    x6 DEFB  0x88              ;0xc0bd:   
-    x6 DEFB  0x89              ;0xc0be:   
-    x7 DEFB 0x0                ;0xc0bf:   
+    DEFB "DRIV", 'E' + 0x80    ;0xc0a4:   0xc0a4 to 0xc0ab
+    DEFB "USE", 'R' + 0x80     ;0xc0a9:   0xc0a9 to 0xc0af
+    DEFB 0x44                  ;0xc0ad:   
+    DEFB 0x49                  ;0xc0ae:   
+    DEFB 0xd2                  ;0xc0af:   
+    DEFB 0x45                  ;0xc0b0:   
+    DEFB 0x52                  ;0xc0b1:   
+    DEFB 0xc1                  ;0xc0b2:   
+    DEFB 0x52                  ;0xc0b3:   
+    DEFB 0x45                  ;0xc0b4:   
+    DEFB 0xce                  ;0xc0b5:   
+    DEFB 0x81                  ;0xc0b6:   
+    DEFB 0x82                  ;0xc0b7:   
+    DEFB 0x83                  ;0xc0b8:   
+    DEFB 0x84                  ;0xc0b9:   
+    DEFB 0x85                  ;0xc0ba:   
+    DEFB 0x86                  ;0xc0bb:   
+    DEFB 0x87                  ;0xc0bc:   
+    DEFB 0x88                  ;0xc0bd:   
+    DEFB 0x89                  ;0xc0be:   
+    DEFB 0x0                   ;0xc0bf:   
 ;--------------------------------------
 C_c0c0:                        ;          XREF: 0xC204 
     LD HL,(0x39)               ;0xc0c0:   2a 39 00  "*9."  
@@ -982,8 +990,8 @@ C_C5A2:                        ;          XREF: 0xC59D
     RET                        ;0xc5bf:   c9  "." 
 ;--------------------------------------
 D_C5C0:                        ;          XREF: 0xC59F 
-    x9 DEFB 0x20               ;0xc5c0:   " "
-    x9 DEFB 0x0                ;0xc5c1:   0x0
+    DEFB 0x20                  ;0xc5c0:   " "
+    DEFB 0x0                   ;0xc5c1:   0x0
 ;--------------------------------------
 C_c5c2:                        ;          XREF: 0xC5C0 
     SBC A,E                    ;0xc5c2:   9b  "." 
@@ -2079,11 +2087,11 @@ C_CB83:                        ;          XREF: 0xCB2A
     JP TXT_OUTPUT              ;0xcb83:   c3 5a bb  ".Z." 
 ;--------------------------------------
 D_CB86:                        ;          XREF: 0xCAF0 
-    x9 DEFB 0xd                ;0xcb86:   0xd
-    x9 DEFB 0xa                ;0xcb87:   0xa
-    x9 DEFB 0xff               ;0xcb88:   0xff
-    x9 DEFB 0x20               ;0xcb89:   " "
-    x9 DEFB 0x20               ;0xcb8a:   " "
+    DEFB 0xd                   ;0xcb86:   0xd
+    DEFB 0xa                   ;0xcb87:   0xa
+    DEFB 0xff                  ;0xcb88:   0xff
+    DEFB 0x20                  ;0xcb89:   " "
+    DEFB 0x20                  ;0xcb8a:   " "
 ;--------------------------------------
 C_CB8B:                        ;          XREF: 0xCBEC 
     JR nz, $+1                 ;0xcb8b:   20 ff  " ." 
@@ -2092,93 +2100,108 @@ C_CB8B:                        ;          XREF: 0xCBEC
     ADD A,D                    ;0xcb91:   82  "." 
 ;--------------------------------------
 S_cb92:                        ;          XREF: 
-    x2 DEFB " free"            ;0xcb92:   0xcb92 to 0xcb97
-    x6 DEFB  '' + 0x80        ;0xcb98:   
-    x7 DEFB 0x80               ;0xcb99:   
+    DEFB " free"               ;0xcb92:   0xcb92 to 0xcb97
+    DEFB 0xff                  ;0xcb98:   
+    DEFB 0x80                  ;0xcb99:   
 ;--------------------------------------
 S_cb9a:                        ;          XREF: 
-    x2 DEFB "Bad command"      ;0xcb9a:   0xcb9a to 0xcba5
-    x6 DEFB  '' + 0x80        ;0xcba6:   
-    x6 DEFB  0x9b              ;0xcba7:   
+    DEFB "Bad command"         ;0xcb9a:   0xcb9a to 0xcba5
+    DEFB 0xff                  ;0xcba6:   
+    DEFB 0x9b                  ;0xcba7:   
 ;--------------------------------------
 S_cba8:                        ;          XREF: 
-    x2 DEFB "already exists"   ;0xcba8:   0xcba8 to 0xcbb6
-    x6 DEFB  '' + 0x80        ;0xcbb7:   
-    x6 DEFB  0x9b              ;0xcbb8:   
+    DEFB "already exists"      ;0xcba8:   0xcba8 to 0xcbb6
+    DEFB 0xff                  ;0xcbb7:   
+    DEFB 0x9b                  ;0xcbb8:   
 ;--------------------------------------
 S_cbb9:                        ;          XREF: 
-    x2 DEFB "not found"        ;0xcbb9:   0xcbb9 to 0xcbc2
+    DEFB "not found"           ;0xcbb9:   0xcbb9 to 0xcbc2
 ;--------------------------------------
 C_CBC3:                        ;          XREF: 0xCC25 
     RST 0x38                   ;0xcbc3:   ff  "." 
     SUB L                      ;0xcbc4:   95  "." 
 ;--------------------------------------
 S_cbc5:                        ;          XREF: 
-    x2 DEFB "directory "       ;0xcbc5:   0xcbc5 to 0xcbcf
-    x6 DEFB  '' + 0x80        ;0xcbd0:   
-    x6 DEFB  0x98              ;0xcbd1:   
-    x6 DEFB  0x9a              ;0xcbd2:   
-    x6 DEFB  '' + 0x80        ;0xcbd3:   
-    x6 DEFB  0x98              ;0xcbd4:   
+    DEFB "directory "          ;0xcbc5:   0xcbc5 to 0xcbcf
+    DEFB 0xff                  ;0xcbd0:   
+    DEFB 0x98                  ;0xcbd1:   
+    DEFB 0x9a                  ;0xcbd2:   
+    DEFB 0xff                  ;0xcbd3:   
+    DEFB 0x98                  ;0xcbd4:   
 ;--------------------------------------
 S_cbd5:                        ;          XREF: 
-    x1 DEFB "changed, closing ", '}' + 0x80  ;0xcbd5:   0xcbd5 to 0xcbe9
-    x4 DEFB "is ", 0x69        ;0xcbe7:   0xcbe7 to 0xcbeb
-    x4 DEFB "s ", 0x9d         ;0xcbeb:   0xcbeb to 0xcbee
+    DEFB "changed, closing ", '}' + 0x80  ;0xcbd5:   0xcbd5 to 0xcbe9
+    DEFB "is ", '' + 0x80     ;0xcbe7:   0xcbe7 to 0xcbe8
+    DEFB 0x73                  ;0xcbeb:   
+    DEFB 0x20                  ;0xcbec:   
+    DEFB 0x9d                  ;0xcbed:   
 ;--------------------------------------
 S_cbee:                        ;          XREF: 
-    x2 DEFB " only"            ;0xcbee:   0xcbee to 0xcbf3
-    x6 DEFB  '' + 0x80        ;0xcbf4:   
-    x7 DEFB 0xfd               ;0xcbf5:   
-    x6 DEFB  '' + 0x80        ;0xcbf6:   
-    x6 DEFB  0x95              ;0xcbf7:   
+    DEFB " only"               ;0xcbee:   0xcbee to 0xcbf3
+    DEFB 0xff                  ;0xcbf4:   
+    DEFB 0xfd                  ;0xcbf5:   
+    DEFB 0xff                  ;0xcbf6:   
+    DEFB 0x95                  ;0xcbf7:   
 ;--------------------------------------
 S_cbf8:                        ;          XREF: 
-    x1 DEFB "user", '|' + 0x80  ;0xcbf8:   0xcbf8 to 0xcbff
-    x7 DEFB 0x80               ;0xcbfd:   
-    x6 DEFB  '' + 0x80        ;0xcbfe:   
+    DEFB "user", '|' + 0x80    ;0xcbf8:   0xcbf8 to 0xcbff
+    DEFB 0x80                  ;0xcbfd:   
+    DEFB 0xff                  ;0xcbfe:   
 ;--------------------------------------
 S_cbff:                        ;          XREF: 
-    x7 DEFB 0x2e               ;0xcbff:   
-    x4 DEFB "..", 0x5e         ;0xcc00:   0xcc00 to 0xcc03
-    x4 DEFB "C", '' + 0x80    ;0xcc03:   0xcc03 to 0xcc05
+    DEFB 0x2e                  ;0xcbff:   
+    DEFB 0x2e                  ;0xcc00:   
+    DEFB 0x2e                  ;0xcc01:   
+;--------------------------------------
+S_CC02:                        ;          XREF: 0xCB9D 
+    DEFB 0x5e                  ;0xcc02:   
+    DEFB 0x43                  ;0xcc03:   
+    RST 0x38                   ;0xcc04:   ff  "." 
     SUB (HL)                   ;0xcc05:   96  "." 
 ;--------------------------------------
 S_cc06:                        ;          XREF: 
-    x7 DEFB 0x43               ;0xcc06:   
-    x4 DEFB "P/M", 0x80        ;0xcc07:   0xcc07 to 0xcc0b
+    DEFB 0x43                  ;0xcc06:   
+    DEFB "P/M", 0x2f           ;0xcc07:   0xcc07 to 0xcc08
     RST 0x38                   ;0xcc0b:   ff  "." 
     SUB (HL)                   ;0xcc0c:   96  "." 
 ;--------------------------------------
 S_cc0d:                        ;          XREF: 
-    x2 DEFB "boot sector"      ;0xcc0d:   0xcc0d to 0xcc18
-    x4 DEFB "i", 0x95          ;0xcc19:   0xcc19 to 0xcc1b
-    x4 DEFB "i", 0x99          ;0xcc1b:   0xcc1b to 0xcc1d
-    x4 DEFB "i", 0x95          ;0xcc1d:   0xcc1d to 0xcc1f
-    x4 DEFB "i", 0x99          ;0xcc1f:   0xcc1f to 0xcc21
-    x4 DEFB "i", 0x98          ;0xcc21:   0xcc21 to 0xcc23
-    x4 DEFB "i", 0x73          ;0xcc23:   0xcc23 to 0xcc25
+    DEFB "boot sector"         ;0xcc0d:   0xcc0d to 0xcc18
+    DEFB 0xff                  ;0xcc19:   
+    DEFB 0x95                  ;0xcc1a:   
+    DEFB 0x9d                  ;0xcc1b:   
+    DEFB 0x99                  ;0xcc1c:   
+    DEFB 0xff                  ;0xcc1d:   
+    DEFB 0x95                  ;0xcc1e:   
+    DEFB 0x9c                  ;0xcc1f:   
+    DEFB 0x99                  ;0xcc20:   
+    DEFB 0xff                  ;0xcc21:   
+    DEFB 0x98                  ;0xcc22:   
+    DEFB 0x69                  ;0xcc23:   
+;--------------------------------------
+C_CC24:                        ;          XREF: 0xCBBC 
+    LD (HL),E                  ;0xcc24:   73  "s" 
     JR nz, C_CBC3              ;0xcc25:   20 9c  " ." 
 ;--------------------------------------
 S_cc27:                        ;          XREF: 
-    x2 DEFB " protected"       ;0xcc27:   0xcc27 to 0xcc31
-    x6 DEFB  '' + 0x80        ;0xcc32:   
-    x6 DEFB  0x98              ;0xcc33:   
+    DEFB " protected"          ;0xcc27:   0xcc27 to 0xcc31
+    DEFB 0xff                  ;0xcc32:   
+    DEFB 0x98                  ;0xcc33:   
 ;--------------------------------------
 S_cc34:                        ;          XREF: 
-    x2 DEFB "missing"          ;0xcc34:   0xcc34 to 0xcc3b
-    x6 DEFB  '' + 0x80        ;0xcc3c:   
-    x7 DEFB 0x80               ;0xcc3d:   
+    DEFB "missing"             ;0xcc34:   0xcc34 to 0xcc3b
+    DEFB 0xff                  ;0xcc3c:   
+    DEFB 0x80                  ;0xcc3d:   
 ;--------------------------------------
 S_cc3e:                        ;          XREF: 
-    x3 DEFB "Retry, Ignore or Cancel? "  ;0xcc3e:   0xcc3e to 0xcc57
+    DEFB "Retry, Ignore or Cancel? "  ;0xcc3e:   0xcc3e to 0xcc57
 ;--------------------------------------
 C_CC57:                        ;          XREF: 0xCC56 
     RST 0x38                   ;0xcc57:   ff  "." 
     ADD A,B                    ;0xcc58:   80  "." 
 ;--------------------------------------
 S_cc59:                        ;          XREF: 
-    x3 DEFB "Drive "           ;0xcc59:   0xcc59 to 0xcc5f
+    DEFB "Drive "              ;0xcc59:   0xcc59 to 0xcc5f
 ;--------------------------------------
 C_CC5F:                        ;          XREF: 0xCBEE 
     CP 0x3a                    ;0xcc5f:   fe 3a  ".:" 
@@ -2186,7 +2209,7 @@ C_CC5F:                        ;          XREF: 0xCBEE
     ADD A,B                    ;0xcc63:   80  "." 
 ;--------------------------------------
 S_cc64:                        ;          XREF: 
-    x3 DEFB "Failed to load "  ;0xcc64:   0xcc64 to 0xcc73
+    DEFB "Failed to load "     ;0xcc64:   0xcc64 to 0xcc73
 ;--------------------------------------
 C_CC73:                        ;          XREF: 0xCC72 
     RST 0x38                   ;0xcc73:   ff  "." 
@@ -2196,28 +2219,31 @@ C_CC73:                        ;          XREF: 0xCC72
     SUB L                      ;0xcc77:   95  "." 
 ;--------------------------------------
 S_cc78:                        ;          XREF: 
-    x3 DEFB "disc "            ;0xcc78:   0xcc78 to 0xcc7d
+    DEFB "disc "               ;0xcc78:   0xcc78 to 0xcc7d
 ;--------------------------------------
 C_CC7D:                        ;          XREF: 0xCC7C 
     RST 0x38                   ;0xcc7d:   ff  "." 
 ;--------------------------------------
 S_cc7e:                        ;          XREF: 
-    x2 DEFB " fail"            ;0xcc7e:   0xcc7e to 0xcc83
-    x6 DEFB  '' + 0x80        ;0xcc84:   
+    DEFB " fail"               ;0xcc7e:   0xcc7e to 0xcc83
+    DEFB 0xff                  ;0xcc84:   
 ;--------------------------------------
 S_cc85:                        ;          XREF: 
-    x2 DEFB "full"             ;0xcc85:   0xcc85 to 0xcc89
-    x6 DEFB  '' + 0x80        ;0xcc8a:   
-    x7 DEFB 0x80               ;0xcc8b:   
-    x7 DEFB 0xfd               ;0xcc8c:   
-    x4 DEFB " ", '' + 0x80    ;0xcc8d:   0xcc8d to 0xcc8f
+    DEFB "full"                ;0xcc85:   0xcc85 to 0xcc89
+    DEFB 0xff                  ;0xcc8a:   
+    DEFB 0x80                  ;0xcc8b:   
+    DEFB 0xfd                  ;0xcc8c:   
+    DEFB 0x20                  ;0xcc8d:   
+;--------------------------------------
+C_CC8E:                        ;          XREF: 0xCC8C 
+    RST 0x38                   ;0xcc8e:   ff  "." 
 ;--------------------------------------
 S_cc8f:                        ;          XREF: 0xCC44 
-    x3 DEFB "write"            ;0xcc8f:   0xcc8f to 0xcc94
+    DEFB "write"               ;0xcc8f:   0xcc8f to 0xcc94
     RST 0x38                   ;0xcc94:   ff  "." 
 ;--------------------------------------
 S_cc95:                        ;          XREF: 
-    x3 DEFB "read"             ;0xcc95:   0xcc95 to 0xcc99
+    DEFB "read"                ;0xcc95:   0xcc95 to 0xcc99
 ;--------------------------------------
 C_CC99:                        ;          XREF: 0xCC27 
     RST 0x38                   ;0xcc99:   ff  "." 
@@ -3269,35 +3295,35 @@ C_D27B:                        ;          XREF: 0xD274
     RET                        ;0xd280:   c9  "." 
 ;--------------------------------------
 D_D281:                        ;          XREF: 0xD26F 
-    x9 DEFB 0x49               ;0xd281:   "I"
-    x9 DEFB 0xb1               ;0xd282:   ('1') + 0x80
-    x9 DEFB 0x36               ;0xd283:   "6"
-    x9 DEFB 0xf0               ;0xd284:   ('p') + 0x80
-    x9 DEFB 0x2e               ;0xd285:   "."
-    x9 DEFB 0x1e               ;0xd286:   0x1e
-    x9 DEFB 0x6                ;0xd287:   0x6
-    x9 DEFB 0x2a               ;0xd288:   "*"
-    x9 DEFB 0x28               ;0xd289:   "("
-    x9 DEFB 0x19               ;0xd28a:   0x19
-    x9 DEFB 0xea               ;0xd28b:   ('j') + 0x80
+    DEFB 0x49                  ;0xd281:   "I"
+    DEFB 0xb1                  ;0xd282:   ('1') + 0x80
+    DEFB 0x36                  ;0xd283:   "6"
+    DEFB 0xf0                  ;0xd284:   ('p') + 0x80
+    DEFB 0x2e                  ;0xd285:   "."
+    DEFB 0x1e                  ;0xd286:   0x1e
+    DEFB 0x6                   ;0xd287:   0x6
+    DEFB 0x2a                  ;0xd288:   "*"
+    DEFB 0x28                  ;0xd289:   "("
+    DEFB 0x19                  ;0xd28a:   0x19
+    DEFB 0xea                  ;0xd28b:   ('j') + 0x80
 ;--------------------------------------
 D_D28C:                        ;          XREF: 0xD278 
-    x9 DEFB 0xe2               ;0xd28c:   ('b') + 0x80
-    x9 DEFB 0x9d               ;0xd28d:   0x9d
-    x9 DEFB 0xdb               ;0xd28e:   ('[') + 0x80
-    x9 DEFB 0x1a               ;0xd28f:   0x1a
-    x9 DEFB 0x42               ;0xd290:   "B"
-    x9 DEFB 0x29               ;0xd291:   ")"
-    x9 DEFB 0x39               ;0xd292:   "9"
-    x9 DEFB 0xc6               ;0xd293:   ('F') + 0x80
-    x9 DEFB 0xb3               ;0xd294:   ('3') + 0x80
-    x9 DEFB 0xc6               ;0xd295:   ('F') + 0x80
-    x9 DEFB 0x90               ;0xd296:   0x90
-    x9 DEFB 0x45               ;0xd297:   "E"
-    x9 DEFB 0x8a               ;0xd298:   0x8a
+    DEFB 0xe2                  ;0xd28c:   ('b') + 0x80
+    DEFB 0x9d                  ;0xd28d:   0x9d
+    DEFB 0xdb                  ;0xd28e:   ('[') + 0x80
+    DEFB 0x1a                  ;0xd28f:   0x1a
+    DEFB 0x42                  ;0xd290:   "B"
+    DEFB 0x29                  ;0xd291:   ")"
+    DEFB 0x39                  ;0xd292:   "9"
+    DEFB 0xc6                  ;0xd293:   ('F') + 0x80
+    DEFB 0xb3                  ;0xd294:   ('3') + 0x80
+    DEFB 0xc6                  ;0xd295:   ('F') + 0x80
+    DEFB 0x90                  ;0xd296:   0x90
+    DEFB 0x45                  ;0xd297:   "E"
+    DEFB 0x8a                  ;0xd298:   0x8a
 ;--------------------------------------
 S_d299:                        ;          XREF: 
-    x3 DEFB "   $$$BAKBASBIN"  ;0xd299:   0xd299 to 0xd2a8
+    DEFB "   $$$BAKBASBIN"     ;0xd299:   0xd299 to 0xd2a8
 ;--------------------------------------
 C_D2A8:                        ;          XREF: 0xCEC9 
     XOR A                      ;0xd2a8:   af  "." 
@@ -5061,24 +5087,24 @@ C_DBA5:                        ;          XREF: 0xDAFA
     RET                        ;0xdbb1:   c9  "." 
 ;--------------------------------------
 D_DBB2:                        ;          XREF: 0xDB5F 
-    x9 DEFB 0x3c               ;0xdbb2:   "<"
-    x9 DEFB 0x3e               ;0xdbb3:   ">"
-    x9 DEFB 0x2e               ;0xdbb4:   "."
-    x9 DEFB 0x2c               ;0xdbb5:   ","
-    x9 DEFB 0x3b               ;0xdbb6:   ";"
-    x9 DEFB 0x3a               ;0xdbb7:   ":"
-    x9 DEFB 0x3d               ;0xdbb8:   "="
-    x9 DEFB 0x5b               ;0xdbb9:   "["
-    x9 DEFB 0x5d               ;0xdbba:   "]"
-    x9 DEFB 0x5f               ;0xdbbb:   "_"
-    x9 DEFB 0x25               ;0xdbbc:   "%"
-    x9 DEFB 0x7c               ;0xdbbd:   "|"
-    x9 DEFB 0x28               ;0xdbbe:   "("
-    x9 DEFB 0x29               ;0xdbbf:   ")"
-    x9 DEFB 0x2f               ;0xdbc0:   "/"
-    x9 DEFB 0x5c               ;0xdbc1:   "\"
-    x9 DEFB 0x7f               ;0xdbc2:   0x7f
-    x9 DEFB 0x0                ;0xdbc3:   0x0
+    DEFB 0x3c                  ;0xdbb2:   "<"
+    DEFB 0x3e                  ;0xdbb3:   ">"
+    DEFB 0x2e                  ;0xdbb4:   "."
+    DEFB 0x2c                  ;0xdbb5:   ","
+    DEFB 0x3b                  ;0xdbb6:   ";"
+    DEFB 0x3a                  ;0xdbb7:   ":"
+    DEFB 0x3d                  ;0xdbb8:   "="
+    DEFB 0x5b                  ;0xdbb9:   "["
+    DEFB 0x5d                  ;0xdbba:   "]"
+    DEFB 0x5f                  ;0xdbbb:   "_"
+    DEFB 0x25                  ;0xdbbc:   "%"
+    DEFB 0x7c                  ;0xdbbd:   "|"
+    DEFB 0x28                  ;0xdbbe:   "("
+    DEFB 0x29                  ;0xdbbf:   ")"
+    DEFB 0x2f                  ;0xdbc0:   "/"
+    DEFB 0x5c                  ;0xdbc1:   "\"
+    DEFB 0x7f                  ;0xdbc2:   0x7f
+    DEFB 0x0                   ;0xdbc3:   0x0
 ;--------------------------------------
 C_DBC4:                        ;          XREF: 0xD45D 
     LD A,1                     ;0xdbc4:   3e 01  ">."  
@@ -6784,24 +6810,24 @@ C_E53C:                        ;          XREF: 0xE0A8
     EX DE,HL                   ;0xe551:   eb  "." 
 ;--------------------------------------
 D_E552:                        ;          XREF: 0xCA54 
-    x9 DEFB 0x21               ;0xe552:   "!"
-    x9 DEFB 0x10               ;0xe553:   0x10
-    x9 DEFB 0x0                ;0xe554:   0x0
-    x9 DEFB 0x39               ;0xe555:   "9"
-    x9 DEFB 0xf9               ;0xe556:   ('y') + 0x80
-    x9 DEFB 0x2a               ;0xe557:   "*"
-    x9 DEFB 0x74               ;0xe558:   "t"
-    x9 DEFB 0x4                ;0xe559:   0x4
-    x9 DEFB 0x22               ;0xe55a:   """
-    x9 DEFB 0xef               ;0xe55b:   ('o') + 0x80
-    x9 DEFB 0x1                ;0xe55c:   0x1
-    x9 DEFB 0x2a               ;0xe55d:   "*"
-    x9 DEFB 0x76               ;0xe55e:   "v"
-    x9 DEFB 0x4                ;0xe55f:   0x4
-    x9 DEFB 0x22               ;0xe560:   """
-    x9 DEFB 0xf1               ;0xe561:   ('q') + 0x80
-    x9 DEFB 0x1                ;0xe562:   0x1
-    x9 DEFB 0xc9               ;0xe563:   ('I') + 0x80
+    DEFB 0x21                  ;0xe552:   "!"
+    DEFB 0x10                  ;0xe553:   0x10
+    DEFB 0x0                   ;0xe554:   0x0
+    DEFB 0x39                  ;0xe555:   "9"
+    DEFB 0xf9                  ;0xe556:   ('y') + 0x80
+    DEFB 0x2a                  ;0xe557:   "*"
+    DEFB 0x74                  ;0xe558:   "t"
+    DEFB 0x4                   ;0xe559:   0x4
+    DEFB 0x22                  ;0xe55a:   """
+    DEFB 0xef                  ;0xe55b:   ('o') + 0x80
+    DEFB 0x1                   ;0xe55c:   0x1
+    DEFB 0x2a                  ;0xe55d:   "*"
+    DEFB 0x76                  ;0xe55e:   "v"
+    DEFB 0x4                   ;0xe55f:   0x4
+    DEFB 0x22                  ;0xe560:   """
+    DEFB 0xf1                  ;0xe561:   ('q') + 0x80
+    DEFB 0x1                   ;0xe562:   0x1
+    DEFB 0xc9                  ;0xe563:   ('I') + 0x80
 ;--------------------------------------
 C_E564:                        ;          XREF: 0xE0AB 
     CALL C_E580                ;0xe564:   cd 80 e5  "..." 
@@ -7165,89 +7191,119 @@ C_E7DF:                        ;          XREF: 0xE869
     LD D,B                     ;0xe7e2:   50  "P" 
     LD E,C                     ;0xe7e3:   59  "Y" 
     ADD HL,DE                  ;0xe7e4:   19  "." 
-    x2 DEFB "DMPY!"            ;0xe7e5:   0xe7e5 to 0xe7ea
-    x9 DEFB 0x4                ;0xe7eb:   0x4
-    x7 DEFB 0xcd               ;0xe7ec:   
-    x4 DEFB "N", '|' + 0x80    ;0xe7ed:   0xe7ed to 0xe7ef
-    x4 DEFB "({!", '|' + 0x80  ;0xe7ef:   0xe7ef to 0xe7f3
-    x6 DEFB  '' + 0x80        ;0xe7f3:   
-    x9 DEFB 0x9                ;0xe7f4:   0x9
-    x4 DEFB "^#V", 'k' + 0x80  ;0xe7f5:   0xe7f5 to 0xe7f9
-    x4 DEFB "",34,"z", 0x04    ;0xe7f9:   0xe7f9 to 0xe7fc
-    x4 DEFB "!", '~' + 0x80    ;0xe7fc:   0xe7fc to 0xe7fe
-    x6 DEFB  '' + 0x80        ;0xe7fe:   
-    x9 DEFB 0x9                ;0xe7ff:   0x9
-    x4 DEFB "^#V", 'k' + 0x80  ;0xe800:   0xe800 to 0xe804
-    x4 DEFB "",34,"|", 0x04    ;0xe804:   0xe804 to 0xe807
-    x4 DEFB "*", 0x9a          ;0xe807:   0xe807 to 0xe809
-    x9 DEFB 0x4                ;0xe809:   0x4
-    x7 DEFB 0xe5               ;0xe80a:   
-    x4 DEFB "*", 0x98          ;0xe80b:   0xe80b to 0xe80d
-    x9 DEFB 0x4                ;0xe80d:   0x4
-    x4 DEFB "#",34,"", 0x98    ;0xe80e:   0xe80e to 0xe811
-    x9 DEFB 0x4                ;0xe811:   0x4
-    x4 DEFB "^", 0x16          ;0xe812:   0xe812 to 0xe814
-    x7 DEFB 0x0                ;0xe814:   
-    x7 DEFB 0xd5               ;0xe815:   
-    x7 DEFB 0xcd               ;0xe816:   
-    x4 DEFB "=", 'g' + 0x80    ;0xe817:   0xe817 to 0xe819
-    x7 DEFB 0xd1               ;0xe819:   
-    x7 DEFB 0xd1               ;0xe81a:   
-    x7 DEFB 0xeb               ;0xe81b:   
-    x4 DEFB "*", 0x88          ;0xe81c:   0xe81c to 0xe81e
-    x9 DEFB 0x4                ;0xe81e:   0x4
-    x9 DEFB 0x19               ;0xe81f:   0x19
-    x7 DEFB 0xeb               ;0xe820:   
-    x4 DEFB "`is#r", 'k' + 0x80  ;0xe821:   0xe821 to 0xe827
-    x4 DEFB "",34,"~", 0x04    ;0xe827:   0xe827 to 0xe82a
-    x4 DEFB "*", 0x9a          ;0xe82a:   0xe82a to 0xe82c
-    x9 DEFB 0x4                ;0xe82c:   0x4
-    x4 DEFB "#", 'e' + 0x80    ;0xe82d:   0xe82d to 0xe82f
-    x4 DEFB "*", 0x98          ;0xe82f:   0xe82f to 0xe831
-    x9 DEFB 0x4                ;0xe831:   0x4
-    x4 DEFB "#",34,"", 0x98    ;0xe832:   0xe832 to 0xe835
-    x9 DEFB 0x4                ;0xe835:   0x4
-    x4 DEFB "^", 0x16          ;0xe836:   0xe836 to 0xe838
-    x7 DEFB 0x0                ;0xe838:   
-    x7 DEFB 0xd5               ;0xe839:   
-    x7 DEFB 0xcd               ;0xe83a:   
-    x4 DEFB "=", 'g' + 0x80    ;0xe83b:   0xe83b to 0xe83d
-    x7 DEFB 0xd1               ;0xe83d:   
-    x7 DEFB 0xd1               ;0xe83e:   
-    x7 DEFB 0xeb               ;0xe83f:   
-    x4 DEFB "*", 0x8a          ;0xe840:   0xe840 to 0xe842
-    x9 DEFB 0x4                ;0xe842:   0x4
-    x9 DEFB 0x19               ;0xe843:   0x19
-    x7 DEFB 0xeb               ;0xe844:   
-    x4 DEFB "!", 0x02          ;0xe845:   0xe845 to 0xe847
-    x7 DEFB 0x0                ;0xe847:   
-    x9 DEFB 0x9                ;0xe848:   0x9
-    x4 DEFB "s#r", 'k' + 0x80  ;0xe849:   0xe849 to 0xe84d
-    x4 DEFB "",34,"", 0x80     ;0xe84d:   0xe84d to 0xe84f
-    x9 DEFB 0x4                ;0xe84f:   0x4
-    x4 DEFB "*", 0x01          ;0xe850:   0xe850 to 0xe852
-    x9 DEFB 0x2                ;0xe852:   0x2
-    x7 DEFB 0xe5               ;0xe853:   
-    x4 DEFB "*", 0x80          ;0xe854:   0xe854 to 0xe856
-    x9 DEFB 0x4                ;0xe856:   0x4
-    x7 DEFB 0xe5               ;0xe857:   
-    x4 DEFB "*~", 0x04         ;0xe858:   0xe858 to 0xe85b
-    x7 DEFB 0xe5               ;0xe85b:   
-    x7 DEFB 0xcd               ;0xe85c:   
-    x7 DEFB 0xda               ;0xe85d:   
-    x7 DEFB 0xec               ;0xe85e:   
-    x7 DEFB 0xd1               ;0xe85f:   
-    x7 DEFB 0xd1               ;0xe860:   
-    x4 DEFB "*", 0x01          ;0xe861:   0xe861 to 0xe863
-    x9 DEFB 0x2                ;0xe863:   0x2
-    x7 DEFB 0xe3               ;0xe864:   
-    x7 DEFB 0xcd               ;0xe865:   
-    x7 DEFB 0xb0               ;0xe866:   
-    x7 DEFB 0xe9               ;0xe867:   
-    x7 DEFB 0xd1               ;0xe868:   
-    x7 DEFB 0xc3               ;0xe869:   
-    x7 DEFB 0xdf               ;0xe86a:   
-    x7 DEFB 0xe7               ;0xe86b:   
+    DEFB "DMPY!"               ;0xe7e5:   0xe7e5 to 0xe7ea
+    DEFB 0x4                   ;0xe7eb:   0x4
+    DEFB 0xcd                  ;0xe7ec:   
+    DEFB 0x4e                  ;0xe7ed:   
+    DEFB 0xfc                  ;0xe7ee:   
+    DEFB "({!", 0x7b           ;0xe7ef:   0xe7ef to 0xe7f0
+    DEFB 0xff                  ;0xe7f3:   
+    DEFB 0x9                   ;0xe7f4:   0x9
+    DEFB "^#V", 0x23           ;0xe7f5:   0xe7f5 to 0xe7f6
+    DEFB 0x22                  ;0xe7f9:   
+    DEFB 0x7a                  ;0xe7fa:   
+    DEFB 0x4                   ;0xe7fb:   0x4
+    DEFB 0x21                  ;0xe7fc:   
+    DEFB 0xfe                  ;0xe7fd:   
+    DEFB 0xff                  ;0xe7fe:   
+    DEFB 0x9                   ;0xe7ff:   0x9
+    DEFB "^#V", 0x23           ;0xe800:   0xe800 to 0xe801
+    DEFB 0x22                  ;0xe804:   
+    DEFB 0x7c                  ;0xe805:   
+    DEFB 0x4                   ;0xe806:   0x4
+    DEFB 0x2a                  ;0xe807:   
+    DEFB 0x9a                  ;0xe808:   
+    DEFB 0x4                   ;0xe809:   0x4
+    DEFB 0xe5                  ;0xe80a:   
+    DEFB 0x2a                  ;0xe80b:   
+    DEFB 0x98                  ;0xe80c:   
+    DEFB 0x4                   ;0xe80d:   0x4
+    DEFB 0x23                  ;0xe80e:   
+    DEFB 0x22                  ;0xe80f:   
+    DEFB 0x98                  ;0xe810:   
+    DEFB 0x4                   ;0xe811:   0x4
+    DEFB 0x5e                  ;0xe812:   
+    DEFB 0x16                  ;0xe813:   0x16
+    DEFB 0x0                   ;0xe814:   
+    DEFB 0xd5                  ;0xe815:   
+    DEFB 0xcd                  ;0xe816:   
+    DEFB 0x3d                  ;0xe817:   
+    DEFB 0xe7                  ;0xe818:   
+    DEFB 0xd1                  ;0xe819:   
+    DEFB 0xd1                  ;0xe81a:   
+    DEFB 0xeb                  ;0xe81b:   
+    DEFB 0x2a                  ;0xe81c:   
+    DEFB 0x88                  ;0xe81d:   
+    DEFB 0x4                   ;0xe81e:   0x4
+    DEFB 0x19                  ;0xe81f:   0x19
+    DEFB 0xeb                  ;0xe820:   
+    DEFB "`is#r", 0x69         ;0xe821:   0xe821 to 0xe822
+    DEFB 0x22                  ;0xe827:   
+    DEFB 0x7e                  ;0xe828:   
+    DEFB 0x4                   ;0xe829:   0x4
+    DEFB 0x2a                  ;0xe82a:   
+    DEFB 0x9a                  ;0xe82b:   
+    DEFB 0x4                   ;0xe82c:   0x4
+    DEFB 0x23                  ;0xe82d:   
+    DEFB 0xe5                  ;0xe82e:   
+    DEFB 0x2a                  ;0xe82f:   
+    DEFB 0x98                  ;0xe830:   
+    DEFB 0x4                   ;0xe831:   0x4
+    DEFB 0x23                  ;0xe832:   
+    DEFB 0x22                  ;0xe833:   
+    DEFB 0x98                  ;0xe834:   
+    DEFB 0x4                   ;0xe835:   0x4
+    DEFB 0x5e                  ;0xe836:   
+    DEFB 0x16                  ;0xe837:   0x16
+    DEFB 0x0                   ;0xe838:   
+    DEFB 0xd5                  ;0xe839:   
+    DEFB 0xcd                  ;0xe83a:   
+    DEFB 0x3d                  ;0xe83b:   
+    DEFB 0xe7                  ;0xe83c:   
+    DEFB 0xd1                  ;0xe83d:   
+    DEFB 0xd1                  ;0xe83e:   
+    DEFB 0xeb                  ;0xe83f:   
+    DEFB 0x2a                  ;0xe840:   
+    DEFB 0x8a                  ;0xe841:   
+    DEFB 0x4                   ;0xe842:   0x4
+    DEFB 0x19                  ;0xe843:   0x19
+    DEFB 0xeb                  ;0xe844:   
+    DEFB 0x21                  ;0xe845:   
+    DEFB 0x2                   ;0xe846:   0x2
+    DEFB 0x0                   ;0xe847:   
+    DEFB 0x9                   ;0xe848:   0x9
+    DEFB "s#r", 0x23           ;0xe849:   0xe849 to 0xe84a
+    DEFB 0x22                  ;0xe84d:   
+    DEFB 0x80                  ;0xe84e:   
+    DEFB 0x4                   ;0xe84f:   0x4
+    DEFB 0x2a                  ;0xe850:   
+    DEFB 0x1                   ;0xe851:   0x1
+    DEFB 0x2                   ;0xe852:   0x2
+    DEFB 0xe5                  ;0xe853:   
+    DEFB 0x2a                  ;0xe854:   
+    DEFB 0x80                  ;0xe855:   
+    DEFB 0x4                   ;0xe856:   0x4
+    DEFB 0xe5                  ;0xe857:   
+    DEFB 0x2a                  ;0xe858:   
+    DEFB 0x7e                  ;0xe859:   
+    DEFB 0x4                   ;0xe85a:   0x4
+    DEFB 0xe5                  ;0xe85b:   
+    DEFB 0xcd                  ;0xe85c:   
+    DEFB 0xda                  ;0xe85d:   
+    DEFB 0xec                  ;0xe85e:   
+    DEFB 0xd1                  ;0xe85f:   
+    DEFB 0xd1                  ;0xe860:   
+    DEFB 0x2a                  ;0xe861:   
+    DEFB 0x1                   ;0xe862:   0x1
+    DEFB 0x2                   ;0xe863:   0x2
+    DEFB 0xe3                  ;0xe864:   
+    DEFB 0xcd                  ;0xe865:   
+    DEFB 0xb0                  ;0xe866:   
+    DEFB 0xe9                  ;0xe867:   
+    DEFB 0xd1                  ;0xe868:   
+    DEFB 0xc3                  ;0xe869:   
+    DEFB 0xdf                  ;0xe86a:   
+    DEFB 0xe7                  ;0xe86b:   
 ;--------------------------------------
 C_E86C:                        ;          XREF: 0xE7EF 
     LD HL,(0x494)              ;0xe86c:   2a 94 04  "*.."  
@@ -7464,48 +7520,48 @@ C_E9E1:                        ;          XREF: 0xEA52
     LD HL,(0x4a0)              ;0xe9fd:   2a a0 04  "*.."  
 ;--------------------------------------
 D_EA00:                        ;          XREF: 0xC25E 
-    x9 DEFB 0x29               ;0xea00:   ")"
-    x9 DEFB 0x29               ;0xea01:   ")"
-    x9 DEFB 0xd1               ;0xea02:   ('Q') + 0x80
-    x9 DEFB 0x19               ;0xea03:   0x19
-    x9 DEFB 0x11               ;0xea04:   0x11
-    x9 DEFB 0x7a               ;0xea05:   "z"
-    x9 DEFB 0x4                ;0xea06:   0x4
-    x9 DEFB 0x19               ;0xea07:   0x19
-    x9 DEFB 0x5e               ;0xea08:   "^"
-    x9 DEFB 0x23               ;0xea09:   "#"
-    x9 DEFB 0x56               ;0xea0a:   "V"
-    x9 DEFB 0xeb               ;0xea0b:   ('k') + 0x80
-    x9 DEFB 0x22               ;0xea0c:   """
-    x9 DEFB 0xa4               ;0xea0d:   ('$') + 0x80
-    x9 DEFB 0x4                ;0xea0e:   0x4
-    x9 DEFB 0xd1               ;0xea0f:   ('Q') + 0x80
-    x9 DEFB 0xeb               ;0xea10:   ('k') + 0x80
-    x9 DEFB 0xcd               ;0xea11:   ('M') + 0x80
-    x9 DEFB 0x54               ;0xea12:   "T"
-    x9 DEFB 0xfb               ;0xea13:   ('{') + 0x80
-    x9 DEFB 0x28               ;0xea14:   "("
-    x9 DEFB 0x14               ;0xea15:   0x14
-    x9 DEFB 0x21               ;0xea16:   "!"
-    x9 DEFB 0x0                ;0xea17:   0x0
-    x9 DEFB 0x0                ;0xea18:   0x0
-    x9 DEFB 0xe5               ;0xea19:   ('e') + 0x80
-    x9 DEFB 0xc5               ;0xea1a:   ('E') + 0x80
-    x9 DEFB 0x2a               ;0xea1b:   "*"
-    x9 DEFB 0xa0               ;0xea1c:   (' ') + 0x80
-    x9 DEFB 0x4                ;0xea1d:   0x4
-    x9 DEFB 0xe5               ;0xea1e:   ('e') + 0x80
-    x9 DEFB 0xcd               ;0xea1f:   ('M') + 0x80
-    x9 DEFB 0xa1               ;0xea20:   ('!') + 0x80
-    x9 DEFB 0xea               ;0xea21:   ('j') + 0x80
-    x9 DEFB 0xd1               ;0xea22:   ('Q') + 0x80
-    x9 DEFB 0xd1               ;0xea23:   ('Q') + 0x80
-    x9 DEFB 0xd1               ;0xea24:   ('Q') + 0x80
-    x9 DEFB 0x22               ;0xea25:   """
-    x9 DEFB 0xa2               ;0xea26:   ('"') + 0x80
-    x9 DEFB 0x4                ;0xea27:   0x4
-    x9 DEFB 0x18               ;0xea28:   0x18
-    x9 DEFB 0x28               ;0xea29:   "("
+    DEFB 0x29                  ;0xea00:   ")"
+    DEFB 0x29                  ;0xea01:   ")"
+    DEFB 0xd1                  ;0xea02:   ('Q') + 0x80
+    DEFB 0x19                  ;0xea03:   0x19
+    DEFB 0x11                  ;0xea04:   0x11
+    DEFB 0x7a                  ;0xea05:   "z"
+    DEFB 0x4                   ;0xea06:   0x4
+    DEFB 0x19                  ;0xea07:   0x19
+    DEFB 0x5e                  ;0xea08:   "^"
+    DEFB 0x23                  ;0xea09:   "#"
+    DEFB 0x56                  ;0xea0a:   "V"
+    DEFB 0xeb                  ;0xea0b:   ('k') + 0x80
+    DEFB 0x22                  ;0xea0c:   """
+    DEFB 0xa4                  ;0xea0d:   ('$') + 0x80
+    DEFB 0x4                   ;0xea0e:   0x4
+    DEFB 0xd1                  ;0xea0f:   ('Q') + 0x80
+    DEFB 0xeb                  ;0xea10:   ('k') + 0x80
+    DEFB 0xcd                  ;0xea11:   ('M') + 0x80
+    DEFB 0x54                  ;0xea12:   "T"
+    DEFB 0xfb                  ;0xea13:   ('{') + 0x80
+    DEFB 0x28                  ;0xea14:   "("
+    DEFB 0x14                  ;0xea15:   0x14
+    DEFB 0x21                  ;0xea16:   "!"
+    DEFB 0x0                   ;0xea17:   0x0
+    DEFB 0x0                   ;0xea18:   0x0
+    DEFB 0xe5                  ;0xea19:   ('e') + 0x80
+    DEFB 0xc5                  ;0xea1a:   ('E') + 0x80
+    DEFB 0x2a                  ;0xea1b:   "*"
+    DEFB 0xa0                  ;0xea1c:   (' ') + 0x80
+    DEFB 0x4                   ;0xea1d:   0x4
+    DEFB 0xe5                  ;0xea1e:   ('e') + 0x80
+    DEFB 0xcd                  ;0xea1f:   ('M') + 0x80
+    DEFB 0xa1                  ;0xea20:   ('!') + 0x80
+    DEFB 0xea                  ;0xea21:   ('j') + 0x80
+    DEFB 0xd1                  ;0xea22:   ('Q') + 0x80
+    DEFB 0xd1                  ;0xea23:   ('Q') + 0x80
+    DEFB 0xd1                  ;0xea24:   ('Q') + 0x80
+    DEFB 0x22                  ;0xea25:   """
+    DEFB 0xa2                  ;0xea26:   ('"') + 0x80
+    DEFB 0x4                   ;0xea27:   0x4
+    DEFB 0x18                  ;0xea28:   0x18
+    DEFB 0x28                  ;0xea29:   "("
 ;--------------------------------------
 C_EA2A:                        ;          XREF: 0xEA14 
     LD H,B                     ;0xea2a:   60  "`" 
@@ -8496,22 +8552,22 @@ C_EFF2:                        ;          XREF: 0xE036
     RET                        ;0xf005:   c9  "." 
 ;--------------------------------------
 D_F006:                        ;          XREF: 0xEFF9 
-    x9 DEFB 0xff               ;0xf006:   0xff
-    x9 DEFB 0x0                ;0xf007:   0x0
-    x9 DEFB 0x4                ;0xf008:   0x4
-    x9 DEFB 0xff               ;0xf009:   0xff
-    x9 DEFB 0x6                ;0xf00a:   0x6
-    x9 DEFB 0x7                ;0xf00b:   0x7
-    x9 DEFB 0x5                ;0xf00c:   0x5
-    x9 DEFB 0x6                ;0xf00d:   0x6
-    x9 DEFB 0x2                ;0xf00e:   0x2
-    x9 DEFB 0x1                ;0xf00f:   0x1
-    x9 DEFB 0x3                ;0xf010:   0x3
-    x9 DEFB 0x2                ;0xf011:   0x2
-    x9 DEFB 0xff               ;0xf012:   0xff
-    x9 DEFB 0x0                ;0xf013:   0x0
-    x9 DEFB 0x4                ;0xf014:   0x4
-    x9 DEFB 0xff               ;0xf015:   0xff
+    DEFB 0xff                  ;0xf006:   0xff
+    DEFB 0x0                   ;0xf007:   0x0
+    DEFB 0x4                   ;0xf008:   0x4
+    DEFB 0xff                  ;0xf009:   0xff
+    DEFB 0x6                   ;0xf00a:   0x6
+    DEFB 0x7                   ;0xf00b:   0x7
+    DEFB 0x5                   ;0xf00c:   0x5
+    DEFB 0x6                   ;0xf00d:   0x6
+    DEFB 0x2                   ;0xf00e:   0x2
+    DEFB 0x1                   ;0xf00f:   0x1
+    DEFB 0x3                   ;0xf010:   0x3
+    DEFB 0x2                   ;0xf011:   0x2
+    DEFB 0xff                  ;0xf012:   0xff
+    DEFB 0x0                   ;0xf013:   0x0
+    DEFB 0x4                   ;0xf014:   0x4
+    DEFB 0xff                  ;0xf015:   0xff
 ;--------------------------------------
 C_F016:                        ;          XREF: 0xE039 
     LD HL,2                    ;0xf016:   21 02 00  "!.."  
@@ -8707,7 +8763,7 @@ C_F0F2:                        ;          XREF: 0xE195
     ADD HL,SP                  ;0xf0f5:   39  "9" 
     PUSH BC                    ;0xf0f6:   c5  "." 
     LD BC,0x7fff               ;0xf0f7:   01 ff 7f  "..."  
-    x3 DEFB "^#V#~#fox"        ;0xf0fa:   0xf0fa to 0xf103
+    DEFB "^#V#~#fox"           ;0xf0fa:   0xf0fa to 0xf103
     OR C                       ;0xf103:   b1  "." 
     JP z, C_F116               ;0xf104:   ca 16 f1  "..." 
     LD A,(DE)                  ;0xf107:   1a  "." 
@@ -8748,7 +8804,7 @@ C_F12B:                        ;          XREF: 0xE19B
     INC HL                     ;0xf134:   23  "#" 
     LD D,(HL)                  ;0xf135:   56  "V" 
     PUSH DE                    ;0xf136:   d5  "." 
-    x3 DEFB "#~#fox"           ;0xf137:   0xf137 to 0xf13d
+    DEFB "#~#fox"              ;0xf137:   0xf137 to 0xf13d
     OR C                       ;0xf13d:   b1  "." 
     JP z, C_F14D               ;0xf13e:   ca 4d f1  ".M." 
     LD A,(HL)                  ;0xf141:   7e  "~" 
@@ -8929,9 +8985,9 @@ C_F202:                        ;          XREF: 0xE177
     LD HL,8                    ;0xf203:   21 08 00  "!.."  
 ;--------------------------------------
 D_F206:                        ;          XREF: 0xC263 
-    x9 DEFB 0x19               ;0xf206:   0x19
-    x9 DEFB 0xe5               ;0xf207:   ('e') + 0x80
-    x9 DEFB 0xeb               ;0xf208:   ('k') + 0x80
+    DEFB 0x19                  ;0xf206:   0x19
+    DEFB 0xe5                  ;0xf207:   ('e') + 0x80
+    DEFB 0xeb                  ;0xf208:   ('k') + 0x80
 ;--------------------------------------
 C_F209:                        ;          XREF: 0xE0FF 
     EX DE,HL                   ;0xf209:   eb  "." 
@@ -10057,144 +10113,144 @@ C_F7DC:                        ;          XREF: 0xF772
     RET                        ;0xf7dd:   c9  "." 
 ;--------------------------------------
 D_F7DE:                        ;          XREF: 0xF920 
-    x9 DEFB 0x40               ;0xf7de:   "@"
-    x9 DEFB 0x80               ;0xf7df:   0x80
-    x9 DEFB 0x0                ;0xf7e0:   0x0
-    x9 DEFB 0x0                ;0xf7e1:   0x0
-    x9 DEFB 0x0                ;0xf7e2:   0x0
-    x9 DEFB 0x0                ;0xf7e3:   0x0
-    x9 DEFB 0x0                ;0xf7e4:   0x0
-    x9 DEFB 0x0                ;0xf7e5:   0x0
-    x9 DEFB 0x40               ;0xf7e6:   "@"
-    x9 DEFB 0xc                ;0xf7e7:   0xc
-    x9 DEFB 0xcc               ;0xf7e8:   ('L') + 0x80
-    x9 DEFB 0xcc               ;0xf7e9:   ('L') + 0x80
-    x9 DEFB 0xcc               ;0xf7ea:   ('L') + 0x80
-    x9 DEFB 0xcc               ;0xf7eb:   ('L') + 0x80
-    x9 DEFB 0xcc               ;0xf7ec:   ('L') + 0x80
-    x9 DEFB 0xcd               ;0xf7ed:   ('M') + 0x80
-    x9 DEFB 0x40               ;0xf7ee:   "@"
-    x9 DEFB 0x1                ;0xf7ef:   0x1
-    x9 DEFB 0x47               ;0xf7f0:   "G"
-    x9 DEFB 0xae               ;0xf7f1:   ('.') + 0x80
-    x9 DEFB 0x14               ;0xf7f2:   0x14
-    x9 DEFB 0x7a               ;0xf7f3:   "z"
-    x9 DEFB 0xe1               ;0xf7f4:   ('a') + 0x80
-    x9 DEFB 0x48               ;0xf7f5:   "H"
-    x9 DEFB 0x3f               ;0xf7f6:   "?"
-    x9 DEFB 0x20               ;0xf7f7:   " "
-    x9 DEFB 0xc4               ;0xf7f8:   ('D') + 0x80
-    x9 DEFB 0x9b               ;0xf7f9:   0x9b
-    x9 DEFB 0xa5               ;0xf7fa:   ('%') + 0x80
-    x9 DEFB 0xe3               ;0xf7fb:   ('c') + 0x80
-    x9 DEFB 0x54               ;0xf7fc:   "T"
-    x9 DEFB 0x0                ;0xf7fd:   0x0
-    x9 DEFB 0x3f               ;0xf7fe:   "?"
-    x9 DEFB 0x3                ;0xf7ff:   0x3
+    DEFB 0x40                  ;0xf7de:   "@"
+    DEFB 0x80                  ;0xf7df:   0x80
+    DEFB 0x0                   ;0xf7e0:   0x0
+    DEFB 0x0                   ;0xf7e1:   0x0
+    DEFB 0x0                   ;0xf7e2:   0x0
+    DEFB 0x0                   ;0xf7e3:   0x0
+    DEFB 0x0                   ;0xf7e4:   0x0
+    DEFB 0x0                   ;0xf7e5:   0x0
+    DEFB 0x40                  ;0xf7e6:   "@"
+    DEFB 0xc                   ;0xf7e7:   0xc
+    DEFB 0xcc                  ;0xf7e8:   ('L') + 0x80
+    DEFB 0xcc                  ;0xf7e9:   ('L') + 0x80
+    DEFB 0xcc                  ;0xf7ea:   ('L') + 0x80
+    DEFB 0xcc                  ;0xf7eb:   ('L') + 0x80
+    DEFB 0xcc                  ;0xf7ec:   ('L') + 0x80
+    DEFB 0xcd                  ;0xf7ed:   ('M') + 0x80
+    DEFB 0x40                  ;0xf7ee:   "@"
+    DEFB 0x1                   ;0xf7ef:   0x1
+    DEFB 0x47                  ;0xf7f0:   "G"
+    DEFB 0xae                  ;0xf7f1:   ('.') + 0x80
+    DEFB 0x14                  ;0xf7f2:   0x14
+    DEFB 0x7a                  ;0xf7f3:   "z"
+    DEFB 0xe1                  ;0xf7f4:   ('a') + 0x80
+    DEFB 0x48                  ;0xf7f5:   "H"
+    DEFB 0x3f                  ;0xf7f6:   "?"
+    DEFB 0x20                  ;0xf7f7:   " "
+    DEFB 0xc4                  ;0xf7f8:   ('D') + 0x80
+    DEFB 0x9b                  ;0xf7f9:   0x9b
+    DEFB 0xa5                  ;0xf7fa:   ('%') + 0x80
+    DEFB 0xe3                  ;0xf7fb:   ('c') + 0x80
+    DEFB 0x54                  ;0xf7fc:   "T"
+    DEFB 0x0                   ;0xf7fd:   0x0
+    DEFB 0x3f                  ;0xf7fe:   "?"
+    DEFB 0x3                   ;0xf7ff:   0x3
 ;--------------------------------------
 D_F800:                        ;          XREF: 0xD0AD 
-    x9 DEFB 0x46               ;0xf800:   "F"
-    x9 DEFB 0xdc               ;0xf801:   ('\') + 0x80
-    x9 DEFB 0x5d               ;0xf802:   "]"
-    x9 DEFB 0x63               ;0xf803:   "c"
-    x9 DEFB 0x88               ;0xf804:   0x88
-    x9 DEFB 0x66               ;0xf805:   "f"
-    x9 DEFB 0x3e               ;0xf806:   ">"
-    x9 DEFB 0x53               ;0xf807:   "S"
-    x9 DEFB 0xe2               ;0xf808:   ('b') + 0x80
-    x9 DEFB 0xd6               ;0xf809:   ('V') + 0x80
-    x9 DEFB 0x23               ;0xf80a:   "#"
-    x9 DEFB 0x8d               ;0xf80b:   0x8d
-    x9 DEFB 0xa3               ;0xf80c:   ('#') + 0x80
-    x9 DEFB 0xcd               ;0xf80d:   ('M') + 0x80
-    x9 DEFB 0x3e               ;0xf80e:   ">"
-    x9 DEFB 0x8                ;0xf80f:   0x8
-    x9 DEFB 0x63               ;0xf810:   "c"
-    x9 DEFB 0x7b               ;0xf811:   "{"
-    x9 DEFB 0xd0               ;0xf812:   ('P') + 0x80
-    x9 DEFB 0x5a               ;0xf813:   "Z"
-    x9 DEFB 0xf6               ;0xf814:   ('v') + 0x80
-    x9 DEFB 0xc8               ;0xf815:   ('H') + 0x80
-    x9 DEFB 0x3d               ;0xf816:   "="
-    x9 DEFB 0xd6               ;0xf817:   ('V') + 0x80
-    x9 DEFB 0xbf               ;0xf818:   ('?') + 0x80
-    x9 DEFB 0x94               ;0xf819:   0x94
-    x9 DEFB 0xd5               ;0xf81a:   ('U') + 0x80
-    x9 DEFB 0xe5               ;0xf81b:   ('e') + 0x80
-    x9 DEFB 0x7a               ;0xf81c:   "z"
-    x9 DEFB 0x66               ;0xf81d:   "f"
-    x9 DEFB 0x3d               ;0xf81e:   "="
-    x9 DEFB 0x15               ;0xf81f:   0x15
-    x9 DEFB 0x79               ;0xf820:   "y"
-    x9 DEFB 0x8e               ;0xf821:   0x8e
-    x9 DEFB 0xe2               ;0xf822:   ('b') + 0x80
-    x9 DEFB 0x30               ;0xf823:   "0"
-    x9 DEFB 0x8c               ;0xf824:   0x8c
-    x9 DEFB 0x3d               ;0xf825:   "="
-    x9 DEFB 0x3d               ;0xf826:   "="
-    x9 DEFB 0x2                ;0xf827:   0x2
-    x9 DEFB 0x25               ;0xf828:   "%"
-    x9 DEFB 0xc1               ;0xf829:   ('A') + 0x80
-    x9 DEFB 0x7d               ;0xf82a:   "}"
-    x9 DEFB 0x4                ;0xf82b:   0x4
-    x9 DEFB 0xda               ;0xf82c:   ('Z') + 0x80
-    x9 DEFB 0xd3               ;0xf82d:   ('S') + 0x80
-    x9 DEFB 0x3c               ;0xf82e:   "<"
-    x9 DEFB 0x36               ;0xf82f:   "6"
-    x9 DEFB 0xf9               ;0xf830:   ('y') + 0x80
-    x9 DEFB 0xbf               ;0xf831:   ('?') + 0x80
-    x9 DEFB 0xb3               ;0xf832:   ('3') + 0x80
-    x9 DEFB 0xaf               ;0xf833:   ('/') + 0x80
-    x9 DEFB 0x7b               ;0xf834:   "{"
-    x9 DEFB 0x80               ;0xf835:   0x80
-    x9 DEFB 0x3c               ;0xf836:   "<"
-    x9 DEFB 0x5                ;0xf837:   0x5
-    x9 DEFB 0x7f               ;0xf838:   0x7f
-    x9 DEFB 0x5f               ;0xf839:   "_"
-    x9 DEFB 0xf8               ;0xf83a:   ('x') + 0x80
-    x9 DEFB 0x5e               ;0xf83b:   "^"
-    x9 DEFB 0x59               ;0xf83c:   "Y"
-    x9 DEFB 0x26               ;0xf83d:   "&"
-    x9 DEFB 0x3b               ;0xf83e:   ";"
-    x9 DEFB 0x8c               ;0xf83f:   0x8c
-    x9 DEFB 0xbc               ;0xf840:   ('<') + 0x80
-    x9 DEFB 0xcc               ;0xf841:   ('L') + 0x80
-    x9 DEFB 0x9                ;0xf842:   0x9
-    x9 DEFB 0x6f               ;0xf843:   "o"
-    x9 DEFB 0x50               ;0xf844:   "P"
-    x9 DEFB 0x9a               ;0xf845:   0x9a
-    x9 DEFB 0x3b               ;0xf846:   ";"
-    x9 DEFB 0xe                ;0xf847:   0xe
-    x9 DEFB 0x12               ;0xf848:   0x12
-    x9 DEFB 0xe1               ;0xf849:   ('a') + 0x80
-    x9 DEFB 0x34               ;0xf84a:   "4"
-    x9 DEFB 0x24               ;0xf84b:   "$"
-    x9 DEFB 0xbb               ;0xf84c:   (';') + 0x80
-    x9 DEFB 0x43               ;0xf84d:   "C"
-    x9 DEFB 0x3b               ;0xf84e:   ";"
-    x9 DEFB 0x1                ;0xf84f:   0x1
-    x9 DEFB 0x68               ;0xf850:   "h"
-    x9 DEFB 0x49               ;0xf851:   "I"
-    x9 DEFB 0xb8               ;0xf852:   ('8') + 0x80
-    x9 DEFB 0x6a               ;0xf853:   "j"
-    x9 DEFB 0x12               ;0xf854:   0x12
-    x9 DEFB 0xba               ;0xf855:   (':') + 0x80
-    x9 DEFB 0x3a               ;0xf856:   ":"
-    x9 DEFB 0x24               ;0xf857:   "$"
-    x9 DEFB 0x7                ;0xf858:   0x7
-    x9 DEFB 0x5f               ;0xf859:   "_"
-    x9 DEFB 0x3d               ;0xf85a:   "="
-    x9 DEFB 0xce               ;0xf85b:   ('N') + 0x80
-    x9 DEFB 0xac               ;0xf85c:   (',') + 0x80
-    x9 DEFB 0x33               ;0xf85d:   "3"
-    x9 DEFB 0x3a               ;0xf85e:   ":"
-    x9 DEFB 0x3                ;0xf85f:   0x3
-    x9 DEFB 0x9a               ;0xf860:   0x9a
-    x9 DEFB 0x56               ;0xf861:   "V"
-    x9 DEFB 0x52               ;0xf862:   "R"
-    x9 DEFB 0xfb               ;0xf863:   ('{') + 0x80
-    x9 DEFB 0x11               ;0xf864:   0x11
-    x9 DEFB 0x38               ;0xf865:   "8"
+    DEFB 0x46                  ;0xf800:   "F"
+    DEFB 0xdc                  ;0xf801:   ('\') + 0x80
+    DEFB 0x5d                  ;0xf802:   "]"
+    DEFB 0x63                  ;0xf803:   "c"
+    DEFB 0x88                  ;0xf804:   0x88
+    DEFB 0x66                  ;0xf805:   "f"
+    DEFB 0x3e                  ;0xf806:   ">"
+    DEFB 0x53                  ;0xf807:   "S"
+    DEFB 0xe2                  ;0xf808:   ('b') + 0x80
+    DEFB 0xd6                  ;0xf809:   ('V') + 0x80
+    DEFB 0x23                  ;0xf80a:   "#"
+    DEFB 0x8d                  ;0xf80b:   0x8d
+    DEFB 0xa3                  ;0xf80c:   ('#') + 0x80
+    DEFB 0xcd                  ;0xf80d:   ('M') + 0x80
+    DEFB 0x3e                  ;0xf80e:   ">"
+    DEFB 0x8                   ;0xf80f:   0x8
+    DEFB 0x63                  ;0xf810:   "c"
+    DEFB 0x7b                  ;0xf811:   "{"
+    DEFB 0xd0                  ;0xf812:   ('P') + 0x80
+    DEFB 0x5a                  ;0xf813:   "Z"
+    DEFB 0xf6                  ;0xf814:   ('v') + 0x80
+    DEFB 0xc8                  ;0xf815:   ('H') + 0x80
+    DEFB 0x3d                  ;0xf816:   "="
+    DEFB 0xd6                  ;0xf817:   ('V') + 0x80
+    DEFB 0xbf                  ;0xf818:   ('?') + 0x80
+    DEFB 0x94                  ;0xf819:   0x94
+    DEFB 0xd5                  ;0xf81a:   ('U') + 0x80
+    DEFB 0xe5                  ;0xf81b:   ('e') + 0x80
+    DEFB 0x7a                  ;0xf81c:   "z"
+    DEFB 0x66                  ;0xf81d:   "f"
+    DEFB 0x3d                  ;0xf81e:   "="
+    DEFB 0x15                  ;0xf81f:   0x15
+    DEFB 0x79                  ;0xf820:   "y"
+    DEFB 0x8e                  ;0xf821:   0x8e
+    DEFB 0xe2                  ;0xf822:   ('b') + 0x80
+    DEFB 0x30                  ;0xf823:   "0"
+    DEFB 0x8c                  ;0xf824:   0x8c
+    DEFB 0x3d                  ;0xf825:   "="
+    DEFB 0x3d                  ;0xf826:   "="
+    DEFB 0x2                   ;0xf827:   0x2
+    DEFB 0x25                  ;0xf828:   "%"
+    DEFB 0xc1                  ;0xf829:   ('A') + 0x80
+    DEFB 0x7d                  ;0xf82a:   "}"
+    DEFB 0x4                   ;0xf82b:   0x4
+    DEFB 0xda                  ;0xf82c:   ('Z') + 0x80
+    DEFB 0xd3                  ;0xf82d:   ('S') + 0x80
+    DEFB 0x3c                  ;0xf82e:   "<"
+    DEFB 0x36                  ;0xf82f:   "6"
+    DEFB 0xf9                  ;0xf830:   ('y') + 0x80
+    DEFB 0xbf                  ;0xf831:   ('?') + 0x80
+    DEFB 0xb3                  ;0xf832:   ('3') + 0x80
+    DEFB 0xaf                  ;0xf833:   ('/') + 0x80
+    DEFB 0x7b                  ;0xf834:   "{"
+    DEFB 0x80                  ;0xf835:   0x80
+    DEFB 0x3c                  ;0xf836:   "<"
+    DEFB 0x5                   ;0xf837:   0x5
+    DEFB 0x7f                  ;0xf838:   0x7f
+    DEFB 0x5f                  ;0xf839:   "_"
+    DEFB 0xf8                  ;0xf83a:   ('x') + 0x80
+    DEFB 0x5e                  ;0xf83b:   "^"
+    DEFB 0x59                  ;0xf83c:   "Y"
+    DEFB 0x26                  ;0xf83d:   "&"
+    DEFB 0x3b                  ;0xf83e:   ";"
+    DEFB 0x8c                  ;0xf83f:   0x8c
+    DEFB 0xbc                  ;0xf840:   ('<') + 0x80
+    DEFB 0xcc                  ;0xf841:   ('L') + 0x80
+    DEFB 0x9                   ;0xf842:   0x9
+    DEFB 0x6f                  ;0xf843:   "o"
+    DEFB 0x50                  ;0xf844:   "P"
+    DEFB 0x9a                  ;0xf845:   0x9a
+    DEFB 0x3b                  ;0xf846:   ";"
+    DEFB 0xe                   ;0xf847:   0xe
+    DEFB 0x12                  ;0xf848:   0x12
+    DEFB 0xe1                  ;0xf849:   ('a') + 0x80
+    DEFB 0x34                  ;0xf84a:   "4"
+    DEFB 0x24                  ;0xf84b:   "$"
+    DEFB 0xbb                  ;0xf84c:   (';') + 0x80
+    DEFB 0x43                  ;0xf84d:   "C"
+    DEFB 0x3b                  ;0xf84e:   ";"
+    DEFB 0x1                   ;0xf84f:   0x1
+    DEFB 0x68                  ;0xf850:   "h"
+    DEFB 0x49                  ;0xf851:   "I"
+    DEFB 0xb8                  ;0xf852:   ('8') + 0x80
+    DEFB 0x6a                  ;0xf853:   "j"
+    DEFB 0x12                  ;0xf854:   0x12
+    DEFB 0xba                  ;0xf855:   (':') + 0x80
+    DEFB 0x3a                  ;0xf856:   ":"
+    DEFB 0x24                  ;0xf857:   "$"
+    DEFB 0x7                   ;0xf858:   0x7
+    DEFB 0x5f                  ;0xf859:   "_"
+    DEFB 0x3d                  ;0xf85a:   "="
+    DEFB 0xce                  ;0xf85b:   ('N') + 0x80
+    DEFB 0xac                  ;0xf85c:   (',') + 0x80
+    DEFB 0x33                  ;0xf85d:   "3"
+    DEFB 0x3a                  ;0xf85e:   ":"
+    DEFB 0x3                   ;0xf85f:   0x3
+    DEFB 0x9a                  ;0xf860:   0x9a
+    DEFB 0x56                  ;0xf861:   "V"
+    DEFB 0x52                  ;0xf862:   "R"
+    DEFB 0xfb                  ;0xf863:   ('{') + 0x80
+    DEFB 0x11                  ;0xf864:   0x11
+    DEFB 0x38                  ;0xf865:   "8"
 ;--------------------------------------
 C_F866:                        ;          XREF: 0xE1AD 
     PUSH BC                    ;0xf866:   c5  "." 
@@ -10535,21 +10591,29 @@ C_FA56:                        ;          XREF: 0xFA4E
 C_FA58:                        ;          XREF: 0xE1A4 
     CALL C_FF90                ;0xfa58:   cd 90 ff  "..." 
     LD HL,8                    ;0xfa5b:   21 08 00  "!.."  
-    x1 DEFB "9N#FPY!a", 0x00   ;0xfa5e:   0xfa5e to 0xfa69
-    x7 DEFB 0xcd               ;0xfa67:   
-    x4 DEFB "=", '{' + 0x80    ;0xfa68:   0xfa68 to 0xfa6a
-    x4 DEFB "(", 0x13          ;0xfa6a:   0xfa6a to 0xfa6c
-    x4 DEFB "PY!z", 0x00       ;0xfa6c:   0xfa6c to 0xfa71
-    x7 DEFB 0xcd               ;0xfa71:   
-    x4 DEFB ">", '{' + 0x80    ;0xfa72:   0xfa72 to 0xfa74
-    x4 DEFB "(", 0x09          ;0xfa74:   0xfa74 to 0xfa76
-    x4 DEFB "`i", 0x11         ;0xfa76:   0xfa76 to 0xfa79
-    x4 DEFB " ", 0x00          ;0xfa79:   0xfa79 to 0xfa7b
-    x7 DEFB 0xcd               ;0xfa7b:   
-    x4 DEFB "l", '|' + 0x80    ;0xfa7c:   0xfa7c to 0xfa7e
+    DEFB "9N#FPY!a", 0x00      ;0xfa5e:   0xfa5e to 0xfa69
+    DEFB 0xcd                  ;0xfa67:   
+    DEFB 0x3d                  ;0xfa68:   
+    DEFB 0xfb                  ;0xfa69:   
+    DEFB 0x28                  ;0xfa6a:   
+    DEFB 0x13                  ;0xfa6b:   0x13
+    DEFB "PY!z", 0x59          ;0xfa6c:   0xfa6c to 0xfa6d
+    DEFB 0xcd                  ;0xfa71:   
+    DEFB 0x3e                  ;0xfa72:   
+    DEFB 0xfb                  ;0xfa73:   
+    DEFB 0x28                  ;0xfa74:   
+    DEFB 0x9                   ;0xfa75:   0x9
+    DEFB 0x60                  ;0xfa76:   
+    DEFB 0x69                  ;0xfa77:   
+    DEFB 0x11                  ;0xfa78:   0x11
+    DEFB 0x20                  ;0xfa79:   
+    DEFB 0x0                   ;0xfa7a:   
+    DEFB 0xcd                  ;0xfa7b:   
+    DEFB 0x6c                  ;0xfa7c:   
+    DEFB 0xfc                  ;0xfa7d:   
 ;--------------------------------------
 D_FA7E:                        ;          XREF: 0xC992 0xC9EA 
-    x9 DEFB 0xc9               ;0xfa7e:   ('I') + 0x80
+    DEFB 0xc9                  ;0xfa7e:   ('I') + 0x80
 ;--------------------------------------
 C_FA7F:                        ;          XREF: 0xFA6A 
     LD H,B                     ;0xfa7f:   60  "`" 
@@ -10559,19 +10623,27 @@ C_FA7F:                        ;          XREF: 0xFA6A
 C_FA82:                        ;          XREF: 0xE1A7 
     CALL C_FF90                ;0xfa82:   cd 90 ff  "..." 
     LD HL,8                    ;0xfa85:   21 08 00  "!.."  
-    x1 DEFB "9N#FPY!A", 0x00   ;0xfa88:   0xfa88 to 0xfa93
-    x7 DEFB 0xcd               ;0xfa91:   
-    x4 DEFB "=", '{' + 0x80    ;0xfa92:   0xfa92 to 0xfa94
-    x4 DEFB "(", 0x13          ;0xfa94:   0xfa94 to 0xfa96
-    x4 DEFB "PY!Z", 0x00       ;0xfa96:   0xfa96 to 0xfa9b
-    x7 DEFB 0xcd               ;0xfa9b:   
-    x4 DEFB ">", '{' + 0x80    ;0xfa9c:   0xfa9c to 0xfa9e
-    x4 DEFB "(", 0x09          ;0xfa9e:   0xfa9e to 0xfaa0
-    x4 DEFB "`i", 0x11         ;0xfaa0:   0xfaa0 to 0xfaa3
-    x4 DEFB " ", 0x00          ;0xfaa3:   0xfaa3 to 0xfaa5
-    x7 DEFB 0xcd               ;0xfaa5:   
-    x4 DEFB "l", '|' + 0x80    ;0xfaa6:   0xfaa6 to 0xfaa8
-    x7 DEFB 0xc9               ;0xfaa8:   
+    DEFB "9N#FPY!A", 0x00      ;0xfa88:   0xfa88 to 0xfa93
+    DEFB 0xcd                  ;0xfa91:   
+    DEFB 0x3d                  ;0xfa92:   
+    DEFB 0xfb                  ;0xfa93:   
+    DEFB 0x28                  ;0xfa94:   
+    DEFB 0x13                  ;0xfa95:   0x13
+    DEFB "PY!Z", 0x59          ;0xfa96:   0xfa96 to 0xfa97
+    DEFB 0xcd                  ;0xfa9b:   
+    DEFB 0x3e                  ;0xfa9c:   
+    DEFB 0xfb                  ;0xfa9d:   
+    DEFB 0x28                  ;0xfa9e:   
+    DEFB 0x9                   ;0xfa9f:   0x9
+    DEFB 0x60                  ;0xfaa0:   
+    DEFB 0x69                  ;0xfaa1:   
+    DEFB 0x11                  ;0xfaa2:   0x11
+    DEFB 0x20                  ;0xfaa3:   
+    DEFB 0x0                   ;0xfaa4:   
+    DEFB 0xcd                  ;0xfaa5:   
+    DEFB 0x6c                  ;0xfaa6:   
+    DEFB 0xfc                  ;0xfaa7:   
+    DEFB 0xc9                  ;0xfaa8:   
 ;--------------------------------------
 C_FAA9:                        ;          XREF: 0xFA94 
     LD H,B                     ;0xfaa9:   60  "`" 
@@ -10612,14 +10684,14 @@ C_FADC:                        ;          XREF: 0xE0ED
 ;--------------------------------------
 D_FADD:                        ;          XREF: 0xC446 0xC38A 0xC435 0xC3F7 0xC3DB 
     AND D                      ;0xfadd:   a2  "." 
-    x9 DEFB 0x67               ;0xfade:   "g"
+    DEFB 0x67                  ;0xfade:   "g"
 ;--------------------------------------
 D_FADF:                        ;          XREF: 0xC43A 0xC3E3 0xC44C 0xC3FF 
-    x9 DEFB 0x7d               ;0xfadf:   "}"
-    x9 DEFB 0xa3               ;0xfae0:   ('#') + 0x80
-    x9 DEFB 0x6f               ;0xfae1:   "o"
-    x9 DEFB 0xb4               ;0xfae2:   ('4') + 0x80
-    x9 DEFB 0xc9               ;0xfae3:   ('I') + 0x80
+    DEFB 0x7d                  ;0xfadf:   "}"
+    DEFB 0xa3                  ;0xfae0:   ('#') + 0x80
+    DEFB 0x6f                  ;0xfae1:   "o"
+    DEFB 0xb4                  ;0xfae2:   ('4') + 0x80
+    DEFB 0xc9                  ;0xfae3:   ('I') + 0x80
 ;--------------------------------------
 C_FAE4:                        ;          XREF: 0xE16E 
     LD A,H                     ;0xfae4:   7c  "|" 
@@ -10652,14 +10724,14 @@ C_FAED:                        ;          XREF: 0xE12C
     LD H,B                     ;0xfafd:   60  "`" 
     LD L,C                     ;0xfafe:   69  "i" 
     CALL C_FAEC                ;0xfaff:   cd ec fa  "..." 
-    x9 DEFB 0xeb               ;0xfb02:   ('k') + 0x80
-    x9 DEFB 0xe1               ;0xfb03:   ('a') + 0x80
-    x9 DEFB 0xf9               ;0xfb04:   ('y') + 0x80
-    x9 DEFB 0xc1               ;0xfb05:   ('A') + 0x80
-    x9 DEFB 0xeb               ;0xfb06:   ('k') + 0x80
-    x9 DEFB 0x7c               ;0xfb07:   "|"
-    x9 DEFB 0xb5               ;0xfb08:   ('5') + 0x80
-    x9 DEFB 0xc9               ;0xfb09:   ('I') + 0x80
+    DEFB 0xeb                  ;0xfb02:   ('k') + 0x80
+    DEFB 0xe1                  ;0xfb03:   ('a') + 0x80
+    DEFB 0xf9                  ;0xfb04:   ('y') + 0x80
+    DEFB 0xc1                  ;0xfb05:   ('A') + 0x80
+    DEFB 0xeb                  ;0xfb06:   ('k') + 0x80
+    DEFB 0x7c                  ;0xfb07:   "|"
+    DEFB 0xb5                  ;0xfb08:   ('5') + 0x80
+    DEFB 0xc9                  ;0xfb09:   ('I') + 0x80
 ;--------------------------------------
 C_FB0A:                        ;          XREF: 0xE14A 
     LD A,D                     ;0xfb0a:   7a  "z" 
@@ -10766,12 +10838,12 @@ C_FB7B:                        ;          XREF: 0xFB0F
     LD A,H                     ;0xfb7b:   7c  "|" 
     OR A                       ;0xfb7c:   b7  "." 
     JP p, C_FB86               ;0xfb7d:   f2 86 fb  "..." 
-    x9 DEFB 0x2f               ;0xfb80:   "/"
-    x9 DEFB 0x67               ;0xfb81:   "g"
-    x9 DEFB 0x7d               ;0xfb82:   "}"
-    x9 DEFB 0x2f               ;0xfb83:   "/"
-    x9 DEFB 0x6f               ;0xfb84:   "o"
-    x9 DEFB 0x23               ;0xfb85:   "#"
+    DEFB 0x2f                  ;0xfb80:   "/"
+    DEFB 0x67                  ;0xfb81:   "g"
+    DEFB 0x7d                  ;0xfb82:   "}"
+    DEFB 0x2f                  ;0xfb83:   "/"
+    DEFB 0x6f                  ;0xfb84:   "o"
+    DEFB 0x23                  ;0xfb85:   "#"
 ;--------------------------------------
 C_FB86:                        ;          XREF: 0xFB7D 
     LD A,D                     ;0xfb86:   7a  "z" 
@@ -10861,12 +10933,12 @@ C_FBDE:                        ;          XREF: 0xE132
 ;--------------------------------------
 D_FBDF:                        ;          XREF: 0xC3AE 
     OR L                       ;0xfbdf:   b5  "." 
-    x9 DEFB 0xca               ;0xfbe0:   ('J') + 0x80
-    x9 DEFB 0x35               ;0xfbe1:   "5"
-    x9 DEFB 0xfb               ;0xfbe2:   ('{') + 0x80
-    x9 DEFB 0xc3               ;0xfbe3:   ('C') + 0x80
-    x9 DEFB 0x29               ;0xfbe4:   ")"
-    x9 DEFB 0xfb               ;0xfbe5:   ('{') + 0x80
+    DEFB 0xca                  ;0xfbe0:   ('J') + 0x80
+    DEFB 0x35                  ;0xfbe1:   "5"
+    DEFB 0xfb                  ;0xfbe2:   ('{') + 0x80
+    DEFB 0xc3                  ;0xfbe3:   ('C') + 0x80
+    DEFB 0x29                  ;0xfbe4:   ")"
+    DEFB 0xfb                  ;0xfbe5:   ('{') + 0x80
 ;--------------------------------------
 C_FBE6:                        ;          XREF: 0xE171 
     LD A,H                     ;0xfbe6:   7c  "|" 
@@ -11032,10 +11104,10 @@ C_FC74:                        ;          XREF: 0xE0E7
     JP (HL)                    ;0xfc87:   e9  "." 
 ;--------------------------------------
 D_FC88:                        ;          XREF: 0xFC83 
-    x9 DEFB 0xc1               ;0xfc88:   ('A') + 0x80
-    x9 DEFB 0x7c               ;0xfc89:   "|"
-    x9 DEFB 0xb5               ;0xfc8a:   ('5') + 0x80
-    x9 DEFB 0xc9               ;0xfc8b:   ('I') + 0x80
+    DEFB 0xc1                  ;0xfc88:   ('A') + 0x80
+    DEFB 0x7c                  ;0xfc89:   "|"
+    DEFB 0xb5                  ;0xfc8a:   ('5') + 0x80
+    DEFB 0xc9                  ;0xfc8b:   ('I') + 0x80
 ;--------------------------------------
 C_FC8C:                        ;          XREF: 0xE192 
     INC HL                     ;0xfc8c:   23  "#" 
@@ -11060,28 +11132,28 @@ C_FC94:                        ;          XREF: 0xE1AA
     LD (0x506),HL              ;0xfca1:   22 06 05  "".."  
 ;--------------------------------------
 D_FCA4:                        ;          XREF: 0xC246 
-    x9 DEFB 0xcd               ;0xfca4:   ('M') + 0x80
-    x9 DEFB 0xbf               ;0xfca5:   ('?') + 0x80
-    x9 DEFB 0xf5               ;0xfca6:   ('u') + 0x80
-    x9 DEFB 0x21               ;0xfca7:   "!"
-    x9 DEFB 0x4                ;0xfca8:   0x4
-    x9 DEFB 0x0                ;0xfca9:   0x0
-    x9 DEFB 0x39               ;0xfcaa:   "9"
-    x9 DEFB 0x4e               ;0xfcab:   "N"
-    x9 DEFB 0x23               ;0xfcac:   "#"
-    x9 DEFB 0x46               ;0xfcad:   "F"
-    x9 DEFB 0xa                ;0xfcae:   0xa
-    x9 DEFB 0xfe               ;0xfcaf:   ('~') + 0x80
-    x9 DEFB 0x2d               ;0xfcb0:   "-"
-    x9 DEFB 0xc2               ;0xfcb1:   ('B') + 0x80
-    x9 DEFB 0xba               ;0xfcb2:   (':') + 0x80
-    x9 DEFB 0xfc               ;0xfcb3:   ('|') + 0x80
-    x9 DEFB 0x32               ;0xfcb4:   "2"
-    x9 DEFB 0x3                ;0xfcb5:   0x3
-    x9 DEFB 0x5                ;0xfcb6:   0x5
-    x9 DEFB 0xc3               ;0xfcb7:   ('C') + 0x80
-    x9 DEFB 0xbf               ;0xfcb8:   ('?') + 0x80
-    x9 DEFB 0xfc               ;0xfcb9:   ('|') + 0x80
+    DEFB 0xcd                  ;0xfca4:   ('M') + 0x80
+    DEFB 0xbf                  ;0xfca5:   ('?') + 0x80
+    DEFB 0xf5                  ;0xfca6:   ('u') + 0x80
+    DEFB 0x21                  ;0xfca7:   "!"
+    DEFB 0x4                   ;0xfca8:   0x4
+    DEFB 0x0                   ;0xfca9:   0x0
+    DEFB 0x39                  ;0xfcaa:   "9"
+    DEFB 0x4e                  ;0xfcab:   "N"
+    DEFB 0x23                  ;0xfcac:   "#"
+    DEFB 0x46                  ;0xfcad:   "F"
+    DEFB 0xa                   ;0xfcae:   0xa
+    DEFB 0xfe                  ;0xfcaf:   ('~') + 0x80
+    DEFB 0x2d                  ;0xfcb0:   "-"
+    DEFB 0xc2                  ;0xfcb1:   ('B') + 0x80
+    DEFB 0xba                  ;0xfcb2:   (':') + 0x80
+    DEFB 0xfc                  ;0xfcb3:   ('|') + 0x80
+    DEFB 0x32                  ;0xfcb4:   "2"
+    DEFB 0x3                   ;0xfcb5:   0x3
+    DEFB 0x5                   ;0xfcb6:   0x5
+    DEFB 0xc3                  ;0xfcb7:   ('C') + 0x80
+    DEFB 0xbf                  ;0xfcb8:   ('?') + 0x80
+    DEFB 0xfc                  ;0xfcb9:   ('|') + 0x80
 ;--------------------------------------
 C_FCBA:                        ;          XREF: 0xFCB1 
     CP 0x2b                    ;0xfcba:   fe 2b  ".+" 
@@ -11403,149 +11475,149 @@ C_FEBD:                        ;          XREF: 0xFE9D
     LD HL,0x10                 ;0xfebd:   21 10 00  "!.."  
 ;--------------------------------------
 D_FEC0:                        ;          XREF: 0xEF06 
-    x9 DEFB 0x39               ;0xfec0:   "9"
-    x9 DEFB 0xe5               ;0xfec1:   ('e') + 0x80
-    x9 DEFB 0x21               ;0xfec2:   "!"
-    x9 DEFB 0xd7               ;0xfec3:   ('W') + 0x80
-    x9 DEFB 0x1                ;0xfec4:   0x1
-    x9 DEFB 0xcd               ;0xfec5:   ('M') + 0x80
-    x9 DEFB 0x9                ;0xfec6:   0x9
-    x9 DEFB 0xf2               ;0xfec7:   ('r') + 0x80
-    x9 DEFB 0xcd               ;0xfec8:   ('M') + 0x80
-    x9 DEFB 0xa6               ;0xfec9:   ('&') + 0x80
-    x9 DEFB 0xf2               ;0xfeca:   ('r') + 0x80
-    x9 DEFB 0xe1               ;0xfecb:   ('a') + 0x80
-    x9 DEFB 0xe5               ;0xfecc:   ('e') + 0x80
-    x9 DEFB 0xcd               ;0xfecd:   ('M') + 0x80
-    x9 DEFB 0x9                ;0xfece:   0x9
-    x9 DEFB 0xf2               ;0xfecf:   ('r') + 0x80
-    x9 DEFB 0xcd               ;0xfed0:   ('M') + 0x80
-    x9 DEFB 0xe4               ;0xfed1:   ('d') + 0x80
-    x9 DEFB 0xf3               ;0xfed2:   ('s') + 0x80
-    x9 DEFB 0xe1               ;0xfed3:   ('a') + 0x80
-    x9 DEFB 0xcd               ;0xfed4:   ('M') + 0x80
-    x9 DEFB 0x28               ;0xfed5:   "("
-    x9 DEFB 0xf2               ;0xfed6:   ('r') + 0x80
-    x9 DEFB 0x21               ;0xfed7:   "!"
-    x9 DEFB 0x4                ;0xfed8:   0x4
-    x9 DEFB 0x0                ;0xfed9:   0x0
-    x9 DEFB 0x39               ;0xfeda:   "9"
-    x9 DEFB 0xe5               ;0xfedb:   ('e') + 0x80
-    x9 DEFB 0x21               ;0xfedc:   "!"
-    x9 DEFB 0x12               ;0xfedd:   0x12
-    x9 DEFB 0x0                ;0xfede:   0x0
-    x9 DEFB 0x39               ;0xfedf:   "9"
-    x9 DEFB 0xcd               ;0xfee0:   ('M') + 0x80
-    x9 DEFB 0x9                ;0xfee1:   0x9
-    x9 DEFB 0xf2               ;0xfee2:   ('r') + 0x80
-    x9 DEFB 0x21               ;0xfee3:   "!"
-    x9 DEFB 0x12               ;0xfee4:   0x12
-    x9 DEFB 0x0                ;0xfee5:   0x0
-    x9 DEFB 0x39               ;0xfee6:   "9"
-    x9 DEFB 0xcd               ;0xfee7:   ('M') + 0x80
-    x9 DEFB 0xfb               ;0xfee8:   ('{') + 0x80
-    x9 DEFB 0xf1               ;0xfee9:   ('q') + 0x80
-    x9 DEFB 0xcd               ;0xfeea:   ('M') + 0x80
-    x9 DEFB 0xe4               ;0xfeeb:   ('d') + 0x80
-    x9 DEFB 0xf4               ;0xfeec:   ('t') + 0x80
-    x9 DEFB 0xe1               ;0xfeed:   ('a') + 0x80
-    x9 DEFB 0xcd               ;0xfeee:   ('M') + 0x80
-    x9 DEFB 0x28               ;0xfeef:   "("
-    x9 DEFB 0xf2               ;0xfef0:   ('r') + 0x80
-    x9 DEFB 0x21               ;0xfef1:   "!"
-    x9 DEFB 0x4                ;0xfef2:   0x4
-    x9 DEFB 0x0                ;0xfef3:   0x0
-    x9 DEFB 0x39               ;0xfef4:   "9"
-    x9 DEFB 0xcd               ;0xfef5:   ('M') + 0x80
-    x9 DEFB 0x9                ;0xfef6:   0x9
-    x9 DEFB 0xf2               ;0xfef7:   ('r') + 0x80
-    x9 DEFB 0xcd               ;0xfef8:   ('M') + 0x80
-    x9 DEFB 0xf4               ;0xfef9:   ('t') + 0x80
-    x9 DEFB 0xf1               ;0xfefa:   ('q') + 0x80
-    x9 DEFB 0x3e               ;0xfefb:   ">"
-    x9 DEFB 0x2e               ;0xfefc:   "."
-    x9 DEFB 0x2e               ;0xfefd:   "."
-    x9 DEFB 0x53               ;0xfefe:   "S"
-    x9 DEFB 0xb4               ;0xfeff:   ('4') + 0x80
+    DEFB 0x39                  ;0xfec0:   "9"
+    DEFB 0xe5                  ;0xfec1:   ('e') + 0x80
+    DEFB 0x21                  ;0xfec2:   "!"
+    DEFB 0xd7                  ;0xfec3:   ('W') + 0x80
+    DEFB 0x1                   ;0xfec4:   0x1
+    DEFB 0xcd                  ;0xfec5:   ('M') + 0x80
+    DEFB 0x9                   ;0xfec6:   0x9
+    DEFB 0xf2                  ;0xfec7:   ('r') + 0x80
+    DEFB 0xcd                  ;0xfec8:   ('M') + 0x80
+    DEFB 0xa6                  ;0xfec9:   ('&') + 0x80
+    DEFB 0xf2                  ;0xfeca:   ('r') + 0x80
+    DEFB 0xe1                  ;0xfecb:   ('a') + 0x80
+    DEFB 0xe5                  ;0xfecc:   ('e') + 0x80
+    DEFB 0xcd                  ;0xfecd:   ('M') + 0x80
+    DEFB 0x9                   ;0xfece:   0x9
+    DEFB 0xf2                  ;0xfecf:   ('r') + 0x80
+    DEFB 0xcd                  ;0xfed0:   ('M') + 0x80
+    DEFB 0xe4                  ;0xfed1:   ('d') + 0x80
+    DEFB 0xf3                  ;0xfed2:   ('s') + 0x80
+    DEFB 0xe1                  ;0xfed3:   ('a') + 0x80
+    DEFB 0xcd                  ;0xfed4:   ('M') + 0x80
+    DEFB 0x28                  ;0xfed5:   "("
+    DEFB 0xf2                  ;0xfed6:   ('r') + 0x80
+    DEFB 0x21                  ;0xfed7:   "!"
+    DEFB 0x4                   ;0xfed8:   0x4
+    DEFB 0x0                   ;0xfed9:   0x0
+    DEFB 0x39                  ;0xfeda:   "9"
+    DEFB 0xe5                  ;0xfedb:   ('e') + 0x80
+    DEFB 0x21                  ;0xfedc:   "!"
+    DEFB 0x12                  ;0xfedd:   0x12
+    DEFB 0x0                   ;0xfede:   0x0
+    DEFB 0x39                  ;0xfedf:   "9"
+    DEFB 0xcd                  ;0xfee0:   ('M') + 0x80
+    DEFB 0x9                   ;0xfee1:   0x9
+    DEFB 0xf2                  ;0xfee2:   ('r') + 0x80
+    DEFB 0x21                  ;0xfee3:   "!"
+    DEFB 0x12                  ;0xfee4:   0x12
+    DEFB 0x0                   ;0xfee5:   0x0
+    DEFB 0x39                  ;0xfee6:   "9"
+    DEFB 0xcd                  ;0xfee7:   ('M') + 0x80
+    DEFB 0xfb                  ;0xfee8:   ('{') + 0x80
+    DEFB 0xf1                  ;0xfee9:   ('q') + 0x80
+    DEFB 0xcd                  ;0xfeea:   ('M') + 0x80
+    DEFB 0xe4                  ;0xfeeb:   ('d') + 0x80
+    DEFB 0xf4                  ;0xfeec:   ('t') + 0x80
+    DEFB 0xe1                  ;0xfeed:   ('a') + 0x80
+    DEFB 0xcd                  ;0xfeee:   ('M') + 0x80
+    DEFB 0x28                  ;0xfeef:   "("
+    DEFB 0xf2                  ;0xfef0:   ('r') + 0x80
+    DEFB 0x21                  ;0xfef1:   "!"
+    DEFB 0x4                   ;0xfef2:   0x4
+    DEFB 0x0                   ;0xfef3:   0x0
+    DEFB 0x39                  ;0xfef4:   "9"
+    DEFB 0xcd                  ;0xfef5:   ('M') + 0x80
+    DEFB 0x9                   ;0xfef6:   0x9
+    DEFB 0xf2                  ;0xfef7:   ('r') + 0x80
+    DEFB 0xcd                  ;0xfef8:   ('M') + 0x80
+    DEFB 0xf4                  ;0xfef9:   ('t') + 0x80
+    DEFB 0xf1                  ;0xfefa:   ('q') + 0x80
+    DEFB 0x3e                  ;0xfefb:   ">"
+    DEFB 0x2e                  ;0xfefc:   "."
+    DEFB 0x2e                  ;0xfefd:   "."
+    DEFB 0x53                  ;0xfefe:   "S"
+    DEFB 0xb4                  ;0xfeff:   ('4') + 0x80
 ;--------------------------------------
 D_FF00:                        ;          XREF: 0xE751 
-    x9 DEFB 0xe4               ;0xff00:   ('d') + 0x80
-    x9 DEFB 0xcc               ;0xff01:   ('L') + 0x80
-    x9 DEFB 0xe9               ;0xff02:   ('i') + 0x80
-    x9 DEFB 0xcd               ;0xff03:   ('M') + 0x80
-    x9 DEFB 0xe4               ;0xff04:   ('d') + 0x80
-    x9 DEFB 0xf4               ;0xff05:   ('t') + 0x80
-    x9 DEFB 0xcd               ;0xff06:   ('M') + 0x80
-    x9 DEFB 0xf4               ;0xff07:   ('t') + 0x80
-    x9 DEFB 0xf1               ;0xff08:   ('q') + 0x80
-    x9 DEFB 0xbf               ;0xff09:   ('?') + 0x80
-    x9 DEFB 0xd                ;0xff0a:   0xd
-    x9 DEFB 0x0                ;0xff0b:   0x0
-    x9 DEFB 0xc0               ;0xff0c:   ('@') + 0x80
-    x9 DEFB 0x2a               ;0xff0d:   "*"
-    x9 DEFB 0x8e               ;0xff0e:   0x8e
-    x9 DEFB 0x2f               ;0xff0f:   "/"
-    x9 DEFB 0x3e               ;0xff10:   ">"
-    x9 DEFB 0xcd               ;0xff11:   ('M') + 0x80
-    x9 DEFB 0xf                ;0xff12:   0xf
-    x9 DEFB 0xf3               ;0xff13:   ('s') + 0x80
-    x9 DEFB 0x21               ;0xff14:   "!"
-    x9 DEFB 0x4                ;0xff15:   0x4
-    x9 DEFB 0x0                ;0xff16:   0x0
-    x9 DEFB 0x39               ;0xff17:   "9"
-    x9 DEFB 0xcd               ;0xff18:   ('M') + 0x80
-    x9 DEFB 0xfb               ;0xff19:   ('{') + 0x80
-    x9 DEFB 0xf1               ;0xff1a:   ('q') + 0x80
-    x9 DEFB 0xcd               ;0xff1b:   ('M') + 0x80
-    x9 DEFB 0xe4               ;0xff1c:   ('d') + 0x80
-    x9 DEFB 0xf4               ;0xff1d:   ('t') + 0x80
-    x9 DEFB 0xcd               ;0xff1e:   ('M') + 0x80
-    x9 DEFB 0xf4               ;0xff1f:   ('t') + 0x80
+    DEFB 0xe4                  ;0xff00:   ('d') + 0x80
+    DEFB 0xcc                  ;0xff01:   ('L') + 0x80
+    DEFB 0xe9                  ;0xff02:   ('i') + 0x80
+    DEFB 0xcd                  ;0xff03:   ('M') + 0x80
+    DEFB 0xe4                  ;0xff04:   ('d') + 0x80
+    DEFB 0xf4                  ;0xff05:   ('t') + 0x80
+    DEFB 0xcd                  ;0xff06:   ('M') + 0x80
+    DEFB 0xf4                  ;0xff07:   ('t') + 0x80
+    DEFB 0xf1                  ;0xff08:   ('q') + 0x80
+    DEFB 0xbf                  ;0xff09:   ('?') + 0x80
+    DEFB 0xd                   ;0xff0a:   0xd
+    DEFB 0x0                   ;0xff0b:   0x0
+    DEFB 0xc0                  ;0xff0c:   ('@') + 0x80
+    DEFB 0x2a                  ;0xff0d:   "*"
+    DEFB 0x8e                  ;0xff0e:   0x8e
+    DEFB 0x2f                  ;0xff0f:   "/"
+    DEFB 0x3e                  ;0xff10:   ">"
+    DEFB 0xcd                  ;0xff11:   ('M') + 0x80
+    DEFB 0xf                   ;0xff12:   0xf
+    DEFB 0xf3                  ;0xff13:   ('s') + 0x80
+    DEFB 0x21                  ;0xff14:   "!"
+    DEFB 0x4                   ;0xff15:   0x4
+    DEFB 0x0                   ;0xff16:   0x0
+    DEFB 0x39                  ;0xff17:   "9"
+    DEFB 0xcd                  ;0xff18:   ('M') + 0x80
+    DEFB 0xfb                  ;0xff19:   ('{') + 0x80
+    DEFB 0xf1                  ;0xff1a:   ('q') + 0x80
+    DEFB 0xcd                  ;0xff1b:   ('M') + 0x80
+    DEFB 0xe4                  ;0xff1c:   ('d') + 0x80
+    DEFB 0xf4                  ;0xff1d:   ('t') + 0x80
+    DEFB 0xcd                  ;0xff1e:   ('M') + 0x80
+    DEFB 0xf4                  ;0xff1f:   ('t') + 0x80
 ;--------------------------------------
 D_FF20:                        ;          XREF: 0xCC60 
-    x9 DEFB 0xf1               ;0xff20:   ('q') + 0x80
-    x9 DEFB 0x40               ;0xff21:   "@"
-    x9 DEFB 0x2                ;0xff22:   0x2
-    x9 DEFB 0x22               ;0xff23:   """
-    x9 DEFB 0x22               ;0xff24:   """
-    x9 DEFB 0x1a               ;0xff25:   0x1a
-    x9 DEFB 0x42               ;0xff26:   "B"
-    x9 DEFB 0x5c               ;0xff27:   "\"
-    x9 DEFB 0xad               ;0xff28:   ('-') + 0x80
-    x9 DEFB 0xcd               ;0xff29:   ('M') + 0x80
-    x9 DEFB 0xf                ;0xff2a:   0xf
-    x9 DEFB 0xf3               ;0xff2b:   ('s') + 0x80
-    x9 DEFB 0x21               ;0xff2c:   "!"
-    x9 DEFB 0x4                ;0xff2d:   0x4
-    x9 DEFB 0x0                ;0xff2e:   0x0
-    x9 DEFB 0x39               ;0xff2f:   "9"
-    x9 DEFB 0xcd               ;0xff30:   ('M') + 0x80
-    x9 DEFB 0xfb               ;0xff31:   ('{') + 0x80
-    x9 DEFB 0xf1               ;0xff32:   ('q') + 0x80
-    x9 DEFB 0xcd               ;0xff33:   ('M') + 0x80
-    x9 DEFB 0xe4               ;0xff34:   ('d') + 0x80
-    x9 DEFB 0xf4               ;0xff35:   ('t') + 0x80
-    x9 DEFB 0xcd               ;0xff36:   ('M') + 0x80
-    x9 DEFB 0xf4               ;0xff37:   ('t') + 0x80
-    x9 DEFB 0xf1               ;0xff38:   ('q') + 0x80
-    x9 DEFB 0xc0               ;0xff39:   ('@') + 0x80
-    x9 DEFB 0x2a               ;0xff3a:   "*"
-    x9 DEFB 0xaa               ;0xff3b:   ('*') + 0x80
-    x9 DEFB 0xaa               ;0xff3c:   ('*') + 0x80
-    x9 DEFB 0xa9               ;0xff3d:   (')') + 0x80
-    x9 DEFB 0x85               ;0xff3e:   0x85
-    x9 DEFB 0x76               ;0xff3f:   "v"
-    x9 DEFB 0xac               ;0xff40:   (',') + 0x80
-    x9 DEFB 0xcd               ;0xff41:   ('M') + 0x80
-    x9 DEFB 0xf                ;0xff42:   0xf
-    x9 DEFB 0xf3               ;0xff43:   ('s') + 0x80
-    x9 DEFB 0x21               ;0xff44:   "!"
-    x9 DEFB 0x4                ;0xff45:   0x4
-    x9 DEFB 0x0                ;0xff46:   0x0
-    x9 DEFB 0x39               ;0xff47:   "9"
-    x9 DEFB 0xcd               ;0xff48:   ('M') + 0x80
-    x9 DEFB 0xfb               ;0xff49:   ('{') + 0x80
-    x9 DEFB 0xf1               ;0xff4a:   ('q') + 0x80
+    DEFB 0xf1                  ;0xff20:   ('q') + 0x80
+    DEFB 0x40                  ;0xff21:   "@"
+    DEFB 0x2                   ;0xff22:   0x2
+    DEFB 0x22                  ;0xff23:   """
+    DEFB 0x22                  ;0xff24:   """
+    DEFB 0x1a                  ;0xff25:   0x1a
+    DEFB 0x42                  ;0xff26:   "B"
+    DEFB 0x5c                  ;0xff27:   "\"
+    DEFB 0xad                  ;0xff28:   ('-') + 0x80
+    DEFB 0xcd                  ;0xff29:   ('M') + 0x80
+    DEFB 0xf                   ;0xff2a:   0xf
+    DEFB 0xf3                  ;0xff2b:   ('s') + 0x80
+    DEFB 0x21                  ;0xff2c:   "!"
+    DEFB 0x4                   ;0xff2d:   0x4
+    DEFB 0x0                   ;0xff2e:   0x0
+    DEFB 0x39                  ;0xff2f:   "9"
+    DEFB 0xcd                  ;0xff30:   ('M') + 0x80
+    DEFB 0xfb                  ;0xff31:   ('{') + 0x80
+    DEFB 0xf1                  ;0xff32:   ('q') + 0x80
+    DEFB 0xcd                  ;0xff33:   ('M') + 0x80
+    DEFB 0xe4                  ;0xff34:   ('d') + 0x80
+    DEFB 0xf4                  ;0xff35:   ('t') + 0x80
+    DEFB 0xcd                  ;0xff36:   ('M') + 0x80
+    DEFB 0xf4                  ;0xff37:   ('t') + 0x80
+    DEFB 0xf1                  ;0xff38:   ('q') + 0x80
+    DEFB 0xc0                  ;0xff39:   ('@') + 0x80
+    DEFB 0x2a                  ;0xff3a:   "*"
+    DEFB 0xaa                  ;0xff3b:   ('*') + 0x80
+    DEFB 0xaa                  ;0xff3c:   ('*') + 0x80
+    DEFB 0xa9                  ;0xff3d:   (')') + 0x80
+    DEFB 0x85                  ;0xff3e:   0x85
+    DEFB 0x76                  ;0xff3f:   "v"
+    DEFB 0xac                  ;0xff40:   (',') + 0x80
+    DEFB 0xcd                  ;0xff41:   ('M') + 0x80
+    DEFB 0xf                   ;0xff42:   0xf
+    DEFB 0xf3                  ;0xff43:   ('s') + 0x80
+    DEFB 0x21                  ;0xff44:   "!"
+    DEFB 0x4                   ;0xff45:   0x4
+    DEFB 0x0                   ;0xff46:   0x0
+    DEFB 0x39                  ;0xff47:   "9"
+    DEFB 0xcd                  ;0xff48:   ('M') + 0x80
+    DEFB 0xfb                  ;0xff49:   ('{') + 0x80
+    DEFB 0xf1                  ;0xff4a:   ('q') + 0x80
 ;--------------------------------------
 C_FF4B:                        ;          XREF: 0xCB8D 
     CALL C_F4E4                ;0xff4b:   cd e4 f4  "..." 
@@ -11618,10 +11690,10 @@ C_FF90:                        ;          XREF: 0xE0E4
 ;--------------------------------------
 C_FF9A:                        ;          XREF: 0xE0C9 
     LD HL,(0x6)                ;0xff9a:   2a 06 00  "*.."  
-    x9 DEFB 0xf9               ;0xff9d:   ('y') + 0x80
-    x9 DEFB 0xcd               ;0xff9e:   ('M') + 0x80
-    x9 DEFB 0xeb               ;0xff9f:   ('k') + 0x80
-    x9 DEFB 0xff               ;0xffa0:   0xff
+    DEFB 0xf9                  ;0xff9d:   ('y') + 0x80
+    DEFB 0xcd                  ;0xff9e:   ('M') + 0x80
+    DEFB 0xeb                  ;0xff9f:   ('k') + 0x80
+    DEFB 0xff                  ;0xffa0:   0xff
 ;--------------------------------------
 C_FFA1:                        ;          XREF: 0xE0D8 
     LD BC,0                    ;0xffa1:   01 00 00  "..."  
@@ -11660,66 +11732,66 @@ C_FFD0:                        ;          XREF: 0xE0D5
     CALL C_FC74                ;0xffd0:   cd 74 fc  ".t." 
 ;--------------------------------------
 D_FFD3:                        ;          XREF: 0xD0FF 
-    x9 DEFB 0x2a               ;0xffd3:   "*"
-    x9 DEFB 0xfd               ;0xffd4:   ('}') + 0x80
-    x9 DEFB 0x4                ;0xffd5:   0x4
-    x9 DEFB 0xeb               ;0xffd6:   ('k') + 0x80
-    x9 DEFB 0x2a               ;0xffd7:   "*"
-    x9 DEFB 0x1                ;0xffd8:   0x1
-    x9 DEFB 0x0                ;0xffd9:   0x0
-    x9 DEFB 0x2b               ;0xffda:   "+"
-    x9 DEFB 0x2b               ;0xffdb:   "+"
-    x9 DEFB 0x2b               ;0xffdc:   "+"
-    x9 DEFB 0x19               ;0xffdd:   0x19
-    x9 DEFB 0x19               ;0xffde:   0x19
-    x9 DEFB 0x19               ;0xffdf:   0x19
-    x9 DEFB 0xeb               ;0xffe0:   ('k') + 0x80
-    x9 DEFB 0x2a               ;0xffe1:   "*"
-    x9 DEFB 0xff               ;0xffe2:   0xff
-    x9 DEFB 0x4                ;0xffe3:   0x4
-    x9 DEFB 0x44               ;0xffe4:   "D"
-    x9 DEFB 0x4d               ;0xffe5:   "M"
+    DEFB 0x2a                  ;0xffd3:   "*"
+    DEFB 0xfd                  ;0xffd4:   ('}') + 0x80
+    DEFB 0x4                   ;0xffd5:   0x4
+    DEFB 0xeb                  ;0xffd6:   ('k') + 0x80
+    DEFB 0x2a                  ;0xffd7:   "*"
+    DEFB 0x1                   ;0xffd8:   0x1
+    DEFB 0x0                   ;0xffd9:   0x0
+    DEFB 0x2b                  ;0xffda:   "+"
+    DEFB 0x2b                  ;0xffdb:   "+"
+    DEFB 0x2b                  ;0xffdc:   "+"
+    DEFB 0x19                  ;0xffdd:   0x19
+    DEFB 0x19                  ;0xffde:   0x19
+    DEFB 0x19                  ;0xffdf:   0x19
+    DEFB 0xeb                  ;0xffe0:   ('k') + 0x80
+    DEFB 0x2a                  ;0xffe1:   "*"
+    DEFB 0xff                  ;0xffe2:   0xff
+    DEFB 0x4                   ;0xffe3:   0x4
+    DEFB 0x44                  ;0xffe4:   "D"
+    DEFB 0x4d                  ;0xffe5:   "M"
 ;--------------------------------------
 D_FFE6:                        ;          XREF: 0xD10B 
-    x9 DEFB 0x2a               ;0xffe6:   "*"
+    DEFB 0x2a                  ;0xffe6:   "*"
 ;--------------------------------------
 D_FFE7:                        ;          XREF: 0xD15A 
-    x9 DEFB 0x1                ;0xffe7:   0x1
+    DEFB 0x1                   ;0xffe7:   0x1
 ;--------------------------------------
 D_FFE8:                        ;          XREF: 0xD143 
-    x9 DEFB 0x5                ;0xffe8:   0x5
-    x9 DEFB 0xeb               ;0xffe9:   ('k') + 0x80
+    DEFB 0x5                   ;0xffe8:   0x5
+    DEFB 0xeb                  ;0xffe9:   ('k') + 0x80
 ;--------------------------------------
 D_FFEA:                        ;          XREF: 0xCFEB 
-    x9 DEFB 0xe9               ;0xffea:   ('i') + 0x80
+    DEFB 0xe9                  ;0xffea:   ('i') + 0x80
 ;--------------------------------------
 C_FFEB:                        ;          XREF: 0xE0DE 
     JP 0x44e                   ;0xffeb:   c3 4e 04  ".N." 
 ;--------------------------------------
 D_FFEE:                        ;          XREF: 0xF064 0xF08D 
-    x9 DEFB 0x1a               ;0xffee:   0x1a
-    x9 DEFB 0x1a               ;0xffef:   0x1a
-    x9 DEFB 0x1a               ;0xfff0:   0x1a
-    x9 DEFB 0x1a               ;0xfff1:   0x1a
-    x9 DEFB 0x1a               ;0xfff2:   0x1a
-    x9 DEFB 0x1a               ;0xfff3:   0x1a
-    x9 DEFB 0x1a               ;0xfff4:   0x1a
-    x9 DEFB 0x1a               ;0xfff5:   0x1a
+    DEFB 0x1a                  ;0xffee:   0x1a
+    DEFB 0x1a                  ;0xffef:   0x1a
+    DEFB 0x1a                  ;0xfff0:   0x1a
+    DEFB 0x1a                  ;0xfff1:   0x1a
+    DEFB 0x1a                  ;0xfff2:   0x1a
+    DEFB 0x1a                  ;0xfff3:   0x1a
+    DEFB 0x1a                  ;0xfff4:   0x1a
+    DEFB 0x1a                  ;0xfff5:   0x1a
 ;--------------------------------------
 D_FFF6:                        ;          XREF: 0xCB42 0xF03A 
-    x9 DEFB 0x1a               ;0xfff6:   0x1a
-    x9 DEFB 0x1a               ;0xfff7:   0x1a
-    x9 DEFB 0x1a               ;0xfff8:   0x1a
-    x9 DEFB 0x1a               ;0xfff9:   0x1a
-    x9 DEFB 0x1a               ;0xfffa:   0x1a
-    x9 DEFB 0x1a               ;0xfffb:   0x1a
+    DEFB 0x1a                  ;0xfff6:   0x1a
+    DEFB 0x1a                  ;0xfff7:   0x1a
+    DEFB 0x1a                  ;0xfff8:   0x1a
+    DEFB 0x1a                  ;0xfff9:   0x1a
+    DEFB 0x1a                  ;0xfffa:   0x1a
+    DEFB 0x1a                  ;0xfffb:   0x1a
 ;--------------------------------------
 D_FFFC:                        ;          XREF: 0xE7F1 
-    x9 DEFB 0x1a               ;0xfffc:   0x1a
-    x9 DEFB 0x1a               ;0xfffd:   0x1a
+    DEFB 0x1a                  ;0xfffc:   0x1a
+    DEFB 0x1a                  ;0xfffd:   0x1a
 ;--------------------------------------
 D_FFFE:                        ;          XREF: 0xE7FC 
-    x9 DEFB 0x1a               ;0xfffe:   0x1a
+    DEFB 0x1a                  ;0xfffe:   0x1a
 ;--------------------------------------
 D_FFFF:                        ;          XREF: 0xE9C5 0xF125 0xD688 0xF7C8 0xE9B3 0xD7BB 0xE9DC 
-    x9 DEFB 0x1a               ;0xffff:   0x1a
+    DEFB 0x1a                  ;0xffff:   0x1a
