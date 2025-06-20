@@ -8,7 +8,7 @@ They also created a method where additional programs could be installed as addon
 
 This project aims to produce a disassembly of thier code to gain a better understanding of the technology.
 
-## Tools used.
+## Tools used
 
 This was generated using z80-smart-disassembler, available at https://github.com/cormacj/z80-smart-disassembler
 

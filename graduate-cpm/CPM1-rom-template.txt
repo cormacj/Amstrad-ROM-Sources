@@ -42,9 +42,11 @@
 0xff00,0xff17,b,ENCRYPTED_USER_NAME
 0xff1a,0xff5e,b,ENCRYPTED_USER_ADDRESS
 0xff71,0xff7d,b,ENCRYPTED_SERIAL
-
+0xc7c1,0xc7d2,c,RELO_AREA_TODO
 
 ;maybe code, or maybe data?
+;Problem is that ROM relocates things in CPM so none of the code is at the right location
+;These defines fix that.
 0xc32b,0xc357,c,D_C32B
 0xcc1c,0xcc2d,c,D_CC1C
 0xccee,0xcdc6,c,D_CCEE
@@ -54,6 +56,12 @@
 0xd201,0xd21e,c,C_d201
 0xd315,0xd319,c,d_d315
 0xd358,0xd37a,c,C_d358
+0xcfaf,0xcfc8,c,C_cfaf
+0xd02a,0xd04e,c,C_d02a
+0xd065,0xd06c,c,C_d065
+0xd0ea,0xd0fb,c,C_d0ea
+0xd13f,0xd143,c,C_d13f
+0xd167,0xd16e,c,C_d167
 
 ;----
 ;db "CP/M PLU"
@@ -107,7 +115,7 @@
 0xc3dC,0xc403,s,SECOND_ROM_NOT_FOUND_ERROR_MESSAGE
 ;----
 ;db "CPM PLUS is copyright : -"
-0xc44c,0xc465,s,COPYRIGHT_MESSAGE
+0xc44a,0xc465,s,COPYRIGHT_MESSAGE
 ;----
 ;db "AMSTRAD CONSUMER ELECTRONICS PLC. & "
 0xc468,0xc48c,s,ACE_MESSAGE
@@ -116,7 +124,7 @@
 0xc48f,0xc4a0,s,DR_MESSAGE
 ;----
 ;db "CPM ROM by Graduate software."
-0xc4a3,0xc4c0,s,CPM_ROM_BY_GRADUATE_MSG
+0xc4a1,0xc4c0,s,CPM_ROM_BY_GRADUATE_MSG
 ;----
 ;db "This rom is version "
 0xc4c3,0xc4d7,s,ROM_VERSION_MSG
@@ -152,7 +160,7 @@
 0xc6bb,0xc6cb,s,DISC_READ_ERROR
 ;----
 ;db " C P M   M E N U "
-0xc6d0,0xc6e1,s,CPM_MENU_HEADER
+0xc6cf,0xc6e1,s,CPM_MENU_HEADER
 ;----
 ;db "  by Graduate Software. Copyright 1988."
 0xc6e2,0xc709,s,BY_GRADUATE_MSG
@@ -192,7 +200,7 @@
 0xcefe,0xcf2a,s,USER_MSG_BUILTIN_MSG
 ;----
 ;db "Key No.(0-79),Char(0-254) :$"
-0xcf92,0xcfae,s,S_cf92
+0xcf92,0xcfae,s,CKEY_NKEY_MSG
 ;----
 ;db "$Mode No.(0-2) :$*"
 0xd018,0xd02a,s,S_d018
@@ -216,7 +224,7 @@
 0xd1ef,0xd201,s,S_d1ef
 ;----
 ;db "Exp No.(128-159),String :$"
-0xd279,0xd293,s,S_d279
+0xd279,0xd293,s,EXPAND_MSG
 ;----
 ;db "Lprint filename : $"
 0xd344,0xd357,s,S_d344

@@ -19,6 +19,19 @@ PRINT_AMS_BOOT_REPLACEMENT 0xC124
 RELOCATE_THINGS equ 0xC2AC
 PRINT_2ND_ROM_NOT_FOUND equ 0xC3D4
 CHECK_FOR_2ND_ROM equ 0xc224
+SETUP_FOR_DIR_COM_SUB equ 0xc56c
+DO_CPM_MENU equ 0xc7cd
+NO_SECOND_ROM equ 0xc58f
+NO_DISC_ROM equ 0xC5A4
+STR_TWO_NEWLINES equ 0xc503
+NUMBER_TO_ASCII equ 0xc443
+STR_SPACE_COLON_SPACE equ 0xc549
+CPM_SECOND_ROM_SEARCH_STR equ 0xc56c
+ROM2_LOOKUP_RELOCATE equ 0xc800
+
+;EMS parameter
+STORE_EMS_PARAM equ 0xcc9d
+PREP_CPM_BOOT equ 0xc369
 
 ;Password management
 BAD_PASSWORD equ 0xca56
@@ -28,12 +41,37 @@ PASSWORD_INPUT equ 0xc9e3
 PASSWORD_DELETE_INPUT equ 0xca12
 PW_INPUT_LOOP equ 0xc9ec
 
+;User branding
+DECODE_OWNER equ 0xc514
+DECODE_SERIAL equ 0xc530
+DECODE_OWNER_ADDRESS equ 0xc53f
+
+
 ;Just accessory rom things
 ACCESSORY_ROMS_SCAN equ 0xdefc
 ACCESSORY_ROM_INIT equ 0xdf0f
 
 ;A list of Amstrad CPC BIOS calls.
 ;Recorded here for use with the disassembler
+ENTER_FIRMWARE equ 0xbe9b
+KL_FAR_PCHL        equ 0x1b
+;&001B - KL FAR PCHL
+;
+;Calls a routine, given by the far address in HL & C, anywhere in RAM or ROM.
+;Entry
+;
+;    HL holds the address of the routine to be called.
+;    C holds the ROM select byte.
+;    All the registers apart from IY are passed to the destination routine unaltered.
+;
+;Exit
+;
+;    IY is preserved.
+;    The other registers are as set by the destination routine or are returned unchanged.
+;
+;Notes
+;
+;See FAR CALL above for more details on the ROM select byte.
 
 KL_ROM_SELECT      equ 0xb90f
 KL_CURR_SELECTION  equ 0xb912
