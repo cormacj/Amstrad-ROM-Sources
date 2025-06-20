@@ -1,7 +1,7 @@
 # About this file
 
 I started to work on the disassembly of AMSDOS.ROM because I wanted to see how
-Amstrads handled booting CP/M. I got a little way into the Basic prep work, and
+Amstrads handled booting CP/M. I got a little way into the initial prep work, and
 then I discovered the work had already been done when I was browsing ACPC.me.
 
 I wasn't able to track down the original author, so if you know who did this work,
