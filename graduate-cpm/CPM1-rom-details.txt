@@ -1,0 +1,17 @@
+Rom Details:
+Rom type:	 Background
+Version:	 2.34
+Rom Name:	 CP/M PLUS 
+
+Commands:
+ EMS
+ O
+ CPMVER
+ VER
+ OP
+ MYNAME
+ PASSWORD
+ PW
+ OHELP
+ EMSHELP
+ NOCPM
