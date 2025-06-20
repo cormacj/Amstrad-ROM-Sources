@@ -10,3 +10,8 @@ please let me know.
 This code is also rather hard to properly google, so I decided to ditch my work and
 include this in this repository in the hope that perhaps it one day is noticed by
 search engine.
+
+## Other relevant repositories
+
+https://github.com/Richard-Lloyd/Amstrad-CPC-ROM-Disassembly
+https://cpcrulez.fr/coding_src-list-disassembly_of_amsdos_rom.htm
