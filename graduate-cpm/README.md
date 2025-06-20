@@ -14,15 +14,15 @@ This was generated using z80-smart-disassembler, available at https://github.com
 
 ## Description of Files
 
-README.md - This file
+**README.md** - This file
 
-amstrad-labels.txt - A list of descriptive code labels with thier locations and definitions for BIOS calls. (used with the disassembler)
+**amstrad-labels.txt** - A list of descriptive code labels with thier locations and definitions for BIOS calls. (used with the disassembler)
 
-CPM1-rom-template.txt - A list of locations of strings, data area and other fixups as needed. (used with the disassembler)
+**CPM1-rom-template.txt** - A list of locations of strings, data area and other fixups as needed. (used with the disassembler)
 
-CPM1-rom-details.txt - The list of commands that the ROM provides
+**CPM1-rom-details.txt** - The list of commands that the ROM provides
 
-cpm1.asm - The disassembled source
+**cpm1.asm** - The disassembled source
 
 ## The ROMs
 
