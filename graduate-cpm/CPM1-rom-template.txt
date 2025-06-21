@@ -32,6 +32,14 @@
 ;Here everthing between the pointer to the command table, and the address of the JP ROM_INIT address is strings
 (0xc004),(0xc007),s,RSX_COMMANDS
 
+;Fixup for RST 18
+0xc852,0xc852,w,RST18_data_c852
+0xc243,0xc234,w,RST18_data_c234
+0xc3c7,0xc3c7,w,RST8_data_c3c7
+0xc824,0xc824,w,RST18_data_c824
+0xc930,0xc930,w,RST20_data_c930
+0
+
 ;Random disassembler fixups
 0xc0fa,0xc11e,c,C_C0FA
 0xc5e0,0xc600,c,C_C5E0
@@ -62,7 +70,10 @@
 0xd0ea,0xd0fb,c,C_d0ea
 0xd13f,0xd143,c,C_d13f
 0xd167,0xd16e,c,C_d167
-
+0xfe58,0xfeff,c,C_fe58
+0xfdad,0xfdaf,c,C_fdad
+0xfbbe,0xfc05,c,C_fbbe
+0xfc18,0xfc4a,c,C_fc18
 ;----
 ;db "CP/M PLU"
 0xc02a,0xc032,s,COMMANDS_AREA
@@ -157,7 +168,7 @@
 0xc693,0xc6b7,s,NO_COM_SUB_FILES
 ;----
 ;db "Disc READ error."
-0xc6bb,0xc6cb,s,DISC_READ_ERROR
+0xc6bb,0xc6ce,s,DISC_READ_ERROR
 ;----
 ;db " C P M   M E N U "
 0xc6cf,0xc6e1,s,CPM_MENU_HEADER
@@ -166,10 +177,8 @@
 0xc6e2,0xc709,s,BY_GRADUATE_MSG
 ;----
 ;db "Press SPACE to move the highlighter, and press RETURN to run the .COM or .SUB   file under the highlighter."
-0xc70d,0xc778,s,MENU_HELP_MSG
+0xc70d,0xc77d,s,MENU_HELP_MSG
 ;----
-;db "    "
-0xc779,0xc77d,s,S_c779
 ;----
 ;db "Press ESC to return to Basic or any other key to try another disc."
 0xc77e,0xc7c0,s,PRESS_ESC_MSG
@@ -187,7 +196,7 @@
 0xcb63,0xcb6c,s,S_cb63
 ;----
 ;db "          $"
-0xcc0c,0xcc17,s,S_cc0c
+0xcc0c,0xcc16,s,STR_SEVERAL_SPACES
 ;----
 ;db "CP/M PLUS"
 0xcc93,0xcc9c,s,CPM_PLUS_MSG
