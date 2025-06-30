@@ -1,0 +1,390 @@
+LDIR:
+
+Repeats LDI (LD (DE),(HL), then increments DE, HL, and decrements BC) until BC=0. Note that if BC=0 before this instruction is called, it will loop around until BC=0 again.
+
+CPM_PLUS_STRING: (0xc3ca -> 0xc3ea)
+Notes: Starts at "CP/M PLUS 2", ends at Second
+
+LD HL,CPM_PLUS_STRING             ;0xc224:   21 ca c3  "!.."   - References: "CP/M PLUS"
+LD DE,0x9000                      ;0xc227:   11 00 90  "..."
+LD BC,0x20                        ;0xc22a:   01 20 00  ". ."
+LDIR
+
+At: 0xc224
+To: 0x9000
+Size: 0x20
+------
+CPM_ROM_2_LOOKUP_DATA: 0c56c to 0c59c
+Notes: ends midway through the no second rom function
+
+LD HL,CPM_ROM_2_LOOKUP_DATA       ;0xc555:   21 6c c5  "!l."   - References: "CP/M PLUS"
+LD DE,0x6f10                      ;0xc558:   11 10 6f  "..o"
+LD BC,0x30
+
+----
+Part of 2nd rom stuff.
+
+Moves from 0x710e to .COM area
+LD HL,0x710e                      ;0xc245:   21 0e 71  "!.q"
+LD DE,0x100                       ;0xc248:   11 00 01  "..."
+LD BC,0x1e6                       ;0xc24b:   01 e6 01  "..."
+LDIR                              ;0xc24e:   ed b0  ".."
+----
+
+CCEE - CDC7 -> 6e00 - 6ed9 (Start of BUILTIN_COMMANDS)
+Notes: To be done
+LD HL,D_CCEE                      ;0xc250:   21 ee cc  "!.."
+LD DE,0x6e00                      ;0xc253:   11 00 6e  "..n"
+LD BC,0xd9                        ;0xc256:   01 d9 00  "..."
+LDIR
+----
+C352-c378 -> -x7ec0-7ee6
+LD HL,C_C352                      ;0xc2ac:   21 52 c3  "!R."
+LD DE,0x7ec0                      ;0xc2af:   11 c0 7e  "..~"
+LD BC,0x26                        ;0xc2b2:   01 26 00  ".&."
+LDIR                              ;0xc2b5:   ed b0  ".."
+----
+FF00-FFFF -> 52A0-53A0
+LD HL,ENCRYPTED_USER_NAME         ;0xc2b7:   21 00 ff  "!.."
+LD DE,0x52a0                      ;0xc2ba:   11 a0 52  "..R"
+LD BC,0x100                       ;0xc2bd:   01 00 01  "..."
+LDIR                              ;0xc2c0:   ed b0  ".."
+----
+C300-C32E -> 6595-65C3
+LD BC,0x7fc0                      ;0xc2c2:   01 c0 7f  "..."
+OUT (C),C                         ;0xc2c5:   ed 49  ".I"
+LD A,0xc3                         ;0xc2c7:   3e c3  ">."
+LD HL,0x740                       ;0xc2c9:   21 40 07  "!@."
+LD (0x629a),A                     ;0xc2cc:   32 9a 62  "2.b"
+LD (0x629b),HL                    ;0xc2cf:   22 9b 62  "".b"
+LD HL,RELOCATE_BUILTIN_MSG        ;0xc2d2:   21 00 c3  "!.."
+LD DE,0x6595                      ;0xc2d5:   11 95 65  "..e"
+LD BC,0x2e                        ;0xc2d8:   01 2e 00  "..."
+LDIR                              ;0xc2db:   ed b0  ".."
+----
+C32B-C352 -> 65C3-65EA
+LD HL,D_C32B                      ;0xc2dd:   21 2b c3  "!+."
+LD DE,0x65c3                      ;0xc2e0:   11 c3 65  "..e"
+LD BC,0x27                        ;0xc2e3:   01 27 00  ".'."
+LDIR                              ;0xc2e6:   ed b0  ".."
+----
+C377-C3C9 -> 9000-9052
+PREP_CPM_BOOT:                        ; XREF: 0xC1FC
+    LD HL,D_C377                      ;0xc369:   21 77 c3  "!w."
+    LD DE,0x9000                      ;0xc36c:   11 00 90  "..."
+    LD BC,0x52                        ;0xc36f:   01 52 00  ".R."
+    LDIR                              ;0xc372:   ed b0  ".."
+---
+C033-C072 -> BE80-BEBF
+LD HL,RSX_EMS                     ;0xc399:   21 33 c0  "!3."
+LD DE,0xbe80                      ;0xc39c:   11 80 be  "..."
+LD BC,0x3f                        ;0xc39f:   01 3f 00  ".?."
+LDIR                              ;0xc3a2:   ed b0  ".."
+----
+C56C-C59C -> 6F10-6F40
+LD HL,CPM_ROM_2_LOOKUP_DATA       ;0xc555:   21 6c c5  "!l."   - References: "CP/M PLUS"
+LD DE,0x6f10                      ;0xc558:   11 10 6f  "..o"
+LD BC,0x30                        ;0xc55b:   01 30 00  ".0."
+LDIR                              ;0xc55e:   ed b0  ".."
+----
+C7C1-C7D2 -> 6F60-6F71
+LD HL,RELO_AREA_TODO              ;0xc806:   21 c1 c7  "!.."
+LD DE,0x6f60                      ;0xc809:   11 60 6f  ".`o"
+LD BC,11                          ;0xc80c:   01 0b 00  "..."
+LDIR                              ;0xc80f:   ed b0  ".."
+----
+3000-3012 -> BF00-BF12
+
+Notes: This is called with HL set elsewhere
+LD HL,0x3000                      ;0xc954:   21 00 30  "!.0"
+CP 0                              ;0xc957:   fe 00  ".."
+JR z,C_C962                       ;0xc959:   28 07  "(."
+
+C_C962:                               ; XREF: 0xC959
+    LD DE,0xbf00                      ;0xc962:   11 00 bf  "..."
+    LD BC,12                          ;0xc965:   01 0c 00  "..."
+    LDIR                              ;0xc968:   ed b0  ".."
+----
+??+22 - ??+3C - CC1C-CC36
+EMSHELP:                              ; XREF: 0xC021
+    PUSH IY                           ;0xcada:   fd e5  ".."
+    POP HL                            ;0xcadc:   e1  "."
+    LD DE,0x22                        ;0xcadd:   11 22 00  "."."
+    ADD HL,DE                         ;0xcae0:   19  "."
+    PUSH HL                           ;0xcae1:   e5  "."
+    POP IY                            ;0xcae2:   fd e1  ".."
+    LD DE,D_CC1C                      ;0xcae4:   11 1c cc  "..."
+    EX DE,HL                          ;0xcae7:   eb  "."
+    LD BC,0x1a                        ;0xcae8:   01 1a 00  "..."
+    LDIR                              ;0xcaeb:   ed b0  ".."
+
+----
+CC93-CCA3 -> 5001-5011
+LD HL,CPM_PLUS_MSG                ;0xcc42:   21 93 cc  "!.."   - References: "CP/M PLUS"
+LD DE,0x5001                      ;0xcc45:   11 01 50  "..P"
+LD BC,0x10                        ;0xcc48:   01 10 00  "..."
+LDIR                              ;0xcc4b:   ed b0  ".."
+
+Notes:
+This copies this data:
+CPM_PLUS_MSG:                         ; XREF: 0xCC42
+    DEFB "CP/M PLUS", '2' + 0x80      ;0xcc93:   0xcc93 to 0xcc9f
+STORE_EMS_PARAM:                      ; XREF: 0xC1F6
+    LD L,(IX+0)                       ;0xcc9d:   dd 6e 00  ".n."
+    LD H,(IX+1)                       ;0xcca0:   dd 66 01  ".f."
+    LD A,(HL)                         ;0xcca3:   7e  "~"
+
+
+----
+CC77-CC93 -> 5002-501E
+
+C_CC59:                               ; XREF: 0xCC53
+    LD HL,D_CC77                      ;0xcc59:   21 77 cc  "!w."
+    LD DE,0x5002                      ;0xcc5c:   11 02 50  "..P"
+    LD BC,0x1c                        ;0xcc5f:   01 1c 00  "..."
+    LDIR                              ;0xcc62:   ed b0  ".."
+-----
+Notes: This is a complicated one, but basically stores the parameter from |EMS,"PARAM" into BF00 which is an area that persists over a reboot.
+
+STORE_EMS_PARAM:                      ; XREF: 0xC1F6
+    LD L,(IX+0)                       ;0xcc9d:   dd 6e 00  ".n."
+    LD H,(IX+1)                       ;0xcca0:   dd 66 01  ".f."
+    LD A,(HL)                         ;0xcca3:   7e  "~"
+    CP 0x81                           ;0xcca4:   fe 81  ".."
+    JP nc, C_C1F9                     ;0xcca6:   d2 f9 c1  "..."
+    CP 0                              ;0xcca9:   fe 00  ".."
+    JP z, C_C1F9                      ;0xccab:   ca f9 c1  "..."
+    LD (0x4f),A                       ;0xccae:   32 4f 00  "2O."
+    INC HL                            ;0xccb1:   23  "#"
+    LD E,(HL)                         ;0xccb2:   5e  "^"
+    INC HL                            ;0xccb3:   23  "#"
+    LD D,(HL)                         ;0xccb4:   56  "V"
+    EX DE,HL                          ;0xccb5:   eb  "."
+    LD DE,0xbf00                      ;0xccb6:   11 00 bf  "..."
+    LD BC,0x80                        ;0xccb9:   01 80 00  "..."
+    LDIR                              ;0xccbc:   ed b0  ".."
+----
+Notes: Another complex one:
+Looks like it copies from 0xbf00 to 0x6e58, for 0xc3 bytes (but needs to be verified)
+
+    LD A,0xc3                         ;0xccc1:   3e c3  ">."
+    LD HL,0xf80                       ;0xccc3:   21 80 0f  "!.."
+    LD (0x6379),A                     ;0xccc6:   32 79 63  "2yc"
+    LD (0x637a),HL                    ;0xccc9:   22 7a 63  ""zc"
+C_CCCC:                               ; XREF: 0xF5E5
+    LD A,(0x4f)                       ;0xcccc:   3a 4f 00  ":O."
+    LD (0x6e57),A                     ;0xcccf:   32 57 6e  "2Wn"
+    LD HL,0xbf00                      ;0xccd2:   21 00 bf  "!.."
+    LD DE,0x6e58                      ;0xccd5:   11 58 6e  ".Xn"
+    LD B,0                            ;0xccd8:   06 00  ".."
+    LD A,(0x4f)                       ;0xccda:   3a 4f 00  ":O."
+    LD C,A                            ;0xccdd:   4f  "O"
+    LDIR                              ;0xccde:   ed b0  ".."
+
+----------------------------------------------------------------------
+Notes: More Complex ones
+D_CCEE:                               ; XREF: 0xC250
+    LD A,0xcd                         ;0xccee:   3e cd  ">."
+    LD HL,0x94e                       ;0xccf0:   21 4e 09  "!N."
+    LD (0x581),A                      ;0xccf3:   32 81 05  "2.."
+    LD (0x582),HL                     ;0xccf6:   22 82 05  "".."
+    LD HL,0xdf4                       ;0xccf9:   21 f4 0d  "!.."
+    LD (HL),0xe7                      ;0xccfc:   36 e7  "6."
+    LD DE,0xdf6                       ;0xccfe:   11 f6 0d  "..."
+    LD HL,0xfd8                       ;0xcd01:   21 d8 0f  "!.."
+    LD B,0                            ;0xcd04:   06 00  ".."
+    LD A,(0xfd7)                      ;0xcd06:   3a d7 0f  ":.."
+    LD C,A                            ;0xcd09:   4f  "O"
+    LDIR                              ;0xcd0a:   ed b0  ".."
+----
+Notes:
+
+LD HL,0x145d                      ;0xd1bd:   21 5d 14  "!]."
+LD DE,0xc100                      ;0xd1c0:   11 00 c1  "..."
+LD BC,0x100                       ;0xd1c3:   01 00 01  "..."
+LDIR                              ;0xd1c6:   ed b0  ".."
+----
+Notes:
+LD HL,0x1547                      ;0xd2a8:   21 47 15  "!G."
+LD DE,0xc100                      ;0xd2ab:   11 00 c1  "..."
+LD BC,0x28                        ;0xd2ae:   01 28 00  ".(."
+LDIR                              ;0xd2b1:   ed b0  ".."
+----
+Notes:
+LD HL,0x1578                      ;0xd2d8:   21 78 15  "!x."
+LD DE,0xc000 aka ROM_TYPE                    ;0xd2db:   11 00 c0  "..."
+LD BC,0x21                        ;0xd2de:   01 21 00  ".!."
+LDIR                              ;0xd2e1:   ed b0  ".."
+----
+Notes: Heres a twofer. 2 bytes from 0xc100 to 0x214, and then 0x19 bytes from 0xc0102 to 0x8960 (because HL was already setup)
+LD HL,0xc100                      ;0xd2ec:   21 00 c1  "!.."
+LD DE,0x214                       ;0xd2ef:   11 14 02  "..."
+LD BC,2                           ;0xd2f2:   01 02 00  "..."
+LDIR                              ;0xd2f5:   ed b0  ".."
+LD DE,0x8960                      ;0xd2f7:   11 60 89  ".`."
+LD BC,0x19                        ;0xd2fa:   01 19 00  "..."
+LDIR                              ;0xd2fd:   ed b0  ".."
+----
+Notes: This one needs figuring out too
+
+C_D5AA:                               ; XREF: 0xD5A1
+    LD DE,12                          ;0xd5aa:   11 0c 00  "..."
+    ADD HL,DE                         ;0xd5ad:   19  "."
+    LD A,(HL)                         ;0xd5ae:   7e  "~"
+    CP 0                              ;0xd5af:   fe 00  ".."
+    JR nz,C_D5CD                      ;0xd5b1:   20 1a  " ."
+    LD DE,12                          ;0xd5b3:   11 0c 00  "..."
+    SBC HL,DE                         ;0xd5b6:   ed 52  ".R"
+    INC HL                            ;0xd5b8:   23  "#"
+    LD DE,(0x18d1)                    ;0xd5b9:   ed 5b d1 18  ".[.."
+    LD BC,11                          ;0xd5bd:   01 0b 00  "..."
+    LDIR                              ;0xd5c0:   ed b0  ".."
+----
+Notes: This ones complex. It might be relocated first, but there's no calls to the Ldirs
+
+C_D703:                               ; XREF: 0xD69B
+    LD DE,11                          ;0xd703:   11 0b 00  "..."
+    ADD HL,DE                         ;0xd706:   19  "."
+    POP DE                            ;0xd707:   d1  "."
+    RET                               ;0xd708:   c9  "."
+    PUSH BC                           ;0xd709:   c5  "."
+    PUSH DE                           ;0xd70a:   d5  "."
+    PUSH HL                           ;0xd70b:   e5  "."
+    PUSH HL                           ;0xd70c:   e5  "."
+    LD DE,0x19bb                      ;0xd70d:   11 bb 19  "..."
+    LD BC,11                          ;0xd710:   01 0b 00  "..."
+    LDIR                              ;0xd713:   ed b0  ".."
+    POP DE                            ;0xd715:   d1  "."
+    LD BC,11                          ;0xd716:   01 0b 00  "..."
+    LDIR                              ;0xd719:   ed b0  ".."
+    LD HL,0x19bb                      ;0xd71b:   21 bb 19  "!.."
+    LD BC,11                          ;0xd71e:   01 0b 00  "..."
+    LDIR                              ;0xd721:   ed b0  ".."
+----
+Notes: Heres a very complex one
+C_E051:                               ; XREF: 0xE02F
+    CALL MC_WAIT_FLYBACK              ;0xe051:   cd 19 bd  "..."
+    LD HL,0x5f80                      ;0xe054:   21 80 5f  "!._"
+;--------------------------------------
+C_E057:                               ; XREF: 0xE035
+    LD DE,1                           ;0xe057:   11 01 00  "..."
+    RET nz                            ;0xe05a:   c0  "."
+    LD BC,0x14e2                      ;0xe05b:   01 e2 14  "..."
+    LDIR                              ;0xe05e:   ed b0  ".."
+This is a very large ldir, but it copies 0x5f80 to 1
+
+
+    LD BC,0x7fc1                      ;0xe060:   01 c1 7f  "..."
+    OUT (C),C                         ;0xe063:   ed 49  ".I"
+    LD DE,1                           ;0xe065:   11 01 00  "..."
+    RET nz                            ;0xe068:   c0  "."
+    PUSH DE                           ;0xe069:   d5  "."
+    LD HL,0xc36                       ;0xe06a:   21 36 0c  "!6."
+    LD BC,0x19f                       ;0xe06d:   01 9f 01  "..."
+    NOP                               ;0xe070:   00  "."
+    LDIR                              ;0xe071:   ed b0  ".."
+    RET                               ;0xe073:   c9  "."
+    LD HL,0xd40                       ;0xe074:   21 40 0d  "!@."
+    LD DE,0x180                       ;0xe077:   11 80 01  "..."
+    NOP                               ;0xe07a:   00  "."
+    LD BC,0xe80                       ;0xe07b:   01 80 0e  "..."
+    LDIR                              ;0xe07e:   ed b0  ".."
+    LD HL,0x1bc0                      ;0xe080:   21 c0 1b  "!.."
+    LD DE,D_FFA0                      ;0xe083:   11 a0 ff  "..."
+    LD BC,0x140                       ;0xe086:   01 40 01  ".@."
+    NOP                               ;0xe089:   00  "."
+    LDIR                              ;0xe08a:   ed b0  ".."
+    LD HL,1                           ;0xe08c:   21 01 00  "!.."
+    INC E                             ;0xe08f:   1c  "."
+    LD DE,1                           ;0xe090:   11 01 00  "..."
+    ADC A,B                           ;0xe093:   88  "."
+    LD BC,1                           ;0xe094:   01 01 00  "..."
+    LD (BC),A                         ;0xe097:   02  "."
+    LDIR                              ;0xe098:   ed b0  ".."
+    LD DE,2                           ;0xe09a:   11 02 00  "..."
+    LD HL,1                           ;0xe09d:   21 01 00  "!.."
+    ADD A,B                           ;0xe0a0:   80  "."
+    CALL TXT_SET_M_TABLE              ;0xe0a1:   cd ab bb  "..."
+    LD HL,1                           ;0xe0a4:   21 01 00  "!.."
+    LD E,0x11                         ;0xe0a7:   1e 11  ".."
+    LD BC,0x8000                      ;0xe0a9:   01 00 80  "..."
+    LD BC,1                           ;0xe0ac:   01 01 00  "..."
+    EX AF,AF'                         ;0xe0af:   08  "."
+    LDIR                              ;0xe0b0:   ed b0  ".."
+---
+A few instructions later:
+LD HL,0xb0d0                      ;0xe0f1:   21 d0 b0  "!.."
+LD DE,0xb0d1                      ;0xe0f4:   11 d1 b0  "..."
+LD BC,0x12f                       ;0xe0f7:   01 2f 01  "./."
+NOP                               ;0xe0fa:   00  "."
+LD (HL),A                         ;0xe0fb:   77  "w"
+LDIR                              ;0xe0fc:   ed b0  ".."
+LD HL,0xbe40                      ;0xe0fe:   21 40 be  "!@."
+LD DE,0xbe41                      ;0xe101:   11 41 be  ".A."
+LD BC,0x1bf                       ;0xe104:   01 bf 01  "..."
+LD (HL),A                         ;0xe107:   77  "w"
+LDIR                              ;0xe108:   ed b0  ".."
+----
+LD DE,0xbe4f                      ;0xe218:   11 4f be  ".O."
+PUSH DE                           ;0xe21b:   d5  "."
+LD HL,0x15e                       ;0xe21c:   21 5e 01  "!^."
+LD BC,0x105                       ;0xe21f:   01 05 01  "..."
+NOP                               ;0xe222:   00  "."
+LDIR                              ;0xe223:   ed b0  ".."
+LD C,3                            ;0xe225:   0e 03  ".."
+LD HL,HOOK_KM_SCAN_KEYS_664       ;0xe227:   21 f4 bd  "!.."
+LDIR                              ;0xe22a:   ed b0  ".."
+----
+LD HL,0x1ce                       ;0xe2da:   21 ce 01  "!.."
+LD DE,D_FFE8                      ;0xe2dd:   11 e8 ff  "..."
+LD BC,0x10b                       ;0xe2e0:   01 0b 01  "..."
+NOP                               ;0xe2e3:   00  "."
+LDIR                              ;0xe2e4:   ed b0  ".."
+----
+LD HL,0x8080                      ;0xe519:   21 80 80  "!.."
+LD DE,1                           ;0xe51c:   11 01 00  "..."
+LD A,B                            ;0xe51f:   78  "x"
+LD BC,0x180                       ;0xe520:   01 80 01  "..."
+NOP                               ;0xe523:   00  "."
+LDIR                              ;0xe524:   ed b0  ".."
+----
+Notes: This might be crypted
+C_EB1C:                               ; XREF: 0xEB19
+    CPL                               ;0xeb1c:   2f  "/"
+    OR A                              ;0xeb1d:   b7  "."
+    JR z,C_EB2C                       ;0xeb1e:   28 0c  "(."
+    CP C                              ;0xeb20:   b9  "."
+    JR nc,C_EB3A                      ;0xeb21:   30 17  "0."
+    PUSH BC                           ;0xeb23:   c5  "."
+    LD C,A                            ;0xeb24:   4f  "O"
+    LDIR                              ;0xeb25:   ed b0  ".."
+
+...also...
+C_EB3A:                               ; XREF: 0xEB21
+    LDIR                              ;0xeb3a:   ed b0  ".."
+    RET                               ;0xeb3c:   c9  "."
+----
+LD HL,0xad0                       ;0xec2a:   21 d0 0a  "!.."
+LD DE,0xb0ed                      ;0xec2d:   11 ed b0  "..."
+LD BC,0x105                       ;0xec30:   01 05 01  "..."
+NOP                               ;0xec33:   00  "."
+LDIR                              ;0xec34:   ed b0  ".."
+----
+LD HL,0xc25                       ;0xedbe:   21 25 0c  "!%."
+LD DE,0x12e                       ;0xedc1:   11 2e 01  "..."
+NOP                               ;0xedc4:   00  "."
+CP 2                              ;0xedc5:   fe 02  ".."
+JR nz, $+19                       ;0xedc7:   20 11  " ."
+PUSH DE                           ;0xedc9:   d5  "."
+PUSH BC                           ;0xedca:   c5  "."
+PUSH IX                           ;0xedcb:   dd e5  ".."
+POP DE                            ;0xedcd:   d1  "."
+LD BC,0x11a                       ;0xedce:   01 1a 01  "..."
+NOP                               ;0xedd1:   00  "."
+LDIR                              ;0xedd2:   ed b0  ".."
+---
+LD HL,0x8080                      ;0xf26f:   21 80 80  "!.."
+LD BC,0x180                       ;0xf272:   01 80 01  "..."
+NOP                               ;0xf275:   00  "."
+LDIR                              ;0xf276:   ed b0  ".."
+---
