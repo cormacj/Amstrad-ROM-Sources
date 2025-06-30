@@ -1,11 +1,12 @@
 ;-----------------------------------
-; Produced using: z80-disassembler.py v0.89 - A Smart Z80 reverse assembler
+; Produced using: z80-disassembler.py v0.90 - A Smart Z80 reverse assembler
 ; Visit https://github.com/cormacj/z80-smart-disassembler for updates and to report issues
 ;
 ; Command line used: z80-disassembler.py -s 0xc9 -o cpm1.asm --labels amstrad-labels.txt -t CPM1-rom-template.txt -l 0xc000 CPM1.rom 
 ;-----------------------------------
 
 ; Define labels for external calls
+CPM_BDOS              equ 0x5
 ENTER_FIRMWARE        equ 0xbe9b
 KL_FAR_PCHL           equ 0x1b
 KL_ROM_SELECT         equ 0xb90f
@@ -146,9 +147,9 @@ ROM_INIT:                             ; XREF:
     LD HL,0x202                       ;0xc06b:   21 02 02  "!.."  
     CALL TXT_SET_CURSOR               ;0xc06e:   cd 75 bb  ".u." 
     CALL TXT_RD_CHAR                  ;0xc071:   cd 60 bb  ".`." 
-    JR nc,C_C09A                      ;0xc074:   30 24  "0$" 
+    JR nc,PRINT_GRAD_CPM_BOOT_MSG           ;0xc074:   30 24  "0$" 
     CP 0x41                           ;0xc076:   fe 41  ".A" 
-    JR z,C_C09A                       ;0xc078:   28 20  "( " 
+    JR z,PRINT_GRAD_CPM_BOOT_MSG           ;0xc078:   28 20  "( " 
     POP HL                            ;0xc07a:   e1  "." 
     INC L                             ;0xc07b:   2c  "," 
     INC L                             ;0xc07c:   2c  "," 
@@ -156,7 +157,7 @@ ROM_INIT:                             ; XREF:
     INC L                             ;0xc07e:   2c  "," 
     INC L                             ;0xc07f:   2c  "," 
 ;--------------------------------------
-C_C080:                               ; XREF: 0xC02E 
+SCROLL_SCREEN_3x:                     ; XREF: 0xC02E 
     INC L                             ;0xc080:   2c  "," 
     PUSH HL                           ;0xc081:   e5  "." 
     LD HL,0x101                       ;0xc082:   21 01 01  "!.."  
@@ -168,7 +169,7 @@ C_C080:                               ; XREF: 0xC02E
     LD HL,S_MOVE_CURSOR_TO_TOP        ;0xc094:   21 1f c1  "!.."  
     CALL PRINT_STRING                 ;0xc097:   cd ea c1  "..." 
 ;--------------------------------------
-C_C09A:                               ; XREF: 0xC074 
+PRINT_GRAD_CPM_BOOT_MSG:              ; XREF: 0xC074 
     LD H,0                            ;0xc09a:   26 00  "&."  
     LD D,0x27                         ;0xc09c:   16 27  ".'"  
     LD L,5                            ;0xc09e:   2e 05  ".."  
@@ -192,7 +193,7 @@ C_C0C2:                               ; XREF: 0xC0BB
     LD HL,FAKE_AMSTRAD_BOOT_MESSAGE   ;0xc0c5:   21 24 c1  "!$."  
     CALL PRINT_STRING                 ;0xc0c8:   cd ea c1  "..." 
     LD HL,ENCRYPTED_USER_NAME         ;0xc0cb:   21 00 ff  "!.."  
-    CALL C_C1DF                       ;0xc0ce:   cd df c1  "..." 
+    CALL PRINT_CRYPTED_0x4e_DATA           ;0xc0ce:   cd df c1  "..." 
     LD A,0x2e                         ;0xc0d1:   3e 2e  ">."  
     CALL TXT_OUTPUT                   ;0xc0d3:   cd 5a bb  ".Z." 
     LD A,13                           ;0xc0d6:   3e 0d  ">."  
@@ -273,7 +274,7 @@ C_C1D3:                               ; XREF: 0xC11C
     SCF                               ;0xc1dd:   37  "7" 
     RET                               ;0xc1de:   c9  "." 
 ;--------------------------------------
-C_C1DF:                               ; XREF: 0xC0CE 
+PRINT_CRYPTED_0x4e_DATA:              ; XREF: 0xC0CE 
     LD A,(HL)                         ;0xc1df:   7e  "~" 
 ;--------------------------------------
 C_C1E0:                               ; XREF: 0xC18B 
@@ -286,7 +287,7 @@ C_C1E2:                               ; XREF: 0xC194
 ;--------------------------------------
 C_C1E7:                               ; XREF: 0xC1C5 
     INC HL                            ;0xc1e7:   23  "#" 
-    JR C_C1DF                         ;0xc1e8:   18 f5  ".." 
+    JR PRINT_CRYPTED_0x4e_DATA           ;0xc1e8:   18 f5  ".." 
 ;--------------------------------------
 PRINT_STRING:                         ; XREF: 0xC08B 
     LD A,(HL)                         ;0xc1ea:   7e  "~" 
@@ -302,7 +303,7 @@ C_C1ED:                               ; XREF: 0xC1CB
 ;--------------------------------------
 EMS:                                  ; XREF: 0xC009 
     CP 1                              ;0xc1f4:   fe 01  ".." 
-    JP z, STORE_EMS_PARAM             ;0xc1f6:   ca 9d cc  "..." 
+    JP z,STORE_EMS_PARAM              ;0xc1f6:   ca 9d cc  "..." 
 ;--------------------------------------
 C_C1F9:                               ; XREF: 0xC1B4 
     CALL C_C1FF                       ;0xc1f9:   cd ff c1  "..." 
@@ -352,14 +353,15 @@ CHECK_FOR_2ND_ROM:                    ; XREF: 0xC213
     CALL KL_FIND_COMMAND              ;0xc232:   cd d4 bc  "..." 
 ;--------------------------------------
 C_C235:                               ; XREF: 0xC1CD 
-    JP nc, PRINT_2ND_ROM_NOT_FOUND           ;0xc235:   d2 d4 c3  "..." 
+    JP nc,PRINT_2ND_ROM_NOT_FOUND           ;0xc235:   d2 d4 c3  "..." 
     LD A,C                            ;0xc238:   79  "y" 
     LD (0xa102),A                     ;0xc239:   32 02 a1  "2.."  
     LD HL,C_C015                      ;0xc23c:   21 15 c0  "!.."  
     LD (0xa100),HL                    ;0xc23f:   22 00 a1  "".."  
     RST 0x18                          ;0xc242:   df  "." 
-    NOP                               ;0xc243:   00  "." 
-    AND C                             ;0xc244:   a1  "." 
+;--------------------------------------
+RST18_data_c234:                      ; XREF: 
+    DEFB 0xa100                       ;0xc243:   
     LD HL,0x710e                      ;0xc245:   21 0e 71  "!.q"  
     LD DE,0x100                       ;0xc248:   11 00 01  "..."  
     LD BC,0x1e6                       ;0xc24b:   01 e6 01  "..."  
@@ -545,6 +547,8 @@ D_C377:                               ; XREF: 0xC369
     CALL ENTER_FIRMWARE               ;0xc3c1:   cd 9b be  "..." 
     LD D,0xbd                         ;0xc3c4:   16 bd  ".."  
     RST 8                             ;0xc3c6:   cf  "." 
+;--------------------------------------
+RST8_data_c3c7:                       ; XREF: 
     NOP                               ;0xc3c7:   00  "." 
     NOP                               ;0xc3c8:   00  "." 
     RET                               ;0xc3c9:   c9  "." 
@@ -713,16 +717,16 @@ OP:                                   ; XREF: 0xC015
     LD BC,0x7fc7                      ;0xc54d:   01 c7 7f  "..."  
     OUT (C),C                         ;0xc550:   ed 49  ".I" 
     LD (0x6f90),A                     ;0xc552:   32 90 6f  "2.o"  
-    LD HL,S_c56c                      ;0xc555:   21 6c c5  "!l."   - References: "CP/M PLUS"
+    LD HL,CPM_ROM_2_LOOKUP_DATA       ;0xc555:   21 6c c5  "!l."   - References: "CP/M PLUS"
     LD DE,0x6f10                      ;0xc558:   11 10 6f  "..o"  
     LD BC,0x30                        ;0xc55b:   01 30 00  ".0."  
     LDIR                              ;0xc55e:   ed b0  ".." 
     LD HL,0x6f10                      ;0xc560:   21 10 6f  "!.o"  
     CALL KL_FIND_COMMAND              ;0xc563:   cd d4 bc  "..." 
-    JP c, DO_CPM_MENU                 ;0xc566:   da cd c7  "..." 
+    JP c,DO_CPM_MENU                  ;0xc566:   da cd c7  "..." 
     JP NO_SECOND_ROM                  ;0xc569:   c3 8f c5  "..." 
 ;--------------------------------------
-S_c56c:                               ; XREF: 0xC555 
+CPM_ROM_2_LOOKUP_DATA:                ; XREF: 0xC555 
     DEFB "CP/M PLUS", '2' + 0x80      ;0xc56c:   0xc56c to 0xc578
     DEFB 0x44                         ;0xc576:   
     DEFB 0x49                         ;0xc577:   
@@ -781,16 +785,16 @@ C_C5C8:                               ; XREF: 0xC814
 C_C5E0:                               ; XREF: 0xC811 
     LD HL,0x6f28                      ;0xc5e0:   21 28 6f  "!(o"  
     CALL KL_FIND_COMMAND              ;0xc5e3:   cd d4 bc  "..." 
-    JP nc, NO_DISC_ROM                ;0xc5e6:   d2 a4 c5  "..." 
+    JP nc,NO_DISC_ROM                 ;0xc5e6:   d2 a4 c5  "..." 
     LD A,0xff                         ;0xc5e9:   3e ff  ">."  
     CALL KL_FAR_PCHL                  ;0xc5eb:   cd 1b 00  "..." 
     LD HL,0x6f27                      ;0xc5ee:   21 27 6f  "!'o"  
     CALL KL_FIND_COMMAND              ;0xc5f1:   cd d4 bc  "..." 
-    JP nc, NO_DISC_ROM                ;0xc5f4:   d2 a4 c5  "..." 
+    JP nc,NO_DISC_ROM                 ;0xc5f4:   d2 a4 c5  "..." 
     LD D,0x27                         ;0xc5f7:   16 27  ".'"  
     LD E,0                            ;0xc5f9:   1e 00  ".."  
     CALL KL_FAR_PCHL                  ;0xc5fb:   cd 1b 00  "..." 
-    JP c, AMSDOS_COMMAND_MAYBE_TODO           ;0xc5fe:   da 0b c6  "..." 
+    JP c,AMSDOS_COMMAND_MAYBE_TODO           ;0xc5fe:   da 0b c6  "..." 
 ;--------------------------------------
 PRINT_DISC_READ_ERROR:                ; XREF: 0xC61B 
     LD HL,DISC_READ_ERROR             ;0xc601:   21 bb c6  "!.."   - References: "Disc READ error."
@@ -801,11 +805,11 @@ PRINT_DISC_READ_ERROR:                ; XREF: 0xC61B
 AMSDOS_COMMAND_MAYBE_TODO:            ; XREF: 0xC5FE 
     LD HL,0x6f27                      ;0xc60b:   21 27 6f  "!'o"  
     CALL KL_FIND_COMMAND              ;0xc60e:   cd d4 bc  "..." 
-    JP nc, NO_DISC_ROM                ;0xc611:   d2 a4 c5  "..." 
+    JP nc,NO_DISC_ROM                 ;0xc611:   d2 a4 c5  "..." 
     LD D,9                            ;0xc614:   16 09  ".."  
     LD E,0                            ;0xc616:   1e 00  ".."  
     CALL KL_FAR_PCHL                  ;0xc618:   cd 1b 00  "..." 
-    JP nc, PRINT_DISC_READ_ERROR           ;0xc61b:   d2 01 c6  "..." 
+    JP nc,PRINT_DISC_READ_ERROR           ;0xc61b:   d2 01 c6  "..." 
     JP C_C814                         ;0xc61e:   c3 14 c8  "..." 
 ;--------------------------------------
 SECOND_ROM_NOT_INSTALLED_MSG:         ; XREF: 0xC59A 
@@ -929,7 +933,7 @@ C_C7F0:                               ; XREF: 0xC7DA
     CALL PRINT_STRING                 ;0xc7f3:   cd ea c1  "..." 
     LD HL,0x6f1a                      ;0xc7f6:   21 1a 6f  "!.o"  
     CALL KL_FIND_COMMAND              ;0xc7f9:   cd d4 bc  "..." 
-    JP nc, NO_DISC_ROM                ;0xc7fc:   d2 a4 c5  "..." 
+    JP nc,NO_DISC_ROM                 ;0xc7fc:   d2 a4 c5  "..." 
     LD A,C                            ;0xc7ff:   79  "y" 
 ;--------------------------------------
 ROM2_LOOKUP_RELOCATE:                 ; XREF: 0xC79D 
@@ -949,8 +953,8 @@ C_C814:                               ; XREF: 0xC61E
     LD IX,0x6f1d                      ;0xc81f:   dd 21 1d 6f  ".!.o"  
     RST 0x18                          ;0xc823:   df  "." 
 ;--------------------------------------
-C_C824:                               ; XREF: 0xC7AE 
-    DJNZ C_C895                       ;0xc824:   10 6f  ".o" 
+RST18_data_c824:                      ; XREF: 0xC7AE 
+    DEFB 0x6f10                       ;0xc824:   
     CALL LOOKUP_DISC_ROM              ;0xc826:   cd b1 c5  "..." 
     LD A,1                            ;0xc829:   3e 01  ">."  
     LD (0x6f70),A                     ;0xc82b:   32 70 6f  "2po"  
@@ -976,7 +980,7 @@ RST18_data_c852:                      ; XREF:
     CALL TXT_SET_CURSOR               ;0xc858:   cd 75 bb  ".u." 
     POP DE                            ;0xc85b:   d1  "." 
     CALL C_C865                       ;0xc85c:   cd 65 c8  ".e." 
-    JP c, C_C8A6                      ;0xc85f:   da a6 c8  "..." 
+    JP c,C_C8A6                       ;0xc85f:   da a6 c8  "..." 
     JP C_C8AD                         ;0xc862:   c3 ad c8  "..." 
 ;--------------------------------------
 C_C865:                               ; XREF: 0xC83A 
@@ -1040,7 +1044,7 @@ C_C8A6:                               ; XREF: 0xC85F
 C_C8AD:                               ; XREF: 0xC862 
     LD A,(0x6f70)                     ;0xc8ad:   3a 70 6f  ":po"  
     CP 1                              ;0xc8b0:   fe 01  ".." 
-    JP z, C_C93D                      ;0xc8b2:   ca 3d c9  ".=." 
+    JP z,C_C93D                       ;0xc8b2:   ca 3d c9  ".=." 
     DEC A                             ;0xc8b5:   3d  "=" 
     LD (0x6f70),A                     ;0xc8b6:   32 70 6f  "2po"  
     LD HL,0x118                       ;0xc8b9:   21 18 01  "!.."  
@@ -1062,7 +1066,7 @@ C_C8CC:                               ; XREF: 0xC900
 C_C8DD:                               ; XREF: 0xC8ED 
     CALL KM_WAIT_KEY                  ;0xc8dd:   cd 18 bb  "..." 
     CP 0xfc                           ;0xc8e0:   fe fc  ".." 
-    JP z, C_C992                      ;0xc8e2:   ca 92 c9  "..." 
+    JP z,C_C992                       ;0xc8e2:   ca 92 c9  "..." 
     CP 13                             ;0xc8e5:   fe 0d  ".." 
     JR z,C_C94D                       ;0xc8e7:   28 64  "(d" 
     CP 0x20                           ;0xc8e9:   fe 20  ". " 
@@ -1113,6 +1117,8 @@ C_C92B:                               ; XREF: 0xC93A
 ;--------------------------------------
 C_C92F:                               ; XREF: 0xC933 
     RST 0x20                          ;0xc92f:   e7  "." 
+;--------------------------------------
+RST20_data_c930:                      ; XREF: 
     CPL                               ;0xc930:   2f  "/" 
     LD (HL),A                         ;0xc931:   77  "w" 
     INC HL                            ;0xc932:   23  "#" 
@@ -1187,7 +1193,7 @@ C_C9A6:                               ; XREF: 0xC9A9
     JR c,C_C9A6                       ;0xc9a9:   38 fb  "8." 
     CALL KM_WAIT_KEY                  ;0xc9ab:   cd 18 bb  "..." 
     CP 0xfc                           ;0xc9ae:   fe fc  ".." 
-    JP nz, OP                         ;0xc9b0:   c2 4d c5  ".M." 
+    JP nz,OP                          ;0xc9b0:   c2 4d c5  ".M." 
     CALL SCR_RESET                    ;0xc9b3:   cd 02 bc  "..." 
     CALL TXT_INITIALIZE               ;0xc9b6:   cd 4e bb  ".N." 
     LD A,1                            ;0xc9b9:   3e 01  ">."  
@@ -1232,11 +1238,11 @@ PW_INPUT_LOOP:                        ; XREF: 0xCA05
     CP 13                             ;0xc9f9:   fe 0d  ".." 
     RET z                             ;0xc9fb:   c8  "." 
     CP 0x7f                           ;0xc9fc:   fe 7f  ".." 
-    JP z, PASSWORD_DELETE_INPUT           ;0xc9fe:   ca 12 ca  "..." 
+    JP z,PASSWORD_DELETE_INPUT           ;0xc9fe:   ca 12 ca  "..." 
     LD C,A                            ;0xca01:   4f  "O" 
     LD A,B                            ;0xca02:   78  "x" 
     CP 0x40                           ;0xca03:   fe 40  ".@" 
-    JP nc, PW_INPUT_LOOP              ;0xca05:   d2 ec c9  "..." 
+    JP nc,PW_INPUT_LOOP               ;0xca05:   d2 ec c9  "..." 
     LD A,C                            ;0xca08:   79  "y" 
     LD (HL),A                         ;0xca09:   77  "w" 
     INC HL                            ;0xca0a:   23  "#" 
@@ -1247,7 +1253,7 @@ PW_INPUT_LOOP:                        ; XREF: 0xCA05
 PASSWORD_DELETE_INPUT:                ; XREF: 0xC9FE 
     LD A,B                            ;0xca12:   78  "x" 
     CP 0                              ;0xca13:   fe 00  ".." 
-    JP z, PASSWORD_INPUT              ;0xca15:   ca e3 c9  "..." 
+    JP z,PASSWORD_INPUT               ;0xca15:   ca e3 c9  "..." 
     CALL PW_MOVE_BUFFER_BACK_ONE           ;0xca18:   cd 1e ca  "..." 
     JP PW_INPUT_LOOP                  ;0xca1b:   c3 ec c9  "..." 
 ;--------------------------------------
@@ -1270,7 +1276,7 @@ VALIDATE_PASSWORD:                    ; XREF: 0xC9D9
     LD B,A                            ;0xca37:   47  "G" 
     LD A,(IY+0)                       ;0xca38:   fd 7e 00  ".~." 
     CP B                              ;0xca3b:   b8  "." 
-    JP nz, BAD_PASSWORD               ;0xca3c:   c2 56 ca  ".V." 
+    JP nz,BAD_PASSWORD                ;0xca3c:   c2 56 ca  ".V." 
     LD A,(IY+0)                       ;0xca3f:   fd 7e 00  ".~." 
     LD B,A                            ;0xca42:   47  "G" 
     CALL C_CA70                       ;0xca43:   cd 70 ca  ".p." 
@@ -1294,7 +1300,7 @@ BAD_PASSWORD:                         ; XREF: 0xCA3C
     LD A,(IY+3)                       ;0xca5d:   fd 7e 03  ".~." 
     INC A                             ;0xca60:   3c  "<" 
     CP 3                              ;0xca61:   fe 03  ".." 
-    JP z, C_CA6C                      ;0xca63:   ca 6c ca  ".l." 
+    JP z,C_CA6C                       ;0xca63:   ca 6c ca  ".l." 
     LD (IY+3),A                       ;0xca66:   fd 77 03  ".w." 
     JP C_C9C8                         ;0xca69:   c3 c8 c9  "..." 
 ;--------------------------------------
@@ -1319,7 +1325,7 @@ PW:                                   ; XREF: 0xC01E
     LD A,(IX+0)                       ;0xca83:   dd 7e 00  ".~." 
     XOR 0xaa                          ;0xca86:   ee aa  ".." 
     CP B                              ;0xca88:   b8  "." 
-    JP nz, C_CA6C                     ;0xca89:   c2 6c ca  ".l." 
+    JP nz,C_CA6C                      ;0xca89:   c2 6c ca  ".l." 
     INC IX                            ;0xca8c:   dd 23  ".#" 
 ;--------------------------------------
 C_CA8E:                               ; XREF: 0xCA9C 
@@ -1328,7 +1334,7 @@ C_CA8E:                               ; XREF: 0xCA9C
     LD C,A                            ;0xca93:   4f  "O" 
     LD A,(HL)                         ;0xca94:   7e  "~" 
     CP C                              ;0xca95:   b9  "." 
-    JP nz, C_CA6C                     ;0xca96:   c2 6c ca  ".l." 
+    JP nz,C_CA6C                      ;0xca96:   c2 6c ca  ".l." 
     INC HL                            ;0xca99:   23  "#" 
     INC IX                            ;0xca9a:   dd 23  ".#" 
     DJNZ C_CA8E                       ;0xca9c:   10 f0  ".." 
@@ -1366,11 +1372,11 @@ C_CAE2:                               ; XREF: 0xCAB6
     LD BC,0x1a                        ;0xcae8:   01 1a 00  "..."  
     LDIR                              ;0xcaeb:   ed b0  ".." 
     CP 1                              ;0xcaed:   fe 01  ".." 
-    JP z, C_CB9C                      ;0xcaef:   ca 9c cb  "..." 
+    JP z,C_CB9C                       ;0xcaef:   ca 9c cb  "..." 
 ;--------------------------------------
 C_CAF2:                               ; XREF: 0xCBA4 
     LD HL,ACC_ROMS_MSG                ;0xcaf2:   21 3e cb  "!>."   - References: "CPM PLUS : Accessory Roms attached"
-    CALL C_CB34                       ;0xcaf5:   cd 34 cb  ".4." 
+    CALL PRINT_MESSAGE                ;0xcaf5:   cd 34 cb  ".4." 
     LD C,1                            ;0xcaf8:   0e 01  ".."  
 ;--------------------------------------
 C_CAFA:                               ; XREF: 0xCB0F 
@@ -1380,7 +1386,7 @@ C_CAFA:                               ; XREF: 0xCB0F
     LD HL,ROM_TYPE                    ;0xcaff:   21 00 c0  "!.."  
     CALL IY_ADDR_JUMP                 ;0xcb02:   cd 1a cc  "..." 
     CP 0x47                           ;0xcb05:   fe 47  ".G" 
-    CALL z, C_CB12                    ;0xcb07:   cc 12 cb  "..." 
+    CALL z,C_CB12                     ;0xcb07:   cc 12 cb  "..." 
     POP BC                            ;0xcb0a:   c1  "." 
     INC C                             ;0xcb0b:   0c  "." 
     LD A,C                            ;0xcb0c:   79  "y" 
@@ -1389,12 +1395,12 @@ C_CAFA:                               ; XREF: 0xCB0F
     RET                               ;0xcb11:   c9  "." 
 ;--------------------------------------
 C_CB12:                               ; XREF: 0xCB07 
-    LD HL,S_CB64                      ;0xcb12:   21 64 cb  "!d."  
-    CALL C_CB34                       ;0xcb15:   cd 34 cb  ".4." 
+    LD HL,S_ROM_MSG                   ;0xcb12:   21 64 cb  "!d."  
+    CALL PRINT_MESSAGE                ;0xcb15:   cd 34 cb  ".4." 
     LD A,(IY+0x19)                    ;0xcb18:   fd 7e 19  ".~." 
     CALL C_CB6C                       ;0xcb1b:   cd 6c cb  ".l." 
     LD HL,S_CB69                      ;0xcb1e:   21 69 cb  "!i."  
-    CALL C_CB34                       ;0xcb21:   cd 34 cb  ".4." 
+    CALL PRINT_MESSAGE                ;0xcb21:   cd 34 cb  ".4." 
     LD HL,0xc010                      ;0xcb24:   21 10 c0  "!.."  
 ;--------------------------------------
 C_CB27:                               ; XREF: 0xCB32 
@@ -1406,20 +1412,18 @@ C_CB27:                               ; XREF: 0xCB32
     INC HL                            ;0xcb31:   23  "#" 
     JR C_CB27                         ;0xcb32:   18 f3  ".." 
 ;--------------------------------------
-C_CB34:                               ; XREF: 0xCAF5 
+PRINT_MESSAGE:                        ; XREF: 0xCAF5 
     LD A,(HL)                         ;0xcb34:   7e  "~" 
     CP 0x24                           ;0xcb35:   fe 24  ".$" 
     RET z                             ;0xcb37:   c8  "." 
     CALL TXT_OUTPUT                   ;0xcb38:   cd 5a bb  ".Z." 
     INC HL                            ;0xcb3b:   23  "#" 
-    JR C_CB34                         ;0xcb3c:   18 f6  ".." 
+    JR PRINT_MESSAGE                  ;0xcb3c:   18 f6  ".." 
 ;--------------------------------------
 ACC_ROMS_MSG:                         ; XREF: 0xCAF2 
     DEFB "CPM PLUS : Accessory Roms attached", 0x0d  ;0xcb3e:   0xcb3e to 0xcb63
     DEFB 0xa                          ;0xcb61:   0xa
     DEFB 0xa                          ;0xcb62:   0xa
-;--------------------------------------
-S_cb63:                               ; XREF: 
     DEFB "$ROM $: $"                  ;0xcb63:   0xcb63 to 0xcb6c
 ;--------------------------------------
 C_CB6C:                               ; XREF: 0xCB1B 
@@ -1471,13 +1475,13 @@ C_CB9C:                               ; XREF: 0xCAEF
     LD A,(IX+0)                       ;0xcb9c:   dd 7e 00  ".~." 
     LD (IY+0x19),A                    ;0xcb9f:   fd 77 19  ".w." 
     CP 0x10                           ;0xcba2:   fe 10  ".." 
-    JP nc, C_CAF2                     ;0xcba4:   d2 f2 ca  "..." 
+    JP nc,C_CAF2                      ;0xcba4:   d2 f2 ca  "..." 
     LD C,(IX+0)                       ;0xcba7:   dd 4e 00  ".N." 
     LD (IY+0x19),A                    ;0xcbaa:   fd 77 19  ".w." 
     LD HL,ROM_TYPE                    ;0xcbad:   21 00 c0  "!.."  
     CALL IY_ADDR_JUMP                 ;0xcbb0:   cd 1a cc  "..." 
     CP 0x47                           ;0xcbb3:   fe 47  ".G" 
-    CALL z, C_CBBC                    ;0xcbb5:   cc bc cb  "..." 
+    CALL z,C_CBBC                     ;0xcbb5:   cc bc cb  "..." 
     CALL PRINT_NEWLINE                ;0xcbb8:   cd f7 cb  "..." 
     RET                               ;0xcbbb:   c9  "." 
 ;--------------------------------------
@@ -1493,7 +1497,7 @@ C_CBC2:                               ; XREF: 0xCBF5
     CALL C_CBFE                       ;0xcbcc:   cd fe cb  "..." 
     PUSH HL                           ;0xcbcf:   e5  "." 
     LD HL,STR_SEVERAL_SPACES          ;0xcbd0:   21 0c cc  "!.."  
-    CALL C_CB34                       ;0xcbd3:   cd 34 cb  ".4." 
+    CALL PRINT_MESSAGE                ;0xcbd3:   cd 34 cb  ".4." 
     POP HL                            ;0xcbd6:   e1  "." 
     LD DE,8                           ;0xcbd7:   11 08 00  "..."  
     ADD HL,DE                         ;0xcbda:   19  "." 
@@ -1515,7 +1519,7 @@ C_CBC2:                               ; XREF: 0xCBF5
 ;--------------------------------------
 PRINT_NEWLINE:                        ; XREF: 0xCBB8 
     LD HL,STR_NEWLINE                 ;0xcbf7:   21 17 cc  "!.."  
-    CALL C_CB34                       ;0xcbfa:   cd 34 cb  ".4." 
+    CALL PRINT_MESSAGE                ;0xcbfa:   cd 34 cb  ".4." 
     RET                               ;0xcbfd:   c9  "." 
 ;--------------------------------------
 C_CBFE:                               ; XREF: 0xCBCC 
@@ -1633,9 +1637,9 @@ STORE_EMS_PARAM:                      ; XREF: 0xC1F6
     LD H,(IX+1)                       ;0xcca0:   dd 66 01  ".f." 
     LD A,(HL)                         ;0xcca3:   7e  "~" 
     CP 0x81                           ;0xcca4:   fe 81  ".." 
-    JP nc, C_C1F9                     ;0xcca6:   d2 f9 c1  "..." 
+    JP nc,C_C1F9                      ;0xcca6:   d2 f9 c1  "..." 
     CP 0                              ;0xcca9:   fe 00  ".." 
-    JP z, C_C1F9                      ;0xccab:   ca f9 c1  "..." 
+    JP z,C_C1F9                       ;0xccab:   ca f9 c1  "..." 
     LD (0x4f),A                       ;0xccae:   32 4f 00  "2O."  
     INC HL                            ;0xccb1:   23  "#" 
     LD E,(HL)                         ;0xccb2:   5e  "^" 
@@ -1694,7 +1698,7 @@ D_CCEE:                               ; XREF: 0xC250
     CALL 0xca6                        ;0xcd29:   cd a6 0c  "..." 
     LD DE,0xdf6                       ;0xcd2c:   11 f6 0d  "..."  
     LD C,9                            ;0xcd2f:   0e 09  ".."  
-    CALL 0x5                          ;0xcd31:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xcd31:   cd 05 00  "..." 
     CALL 0xc09                        ;0xcd34:   cd 09 0c  "..." 
     LD A,(0xfd7)                      ;0xcd37:   3a d7 0f  ":.."  
     LD HL,0xdf6                       ;0xcd3a:   21 f6 0d  "!.."  
@@ -1888,7 +1892,7 @@ C_CECE:                               ; XREF: 0xCE7A
     LD (DE),A                         ;0xced5:   12  "." 
 ;--------------------------------------
 C_CED6:                               ; XREF: 0xCE81 
-    JP p, 0x1411                      ;0xced6:   f2 11 14  "..." 
+    JP p,0x1411                       ;0xced6:   f2 11 14  "..." 
     INC DE                            ;0xced9:   13  "." 
     JR z, $+21                        ;0xceda:   28 13  "(." 
     RST 0x30                          ;0xcedc:   f7  "." 
@@ -1897,7 +1901,7 @@ C_CEDD:                               ; XREF: 0xCE88
     INC DE                            ;0xcedd:   13  "." 
     RST 8                             ;0xcede:   cf  "." 
     INC DE                            ;0xcedf:   13  "." 
-    CALL nz, 0x6a20                   ;0xcee0:   c4 20 6a  ". j" 
+    CALL nz,0x6a20                    ;0xcee0:   c4 20 6a  ". j" 
     INC D                             ;0xcee3:   14  "." 
     LD D,H                            ;0xcee4:   54  "T" 
 ;--------------------------------------
@@ -1948,7 +1952,7 @@ C_CF44:                               ; XREF: 0xCF3B
     CP 0                              ;0xcf46:   fe 00  ".." 
 ;--------------------------------------
 C_CF48:                               ; XREF: 0xCF0C 
-    JP z, 0xc09                       ;0xcf48:   ca 09 0c  "..." 
+    JP z,0xc09                        ;0xcf48:   ca 09 0c  "..." 
     LD A,0x2c                         ;0xcf4b:   3e 2c  ">,"  
     CALL 0xca6                        ;0xcf4d:   cd a6 0c  "..." 
 ;--------------------------------------
@@ -2006,7 +2010,7 @@ C_cfaf:                               ; XREF:
     CALL 0x15e9                       ;0xcfc2:   cd e9 15  "..." 
     LD A,C                            ;0xcfc5:   79  "y" 
     CP 1                              ;0xcfc6:   fe 01  ".." 
-    JP nz, 0x1262                     ;0xcfc8:   c2 62 12  ".b." 
+    JP nz,0x1262                      ;0xcfc8:   c2 62 12  ".b." 
     CALL 0x1281                       ;0xcfcb:   cd 81 12  "..." 
     JR C_CFD3                         ;0xcfce:   18 03  ".." 
     CALL 0x1272                       ;0xcfd0:   cd 72 12  ".r." 
@@ -2025,7 +2029,7 @@ C_CFD6:                               ; XREF: 0xCFA4
     LD C,9                            ;0xcfe3:   0e 09  ".."  
 ;--------------------------------------
 C_CFE5:                               ; XREF: 0xCF95 
-    CALL 0x5                          ;0xcfe5:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xcfe5:   cd 05 00  "..." 
     RET                               ;0xcfe8:   c9  "." 
     DEC DE                            ;0xcfe9:   1b  "." 
     JR nc, $+38                       ;0xcfea:   30 24  "0$" 
@@ -2102,9 +2106,9 @@ C_D06D:                               ; XREF: 0xD01D
     DEC DE                            ;0xd088:   1b  "." 
     LD (HL),C                         ;0xd089:   71  "q" 
     INC H                             ;0xd08a:   24  "$" 
-    JP z, 0xa55                       ;0xd08b:   ca 55 0a  ".U." 
+    JP z,0xa55                        ;0xd08b:   ca 55 0a  ".U." 
     CP 0x2c                           ;0xd08e:   fe 2c  ".," 
-    JP z, 0xa55                       ;0xd090:   ca 55 0a  ".U." 
+    JP z,0xa55                        ;0xd090:   ca 55 0a  ".U." 
     JP 0xa52                          ;0xd093:   c3 52 0a  ".R." 
     LD A,0x40                         ;0xd096:   3e 40  ">@"  
     LD (0xc86),A                      ;0xd098:   32 86 0c  "2.."  
@@ -2230,7 +2234,7 @@ C_D1E3:                               ; XREF: 0xD1ED
     RET z                             ;0xd1e6:   c8  "." 
     LD E,A                            ;0xd1e7:   5f  "_" 
     LD C,5                            ;0xd1e8:   0e 05  ".."  
-    CALL 0x5                          ;0xd1ea:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd1ea:   cd 05 00  "..." 
     JR C_D1E3                         ;0xd1ed:   18 f4  ".." 
 ;--------------------------------------
 S_d1ef:                               ; XREF: 
@@ -2334,7 +2338,7 @@ D_D294:                               ; XREF:
     PUSH BC                           ;0xd294:   c5  "." 
     LD DE,0x80                        ;0xd295:   11 80 00  "..."  
     LD C,0x1a                         ;0xd298:   0e 1a  ".."  
-    CALL 0x5                          ;0xd29a:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd29a:   cd 05 00  "..." 
     POP BC                            ;0xd29d:   c1  "." 
     POP DE                            ;0xd29e:   d1  "." 
     RET                               ;0xd29f:   c9  "." 
@@ -2418,7 +2422,7 @@ C_D31A:                               ; XREF: 0xD32C
     PUSH DE                           ;0xd324:   d5  "." 
     LD E,A                            ;0xd325:   5f  "_" 
     LD C,5                            ;0xd326:   0e 05  ".."  
-    CALL 0x5                          ;0xd328:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd328:   cd 05 00  "..." 
     POP DE                            ;0xd32b:   d1  "." 
     JR C_D31A                         ;0xd32c:   18 ec  ".." 
 ;--------------------------------------
@@ -2460,14 +2464,14 @@ C_d358:                               ; XREF:
     LD C,0                            ;0xd374:   0e 00  ".."  
     RET                               ;0xd376:   c9  "." 
     LD C,9                            ;0xd377:   0e 09  ".."  
-    JP 0x5                            ;0xd379:   c3 05 00  "..." 
+    JP CPM_BDOS                       ;0xd379:   c3 05 00  "..." 
     CALL 0xa41                        ;0xd37c:   cd 41 0a  ".A." 
     JR nz,C_D3B0                      ;0xd37f:   20 2f  " /" 
 ;--------------------------------------
 C_D381:                               ; XREF: 0xD3B7 
     CALL 0x1629                       ;0xd381:   cd 29 16  ".)." 
     LD C,0x18                         ;0xd384:   0e 18  ".."  
-    CALL 0x5                          ;0xd386:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd386:   cd 05 00  "..." 
     LD C,0                            ;0xd389:   0e 00  ".."  
     LD A,L                            ;0xd38b:   7d  "}" 
     CALL 0x165a                       ;0xd38c:   cd 5a 16  ".Z." 
@@ -2479,7 +2483,7 @@ C_D38F:                               ; XREF: 0xD353
     NOP                               ;0xd396:   00  "." 
     PUSH BC                           ;0xd397:   c5  "." 
     LD C,0x19                         ;0xd398:   0e 19  ".."  
-    CALL 0x5                          ;0xd39a:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd39a:   cd 05 00  "..." 
     LD (0x1628),A                     ;0xd39d:   32 28 16  "2(."  
     POP BC                            ;0xd3a0:   c1  "." 
     RET                               ;0xd3a1:   c9  "." 
@@ -2488,7 +2492,7 @@ C_D38F:                               ; XREF: 0xD353
     LD A,(0x1628)                     ;0xd3a4:   3a 28 16  ":(."  
     LD E,A                            ;0xd3a7:   5f  "_" 
     LD C,14                           ;0xd3a8:   0e 0e  ".."  
-    CALL 0x5                          ;0xd3aa:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd3aa:   cd 05 00  "..." 
     POP BC                            ;0xd3ad:   c1  "." 
     POP DE                            ;0xd3ae:   d1  "." 
     RET                               ;0xd3af:   c9  "." 
@@ -2514,7 +2518,7 @@ C_D3CB:                               ; XREF: 0xD3D7
     PUSH BC                           ;0xd3cb:   c5  "." 
     BIT 0,A                           ;0xd3cc:   cb 47  ".G" 
     PUSH AF                           ;0xd3ce:   f5  "." 
-    CALL nz, 0x166d                   ;0xd3cf:   c4 6d 16  ".m." 
+    CALL nz,0x166d                    ;0xd3cf:   c4 6d 16  ".m." 
     POP AF                            ;0xd3d2:   f1  "." 
     RRC A                             ;0xd3d3:   cb 0f  ".." 
     POP BC                            ;0xd3d5:   c1  "." 
@@ -2529,14 +2533,14 @@ C_D3CB:                               ; XREF: 0xD3D7
     LD (0x16ec),A                     ;0xd3e5:   32 ec 16  "2.."  
     LD E,A                            ;0xd3e8:   5f  "_" 
     LD C,14                           ;0xd3e9:   0e 0e  ".."  
-    CALL 0x5                          ;0xd3eb:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd3eb:   cd 05 00  "..." 
     LD C,0x11                         ;0xd3ee:   0e 11  ".."  
     LD DE,0x16ec                      ;0xd3f0:   11 ec 16  "..."  
-    CALL 0x5                          ;0xd3f3:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd3f3:   cd 05 00  "..." 
     LD A,(0x16eb)                     ;0xd3f6:   3a eb 16  ":.."  
     LD E,A                            ;0xd3f9:   5f  "_" 
     LD C,0x2e                         ;0xd3fa:   0e 2e  ".."  
-    CALL 0x5                          ;0xd3fc:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd3fc:   cd 05 00  "..." 
     LD B,3                            ;0xd3ff:   06 03  ".."  
 ;--------------------------------------
 C_D401:                               ; XREF: 0xD411 
@@ -2549,9 +2553,9 @@ C_D401:                               ; XREF: 0xD411
     ADD A,0x41                        ;0xd416:   c6 41  ".A" 
     LD E,A                            ;0xd418:   5f  "_" 
     LD C,2                            ;0xd419:   0e 02  ".."  
-    CALL 0x5                          ;0xd41b:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd41b:   cd 05 00  "..." 
     LD C,0x1d                         ;0xd41e:   0e 1d  ".."  
-    CALL 0x5                          ;0xd420:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd420:   cd 05 00  "..." 
     LD A,(0x175e)                     ;0xd423:   3a 5e 17  ":^."  
     LD B,A                            ;0xd426:   47  "G" 
     OR A                              ;0xd427:   b7  "." 
@@ -2574,10 +2578,10 @@ C_D43A:                               ; XREF: 0xD433
 ;--------------------------------------
 C_D43D:                               ; XREF: 0xD438 
     LD C,9                            ;0xd43d:   0e 09  ".."  
-    CALL 0x5                          ;0xd43f:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd43f:   cd 05 00  "..." 
     LD DE,0x174f                      ;0xd442:   11 4f 17  ".O."  
     LD C,9                            ;0xd445:   0e 09  ".."  
-    CALL 0x5                          ;0xd447:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd447:   cd 05 00  "..." 
     LD H,(IX+1)                       ;0xd44a:   dd 66 01  ".f." 
     LD L,(IX+0)                       ;0xd44d:   dd 6e 00  ".n." 
     CALL 0x16fb                       ;0xd450:   cd fb 16  "..." 
@@ -2616,13 +2620,13 @@ C_D48E:                               ; XREF: 0xD489
     ADD A,0x30                        ;0xd48f:   c6 30  ".0" 
     LD E,A                            ;0xd491:   5f  "_" 
     CP 0x30                           ;0xd492:   fe 30  ".0" 
-    CALL z, 0x1737                    ;0xd494:   cc 37 17  ".7." 
+    CALL z,0x1737                     ;0xd494:   cc 37 17  ".7." 
     LD B,1                            ;0xd497:   06 01  ".."  
     PUSH HL                           ;0xd499:   e5  "." 
     PUSH AF                           ;0xd49a:   f5  "." 
     PUSH BC                           ;0xd49b:   c5  "." 
     LD C,2                            ;0xd49c:   0e 02  ".."  
-    CALL 0x5                          ;0xd49e:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd49e:   cd 05 00  "..." 
     POP BC                            ;0xd4a1:   c1  "." 
     POP AF                            ;0xd4a2:   f1  "." 
     POP HL                            ;0xd4a3:   e1  "." 
@@ -2637,53 +2641,36 @@ C_D4AB:                               ; XREF: 0xD46B
     LD A,0x30                         ;0xd4ab:   3e 30  ">0"  
     LD E,A                            ;0xd4ad:   5f  "_" 
     LD C,2                            ;0xd4ae:   0e 02  ".."  
-    JP 0x5                            ;0xd4b0:   c3 05 00  "..." 
+    JP CPM_BDOS                       ;0xd4b0:   c3 05 00  "..." 
 ;--------------------------------------
 S_d4b3:                               ; XREF: 
     DEFB ": RW$: RO$, Space:   $", 0x0d  ;0xd4b3:   0xd4b3 to 0xd4cc
-    DEFB 0xa                          ;0xd4ca:   0xa
-    DEFB 0x24                         ;0xd4cb:   
-    DEFB 0x0                          ;0xd4cc:   
-    DEFB 0x35                         ;0xd4cd:   
-    DEFB 0x0                          ;0xd4ce:   
-    DEFB 0xe                          ;0xd4cf:   0xe
-    DEFB 0x2d                         ;0xd4d0:   
-    DEFB 0x1e                         ;0xd4d1:   0x1e
-    DEFB 0xff                         ;0xd4d2:   
-    DEFB 0xcd                         ;0xd4d3:   
-    DEFB 0x5                          ;0xd4d4:   0x5
-    DEFB 0x0                          ;0xd4d5:   
-    DEFB 0xe                          ;0xd4d6:   0xe
-    DEFB 0xe                          ;0xd4d7:   0xe
-    DEFB 0x1e                         ;0xd4d8:   0x1e
-    DEFB 0x0                          ;0xd4d9:   
-    DEFB 0xcd                         ;0xd4da:   
-    DEFB 0x5                          ;0xd4db:   0x5
-    DEFB 0x0                          ;0xd4dc:   
-    DEFB 0xf5                         ;0xd4dd:   
-    DEFB 0xe                          ;0xd4de:   0xe
-    DEFB 0x2d                         ;0xd4df:   
-    DEFB 0x1e                         ;0xd4e0:   0x1e
-    DEFB 0x0                          ;0xd4e1:   
-    DEFB 0xcd                         ;0xd4e2:   
-    DEFB 0x5                          ;0xd4e3:   0x5
-    DEFB 0x0                          ;0xd4e4:   
-    DEFB 0xf1                         ;0xd4e5:   
-    DEFB 0xfe                         ;0xd4e6:   
-    DEFB 0xff                         ;0xd4e7:   
-    DEFB 0xca                         ;0xd4e8:   
-    DEFB 0x6                          ;0xd4e9:   0x6
-    DEFB 0x5                          ;0xd4ea:   0x5
-    DEFB 0x21                         ;0xd4eb:   
-    DEFB 0xfc                         ;0xd4ec:   
 ;--------------------------------------
-C_D4ED:                               ; XREF: 0xD4C7 
-    INC B                             ;0xd4ed:   04  "." 
+D_d4ca_todo:                          ; XREF: 
+    LD A,(BC)                         ;0xd4ca:   0a  "." 
+    INC H                             ;0xd4cb:   24  "$" 
+    NOP                               ;0xd4cc:   00  "." 
+    DEC (HL)                          ;0xd4cd:   35  "5" 
+    NOP                               ;0xd4ce:   00  "." 
+    LD C,0x2d                         ;0xd4cf:   0e 2d  ".-"  
+    LD E,0xff                         ;0xd4d1:   1e ff  ".."  
+    CALL CPM_BDOS                     ;0xd4d3:   cd 05 00  "..." 
+    LD C,14                           ;0xd4d6:   0e 0e  ".."  
+    LD E,0                            ;0xd4d8:   1e 00  ".."  
+    CALL CPM_BDOS                     ;0xd4da:   cd 05 00  "..." 
+    PUSH AF                           ;0xd4dd:   f5  "." 
+    LD C,0x2d                         ;0xd4de:   0e 2d  ".-"  
+    LD E,0                            ;0xd4e0:   1e 00  ".."  
+    CALL CPM_BDOS                     ;0xd4e2:   cd 05 00  "..." 
+    POP AF                            ;0xd4e5:   f1  "." 
+    CP 0xff                           ;0xd4e6:   fe ff  ".." 
+    JP z,0x506                        ;0xd4e8:   ca 06 05  "..." 
+    LD HL,0x4fc                       ;0xd4eb:   21 fc 04  "!.."  
     JP 0x4d9                          ;0xd4ee:   c3 d9 04  "..." 
     CALL 0xad8                        ;0xd4f1:   cd d8 0a  "..." 
-    JP z, 0x17ad                      ;0xd4f4:   ca ad 17  "..." 
+    JP z,0x17ad                       ;0xd4f4:   ca ad 17  "..." 
     CALL 0x79e                        ;0xd4f7:   cd 9e 07  "..." 
-    JP nz, 0x17ad                     ;0xd4fa:   c2 ad 17  "..." 
+    JP nz,0x17ad                      ;0xd4fa:   c2 ad 17  "..." 
     LD DE,0xd14                       ;0xd4fd:   11 14 0d  "..."  
     CALL 0x949                        ;0xd500:   cd 49 09  ".I." 
     LD HL,(0xd9b)                     ;0xd503:   2a 9b 0d  "*.."  
@@ -2717,9 +2704,9 @@ C_D4ED:                               ; XREF: 0xD4C7
     JP 0x76c                          ;0xd53b:   c3 6c 07  ".l." 
     LD C,0x31                         ;0xd53e:   0e 31  ".1"  
     LD DE,0x17e7                      ;0xd540:   11 e7 17  "..."  
-    CALL 0x5                          ;0xd543:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd543:   cd 05 00  "..." 
     AND 2                             ;0xd546:   e6 02  ".." 
-    CALL z, 0x2060                    ;0xd548:   cc 60 20  ".` " 
+    CALL z,0x2060                     ;0xd548:   cc 60 20  ".` " 
     CALL 0x214b                       ;0xd54b:   cd 4b 21  ".K!" 
     EI                                ;0xd54e:   fb  "." 
     LD SP,0xf2d                       ;0xd54f:   31 2d 0f  "1-."  
@@ -2732,26 +2719,26 @@ C_D557:                               ; XREF: 0xD57E
     INC HL                            ;0xd55a:   23  "#" 
     LD A,(HL)                         ;0xd55b:   7e  "~" 
     CP 0x3a                           ;0xd55c:   fe 3a  ".:" 
-    JR nz,C_D580                      ;0xd55e:   20 20  "  " 
+    JR nz,CPM_SEARCH_FOR_FILE           ;0xd55e:   20 20  "  " 
     DEC HL                            ;0xd560:   2b  "+" 
     LD A,(HL)                         ;0xd561:   7e  "~" 
     AND 15                            ;0xd562:   e6 0f  ".." 
     DEC A                             ;0xd564:   3d  "=" 
     LD E,A                            ;0xd565:   5f  "_" 
     LD C,0x19                         ;0xd566:   0e 19  ".."  
-    CALL 0x5                          ;0xd568:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd568:   cd 05 00  "..." 
     PUSH AF                           ;0xd56b:   f5  "." 
     LD C,14                           ;0xd56c:   0e 0e  ".."  
-    CALL 0x5                          ;0xd56e:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd56e:   cd 05 00  "..." 
     CALL 0x1812                       ;0xd571:   cd 12 18  "..." 
     POP AF                            ;0xd574:   f1  "." 
     LD E,A                            ;0xd575:   5f  "_" 
     LD C,14                           ;0xd576:   0e 0e  ".."  
-    JP 0x5                            ;0xd578:   c3 05 00  "..." 
+    JP CPM_BDOS                       ;0xd578:   c3 05 00  "..." 
     CALL 0xa41                        ;0xd57b:   cd 41 0a  ".A." 
     JR nz,C_D557                      ;0xd57e:   20 d7  " ." 
 ;--------------------------------------
-C_D580:                               ; XREF: 0xD55E 
+CPM_SEARCH_FOR_FILE:                  ; XREF: 0xD55E 
     CALL 0x1525                       ;0xd580:   cd 25 15  ".%." 
     CALL 0x18eb                       ;0xd583:   cd eb 18  "..." 
     LD HL,0x9000                      ;0xd586:   21 00 90  "!.."  
@@ -2760,9 +2747,9 @@ C_D580:                               ; XREF: 0xD55E
     LD (0x18d3),A                     ;0xd58d:   32 d3 18  "2.."  
     LD DE,0x18dc                      ;0xd590:   11 dc 18  "..."  
     LD C,0x11                         ;0xd593:   0e 11  ".."  
-    CALL 0x5                          ;0xd595:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd595:   cd 05 00  "..." 
     CP 0xff                           ;0xd598:   fe ff  ".." 
-    JP z, 0x188e                      ;0xd59a:   ca 8e 18  "..." 
+    JP z,0x188e                       ;0xd59a:   ca 8e 18  "..." 
 ;--------------------------------------
 C_D59D:                               ; XREF: 0xD5D9 
     LD HL,0x80                        ;0xd59d:   21 80 00  "!.."  
@@ -2780,7 +2767,7 @@ C_D5AA:                               ; XREF: 0xD5A1
     ADD HL,DE                         ;0xd5ad:   19  "." 
     LD A,(HL)                         ;0xd5ae:   7e  "~" 
     CP 0                              ;0xd5af:   fe 00  ".." 
-    JR nz,C_D5CD                      ;0xd5b1:   20 1a  " ." 
+    JR nz,CPM_SEARCH_FOR_NEXT_FILE           ;0xd5b1:   20 1a  " ." 
     LD DE,12                          ;0xd5b3:   11 0c 00  "..."  
     SBC HL,DE                         ;0xd5b6:   ed 52  ".R" 
     INC HL                            ;0xd5b8:   23  "#" 
@@ -2792,10 +2779,10 @@ C_D5AA:                               ; XREF: 0xD5A1
     INC A                             ;0xd5c9:   3c  "<" 
     LD (0x18d3),A                     ;0xd5ca:   32 d3 18  "2.."  
 ;--------------------------------------
-C_D5CD:                               ; XREF: 0xD5B1 
+CPM_SEARCH_FOR_NEXT_FILE:             ; XREF: 0xD5B1 
     LD C,0x12                         ;0xd5cd:   0e 12  ".."  
     LD DE,0x18dc                      ;0xd5cf:   11 dc 18  "..."  
-    CALL 0x5                          ;0xd5d2:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd5d2:   cd 05 00  "..." 
     CP 0xff                           ;0xd5d5:   fe ff  ".." 
     JR z,C_D5DB                       ;0xd5d7:   28 02  "(." 
     JR C_D59D                         ;0xd5d9:   18 c2  ".." 
@@ -2812,7 +2799,7 @@ C_D5E5:                               ; XREF: 0xD5FA
     PUSH DE                           ;0xd5e9:   d5  "." 
     LD DE,0x18d4                      ;0xd5ea:   11 d4 18  "..."  
     LD C,9                            ;0xd5ed:   0e 09  ".."  
-    CALL 0x5                          ;0xd5ef:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd5ef:   cd 05 00  "..." 
     POP DE                            ;0xd5f2:   d1  "." 
     LD HL,11                          ;0xd5f3:   21 0b 00  "!.."  
     ADD HL,DE                         ;0xd5f6:   19  "." 
@@ -2822,7 +2809,7 @@ C_D5E5:                               ; XREF: 0xD5FA
     DJNZ C_D5E5                       ;0xd5fa:   10 e9  ".." 
     LD DE,0x1924                      ;0xd5fc:   11 24 19  ".$."  
     LD C,9                            ;0xd5ff:   0e 09  ".."  
-    CALL 0x5                          ;0xd601:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd601:   cd 05 00  "..." 
     CALL 0x193b                       ;0xd604:   cd 3b 19  ".;." 
     LD DE,0x192c                      ;0xd607:   11 2c 19  ".,."  
     JP 0x1609                         ;0xd60a:   c3 09 16  "..." 
@@ -2834,10 +2821,10 @@ C_D5E5:                               ; XREF: 0xD5FA
     PUSH DE                           ;0xd615:   d5  "." 
     LD E,0x20                         ;0xd616:   1e 20  ". "  
     LD C,2                            ;0xd618:   0e 02  ".."  
-    CALL 0x5                          ;0xd61a:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd61a:   cd 05 00  "..." 
     LD E,0x2e                         ;0xd61d:   1e 2e  ".."  
     LD C,2                            ;0xd61f:   0e 02  ".."  
-    CALL 0x5                          ;0xd621:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd621:   cd 05 00  "..." 
     POP DE                            ;0xd624:   d1  "." 
     LD B,3                            ;0xd625:   06 03  ".."  
     CALL 0x18c0                       ;0xd627:   cd c0 18  "..." 
@@ -2853,7 +2840,7 @@ C_D62E:                               ; XREF: 0xD63C
     RES 7,A                           ;0xd631:   cb bf  ".." 
     LD E,A                            ;0xd633:   5f  "_" 
     LD C,2                            ;0xd634:   0e 02  ".."  
-    CALL 0x5                          ;0xd636:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd636:   cd 05 00  "..." 
     POP DE                            ;0xd639:   d1  "." 
     INC DE                            ;0xd63a:   13  "." 
     POP BC                            ;0xd63b:   c1  "." 
@@ -2879,12 +2866,12 @@ S_d64b:                               ; XREF:
 C_D664:                               ; XREF: 0xD642 
     LD (DE),A                         ;0xd664:   12  "." 
     LD C,0x31                         ;0xd665:   0e 31  ".1"  
-    CALL 0x5                          ;0xd667:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd667:   cd 05 00  "..." 
     CALL 0x1b77                       ;0xd66a:   cd 77 1b  ".w." 
     CALL 0x1b9f                       ;0xd66d:   cd 9f 1b  "..." 
     LD DE,0x191d                      ;0xd670:   11 1d 19  "..."  
     LD C,9                            ;0xd673:   0e 09  ".."  
-    CALL 0x5                          ;0xd675:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd675:   cd 05 00  "..." 
     LD A,(0xd70)                      ;0xd678:   3a 70 0d  ":p."  
     CALL 0xc13                        ;0xd67b:   cd 13 0c  "..." 
     LD DE,0x1933                      ;0xd67e:   11 33 19  ".3."  
@@ -2914,12 +2901,12 @@ S_d695:                               ; XREF:
 C_D6AF:                               ; XREF: 0xD689 
     LD C,0x5f                         ;0xd6af:   0e 5f  "._"  
     PUSH DE                           ;0xd6b1:   d5  "." 
-    CALL 0x5                          ;0xd6b2:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd6b2:   cd 05 00  "..." 
     LD C,0x2e                         ;0xd6b5:   0e 2e  ".."  
 ;--------------------------------------
 C_D6B7:                               ; XREF: 0xD695 
     POP DE                            ;0xd6b7:   d1  "." 
-    CALL 0x5                          ;0xd6b8:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd6b8:   cd 05 00  "..." 
     LD B,3                            ;0xd6bb:   06 03  ".."  
 ;--------------------------------------
 C_D6BD:                               ; XREF: 0xD6CD 
@@ -2949,7 +2936,7 @@ C_D6E4:                               ; XREF: 0xD6FA
     PUSH HL                           ;0xd6ec:   e5  "." 
     CALL 0x19c7                       ;0xd6ed:   cd c7 19  "..." 
     POP HL                            ;0xd6f0:   e1  "." 
-    CALL c, 0x199b                    ;0xd6f1:   dc 9b 19  "..." 
+    CALL c,0x199b                     ;0xd6f1:   dc 9b 19  "..." 
     CALL 0x1994                       ;0xd6f4:   cd 94 19  "..." 
     LD A,C                            ;0xd6f7:   79  "y" 
     POP BC                            ;0xd6f8:   c1  "." 
@@ -3011,7 +2998,7 @@ C_D73A:                               ; XREF: 0xD737
     JR C_D735                         ;0xd73c:   18 f7  ".." 
     LD DE,0x1a97                      ;0xd73e:   11 97 1a  "..."  
     LD C,9                            ;0xd741:   0e 09  ".."  
-    CALL 0x5                          ;0xd743:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd743:   cd 05 00  "..." 
     LD B,4                            ;0xd746:   06 04  ".."  
     LD C,0x4c                         ;0xd748:   0e 4c  ".L"  
 ;--------------------------------------
@@ -3023,7 +3010,7 @@ C_D74A:                               ; XREF: 0xD77C
 ;--------------------------------------
 C_D750:                               ; XREF: 0xC04F 
     LD C,0x31                         ;0xd750:   0e 31  ".1"  
-    CALL 0x5                          ;0xd752:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd752:   cd 05 00  "..." 
     POP BC                            ;0xd755:   c1  "." 
     CP 0xff                           ;0xd756:   fe ff  ".." 
     JR z,C_D77E                       ;0xd758:   28 24  "($" 
@@ -3056,7 +3043,7 @@ C_D77E:                               ; XREF: 0xD758
     LD A,0x18                         ;0xd787:   3e 18  ">."  
     LD (DE),A                         ;0xd789:   12  "." 
     LD C,0x31                         ;0xd78a:   0e 31  ".1"  
-    CALL 0x5                          ;0xd78c:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd78c:   cd 05 00  "..." 
     AND 0x18                          ;0xd78f:   e6 18  ".." 
     RRC A                             ;0xd791:   cb 0f  ".." 
     RRC A                             ;0xd793:   cb 0f  ".." 
@@ -3076,7 +3063,7 @@ C_D77E:                               ; XREF: 0xD758
     LD A,0x50                         ;0xd7ae:   3e 50  ">P"  
     LD (DE),A                         ;0xd7b0:   12  "." 
     LD C,0x31                         ;0xd7b1:   0e 31  ".1"  
-    CALL 0x5                          ;0xd7b3:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd7b3:   cd 05 00  "..." 
     CALL 0x1b82                       ;0xd7b6:   cd 82 1b  "..." 
     LD DE,0x1b12                      ;0xd7b9:   11 12 1b  "..."  
     CALL 0x1609                       ;0xd7bc:   cd 09 16  "..." 
@@ -3084,7 +3071,7 @@ C_D77E:                               ; XREF: 0xD758
     LD A,0x2c                         ;0xd7c2:   3e 2c  ">,"  
     LD (DE),A                         ;0xd7c4:   12  "." 
     LD C,0x31                         ;0xd7c5:   0e 31  ".1"  
-    CALL 0x5                          ;0xd7c7:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd7c7:   cd 05 00  "..." 
     OR A                              ;0xd7ca:   b7  "." 
     JR nz,C_D7D5                      ;0xd7cb:   20 08  " ." 
     LD DE,0x1b2b                      ;0xd7cd:   11 2b 1b  ".+."  
@@ -3102,7 +3089,7 @@ C_D7DB:                               ; XREF: 0xD7D3
     LD A,0x18                         ;0xd7e4:   3e 18  ">."  
     LD (DE),A                         ;0xd7e6:   12  "." 
     LD C,0x31                         ;0xd7e7:   0e 31  ".1"  
-    CALL 0x5                          ;0xd7e9:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd7e9:   cd 05 00  "..." 
     AND 3                             ;0xd7ec:   e6 03  ".." 
     OR A                              ;0xd7ee:   b7  "." 
     JR nz,C_D7F9                      ;0xd7ef:   20 08  " ." 
@@ -3155,7 +3142,7 @@ C_D8E2:                               ; XREF: 0xD8C0
     ADD A,0x41                        ;0xd8e6:   c6 41  ".A" 
     LD E,A                            ;0xd8e8:   5f  "_" 
     LD C,2                            ;0xd8e9:   0e 02  ".."  
-    CALL 0x5                          ;0xd8eb:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd8eb:   cd 05 00  "..." 
     POP AF                            ;0xd8ee:   f1  "." 
     RET                               ;0xd8ef:   c9  "." 
 ;--------------------------------------
@@ -3169,7 +3156,7 @@ C_D8F1:                               ; XREF: 0xD8C2
     JR z,C_D905                       ;0xd8f5:   28 0e  "(." 
     LD E,A                            ;0xd8f7:   5f  "_" 
     LD C,2                            ;0xd8f8:   0e 02  ".."  
-    CALL 0x5                          ;0xd8fa:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd8fa:   cd 05 00  "..." 
     LD DE,0x1aae                      ;0xd8fd:   11 ae 1a  "..."  
     CALL 0x1609                       ;0xd900:   cd 09 16  "..." 
     POP AF                            ;0xd903:   f1  "." 
@@ -3182,16 +3169,16 @@ C_D905:                               ; XREF: 0xD8DF
     RET                               ;0xd90c:   c9  "." 
     LD E,0x3a                         ;0xd90d:   1e 3a  ".:"  
     LD C,2                            ;0xd90f:   0e 02  ".."  
-    JP 0x5                            ;0xd911:   c3 05 00  "..." 
+    JP CPM_BDOS                       ;0xd911:   c3 05 00  "..." 
     CALL 0xa41                        ;0xd914:   cd 41 0a  ".A." 
-    JP z, 0x1e94                      ;0xd917:   ca 94 1e  "..." 
+    JP z,0x1e94                       ;0xd917:   ca 94 1e  "..." 
 ;--------------------------------------
 C_D91A:                               ; XREF: 0xD8D4 
     LD C,0x69                         ;0xd91a:   0e 69  ".i"  
     LD DE,0x1d28                      ;0xd91c:   11 28 1d  ".(."  
 ;--------------------------------------
 C_D91F:                               ; XREF: 0xD8CF 
-    CALL 0x5                          ;0xd91f:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xd91f:   cd 05 00  "..." 
     LD (0x1fa2),A                     ;0xd922:   32 a2 1f  "2.."  
     LD HL,(0xd9b)                     ;0xd925:   2a 9b 0d  "*.."  
     LD A,(HL)                         ;0xd928:   7e  "~" 
@@ -3202,12 +3189,12 @@ C_D91F:                               ; XREF: 0xD8CF
     LD A,(HL)                         ;0xd930:   7e  "~" 
     AND 0x5f                          ;0xd931:   e6 5f  "._" 
     CP 0x45                           ;0xd933:   fe 45  ".E" 
-    JP nz, 0x1bd6                     ;0xd935:   c2 d6 1b  "..." 
+    JP nz,0x1bd6                      ;0xd935:   c2 d6 1b  "..." 
     INC HL                            ;0xd938:   23  "#" 
     LD A,(HL)                         ;0xd939:   7e  "~" 
     AND 0x5f                          ;0xd93a:   e6 5f  "._" 
     CP 0x54                           ;0xd93c:   fe 54  ".T" 
-    JP nz, 0x1bd6                     ;0xd93e:   c2 d6 1b  "..." 
+    JP nz,0x1bd6                      ;0xd93e:   c2 d6 1b  "..." 
     JP 0x1c48                         ;0xd941:   c3 48 1c  ".H." 
 ;--------------------------------------
 C_D944:                               ; XREF: 0xD92D 
@@ -3238,7 +3225,7 @@ D_D9BC:                               ; XREF: 0xC345 0xD036
 ;--------------------------------------
 C_D9C0:                               ; XREF: 0xD97A 
     NOP                               ;0xd9c0:   00  "." 
-    JP z, 0x1cc8                      ;0xd9c1:   ca c8 1c  "..." 
+    JP z,0x1cc8                       ;0xd9c1:   ca c8 1c  "..." 
     LD HL,0                           ;0xd9c4:   21 00 00  "!.."  
     LD C,0                            ;0xd9c7:   0e 00  ".."  
     LD A,(0x1f9b)                     ;0xd9c9:   3a 9b 1f  ":.."  
@@ -3278,7 +3265,7 @@ C_D9F1:                               ; XREF: 0xD9D4
     LD DE,0x16d                       ;0xd9f1:   11 6d 01  ".m."  
     LD A,C                            ;0xd9f4:   79  "y" 
     CP 1                              ;0xd9f5:   fe 01  ".." 
-    CALL z, 0x1cbc                    ;0xd9f7:   cc bc 1c  "..." 
+    CALL z,0x1cbc                     ;0xd9f7:   cc bc 1c  "..." 
     SBC HL,DE                         ;0xd9fa:   ed 52  ".R" 
     LD IX,0x1f0d                      ;0xd9fc:   dd 21 0d 1f  ".!.."  
     LD A,(0x1f9c)                     ;0xda00:   3a 9c 1f  ":.."  
@@ -3328,23 +3315,23 @@ C_DA2C:                               ; XREF: 0xDA04
     JR z,C_DA4A                       ;0xda3b:   28 0d  "(." 
     LD DE,0x1d09                      ;0xda3d:   11 09 1d  "..."  
     LD C,9                            ;0xda40:   0e 09  ".."  
-    CALL 0x5                          ;0xda42:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xda42:   cd 05 00  "..." 
     LD C,1                            ;0xda45:   0e 01  ".."  
-    CALL 0x5                          ;0xda47:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xda47:   cd 05 00  "..." 
 ;--------------------------------------
 C_DA4A:                               ; XREF: 0xDA3B 
     LD DE,0x1d28                      ;0xda4a:   11 28 1d  ".(."  
     LD C,0x68                         ;0xda4d:   0e 68  ".h"  
-    CALL 0x5                          ;0xda4f:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xda4f:   cd 05 00  "..." 
     LD A,(0x1e55)                     ;0xda52:   3a 55 1e  ":U."  
     CP 0                              ;0xda55:   fe 00  ".." 
     JR z,C_DA69                       ;0xda57:   28 10  "(." 
     LD DE,0x1fa0                      ;0xda59:   11 a0 1f  "..."  
     LD C,0x31                         ;0xda5c:   0e 31  ".1"  
-    CALL 0x5                          ;0xda5e:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xda5e:   cd 05 00  "..." 
     LD DE,0x1d01                      ;0xda61:   11 01 1d  "..."  
     LD C,0x32                         ;0xda64:   0e 32  ".2"  
-    CALL 0x5                          ;0xda66:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xda66:   cd 05 00  "..." 
 ;--------------------------------------
 C_DA69:                               ; XREF: 0xDA57 
     LD DE,0x1d24                      ;0xda69:   11 24 1d  ".$."  
@@ -3390,14 +3377,14 @@ C_DAD8:                               ; XREF: 0xDAB2
     CALL 0x1dca                       ;0xdae4:   cd ca 1d  "..." 
     INC C                             ;0xdae7:   0c  "." 
     DEC C                             ;0xdae8:   0d  "." 
-    JP z, 0x1bdf                      ;0xdae9:   ca df 1b  "..." 
+    JP z,0x1bdf                       ;0xdae9:   ca df 1b  "..." 
 ;--------------------------------------
 C_DAEC:                               ; XREF: 0xDAB0 
     LD (0x1f9c),A                     ;0xdaec:   32 9c 1f  "2.."  
     INC HL                            ;0xdaef:   23  "#" 
     LD A,(HL)                         ;0xdaf0:   7e  "~" 
     CP 0x2f                           ;0xdaf1:   fe 2f  "./" 
-    JP nz, 0x1bdf                     ;0xdaf3:   c2 df 1b  "..." 
+    JP nz,0x1bdf                      ;0xdaf3:   c2 df 1b  "..." 
     INC HL                            ;0xdaf6:   23  "#" 
     CALL 0x1dca                       ;0xdaf7:   cd ca 1d  "..." 
 ;--------------------------------------
@@ -3406,36 +3393,36 @@ C_DAFA:                               ; XREF: 0xDA84
     DEC C                             ;0xdafb:   0d  "." 
 ;--------------------------------------
 C_DAFC:                               ; XREF: 0xDA87 
-    JP z, 0x1bdf                      ;0xdafc:   ca df 1b  "..." 
+    JP z,0x1bdf                       ;0xdafc:   ca df 1b  "..." 
     LD (0x1f9d),A                     ;0xdaff:   32 9d 1f  "2.."  
     INC HL                            ;0xdb02:   23  "#" 
     LD A,(HL)                         ;0xdb03:   7e  "~" 
     CP 0x2f                           ;0xdb04:   fe 2f  "./" 
 ;--------------------------------------
 C_DB06:                               ; XREF: 0xDACA 
-    JP nz, 0x1bdf                     ;0xdb06:   c2 df 1b  "..." 
+    JP nz,0x1bdf                      ;0xdb06:   c2 df 1b  "..." 
     INC HL                            ;0xdb09:   23  "#" 
     CALL 0x1dca                       ;0xdb0a:   cd ca 1d  "..." 
     INC C                             ;0xdb0d:   0c  "." 
     DEC C                             ;0xdb0e:   0d  "." 
-    JP z, 0x1bdf                      ;0xdb0f:   ca df 1b  "..." 
+    JP z,0x1bdf                       ;0xdb0f:   ca df 1b  "..." 
     LD (0x1f9b),A                     ;0xdb12:   32 9b 1f  "2.."  
     CP 0x4e                           ;0xdb15:   fe 4e  ".N" 
-    JP c, 0x1bdf                      ;0xdb17:   da df 1b  "..." 
+    JP c,0x1bdf                       ;0xdb17:   da df 1b  "..." 
     LD A,(0x1f9c)                     ;0xdb1a:   3a 9c 1f  ":.."  
     OR A                              ;0xdb1d:   b7  "." 
-    JP z, 0x1bdf                      ;0xdb1e:   ca df 1b  "..." 
+    JP z,0x1bdf                       ;0xdb1e:   ca df 1b  "..." 
 ;--------------------------------------
 C_DB21:                               ; XREF: 0xDABE 
     CP 13                             ;0xdb21:   fe 0d  ".." 
-    JP nc, 0x1bdf                     ;0xdb23:   d2 df 1b  "..." 
+    JP nc,0x1bdf                      ;0xdb23:   d2 df 1b  "..." 
     LD A,(0x1f9d)                     ;0xdb26:   3a 9d 1f  ":.."  
     OR A                              ;0xdb29:   b7  "." 
-    JP z, 0x1bdf                      ;0xdb2a:   ca df 1b  "..." 
+    JP z,0x1bdf                       ;0xdb2a:   ca df 1b  "..." 
     CP 0x20                           ;0xdb2d:   fe 20  ". " 
 ;--------------------------------------
 C_DB2F:                               ; XREF: 0xDAB9 
-    JP nc, 0x1bdf                     ;0xdb2f:   d2 df 1b  "..." 
+    JP nc,0x1bdf                      ;0xdb2f:   d2 df 1b  "..." 
     LD A,1                            ;0xdb32:   3e 01  ">."  
     LD (0x1d27),A                     ;0xdb34:   32 27 1d  "2'."  
     RET                               ;0xdb37:   c9  "." 
@@ -3462,27 +3449,27 @@ C_DB2F:                               ; XREF: 0xDAB9
     CALL 0x1dca                       ;0xdb5c:   cd ca 1d  "..." 
     INC C                             ;0xdb5f:   0c  "." 
     DEC C                             ;0xdb60:   0d  "." 
-    JP z, 0x1be5                      ;0xdb61:   ca e5 1b  "..." 
+    JP z,0x1be5                       ;0xdb61:   ca e5 1b  "..." 
     LD (0x1f9e),A                     ;0xdb64:   32 9e 1f  "2.."  
     INC HL                            ;0xdb67:   23  "#" 
     LD A,(HL)                         ;0xdb68:   7e  "~" 
     CP 0x3a                           ;0xdb69:   fe 3a  ".:" 
-    JP nz, 0x1be5                     ;0xdb6b:   c2 e5 1b  "..." 
+    JP nz,0x1be5                      ;0xdb6b:   c2 e5 1b  "..." 
     INC HL                            ;0xdb6e:   23  "#" 
     CALL 0x1dca                       ;0xdb6f:   cd ca 1d  "..." 
     INC C                             ;0xdb72:   0c  "." 
     DEC C                             ;0xdb73:   0d  "." 
-    JP z, 0x1be5                      ;0xdb74:   ca e5 1b  "..." 
+    JP z,0x1be5                       ;0xdb74:   ca e5 1b  "..." 
     LD (0x1f9f),A                     ;0xdb77:   32 9f 1f  "2.."  
     INC HL                            ;0xdb7a:   23  "#" 
     LD A,(HL)                         ;0xdb7b:   7e  "~" 
     CP 0x3a                           ;0xdb7c:   fe 3a  ".:" 
-    JP nz, 0x1be5                     ;0xdb7e:   c2 e5 1b  "..." 
+    JP nz,0x1be5                      ;0xdb7e:   c2 e5 1b  "..." 
     INC HL                            ;0xdb81:   23  "#" 
     CALL 0x1dca                       ;0xdb82:   cd ca 1d  "..." 
     INC C                             ;0xdb85:   0c  "." 
     DEC C                             ;0xdb86:   0d  "." 
-    JP z, 0x1be5                      ;0xdb87:   ca e5 1b  "..." 
+    JP z,0x1be5                       ;0xdb87:   ca e5 1b  "..." 
     LD (0x1fa2),A                     ;0xdb8a:   32 a2 1f  "2.."  
     LD A,(0x1f9e)                     ;0xdb8d:   3a 9e 1f  ":.."  
     CALL 0x1e56                       ;0xdb90:   cd 56 1e  ".V." 
@@ -3497,12 +3484,12 @@ C_DB2F:                               ; XREF: 0xDAB9
     LD (0x1e55),A                     ;0xdbaa:   32 55 1e  "2U."  
     LD A,(0x1f9e)                     ;0xdbad:   3a 9e 1f  ":.."  
     CP 0x19                           ;0xdbb0:   fe 19  ".." 
-    JP nc, 0x1be5                     ;0xdbb2:   d2 e5 1b  "..." 
+    JP nc,0x1be5                      ;0xdbb2:   d2 e5 1b  "..." 
     LD A,(0x1f9f)                     ;0xdbb5:   3a 9f 1f  ":.."  
     CP 0x3c                           ;0xdbb8:   fe 3c  ".<" 
-    JP nc, 0x1be5                     ;0xdbba:   d2 e5 1b  "..." 
+    JP nc,0x1be5                      ;0xdbba:   d2 e5 1b  "..." 
     CP 0x3c                           ;0xdbbd:   fe 3c  ".<" 
-    JP nc, 0x1be5                     ;0xdbbf:   d2 e5 1b  "..." 
+    JP nc,0x1be5                      ;0xdbbf:   d2 e5 1b  "..." 
     RET                               ;0xdbc2:   c9  "." 
     NOP                               ;0xdbc3:   00  "." 
     PUSH HL                           ;0xdbc4:   e5  "." 
@@ -3654,11 +3641,11 @@ C_DC87:                               ; XREF: 0xDC6A
     CALL 0x1ff6                       ;0xdc96:   cd f6 1f  "..." 
     LD E,0x20                         ;0xdc99:   1e 20  ". "  
     LD C,2                            ;0xdc9b:   0e 02  ".."  
-    CALL 0x5                          ;0xdc9d:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xdc9d:   cd 05 00  "..." 
     CALL 0x1f52                       ;0xdca0:   cd 52 1f  ".R." 
     LD E,0x20                         ;0xdca3:   1e 20  ". "  
     LD C,2                            ;0xdca5:   0e 02  ".."  
-    CALL 0x5                          ;0xdca7:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xdca7:   cd 05 00  "..." 
     LD A,(0x1f9b)                     ;0xdcaa:   3a 9b 1f  ":.."  
     LD L,A                            ;0xdcad:   6f  "o" 
     LD H,0                            ;0xdcae:   26 00  "&."  
@@ -3802,7 +3789,7 @@ C_DD85:                               ; XREF: 0xDD7F
     POP AF                            ;0xdd85:   f1  "." 
     LD E,A                            ;0xdd86:   5f  "_" 
     LD C,2                            ;0xdd87:   0e 02  ".."  
-    CALL 0x5                          ;0xdd89:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xdd89:   cd 05 00  "..." 
     POP AF                            ;0xdd8c:   f1  "." 
     RET                               ;0xdd8d:   c9  "." 
 ;--------------------------------------
@@ -3810,13 +3797,13 @@ C_DD8E:                               ; XREF: 0xDD83
     LD A,0x20                         ;0xdd8e:   3e 20  "> "  
     LD E,A                            ;0xdd90:   5f  "_" 
     LD C,2                            ;0xdd91:   0e 02  ".."  
-    CALL 0x5                          ;0xdd93:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xdd93:   cd 05 00  "..." 
     POP AF                            ;0xdd96:   f1  "." 
     POP AF                            ;0xdd97:   f1  "." 
     RET                               ;0xdd98:   c9  "." 
     LD DE,0x20b4                      ;0xdd99:   11 b4 20  ".. "  
     LD C,9                            ;0xdd9c:   0e 09  ".."  
-    CALL 0x5                          ;0xdd9e:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xdd9e:   cd 05 00  "..." 
     LD C,15                           ;0xdda1:   0e 0f  ".."  
 ;--------------------------------------
 C_DDA3:                               ; XREF: 0xDD40 
@@ -3898,7 +3885,7 @@ C_DE0E:                               ; XREF: 0xDE20
     JR z,C_DE2F                       ;0xde15:   28 18  "(." 
     LD C,2                            ;0xde17:   0e 02  ".."  
     LD E,A                            ;0xde19:   5f  "_" 
-    CALL 0x5                          ;0xde1a:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xde1a:   cd 05 00  "..." 
     POP BC                            ;0xde1d:   c1  "." 
     POP HL                            ;0xde1e:   e1  "." 
     INC HL                            ;0xde1f:   23  "#" 
@@ -3925,7 +3912,7 @@ C_DE36:                               ; XREF: 0xDE50
     LD (0x2167),A                     ;0xde3b:   32 67 21  "2g!"  
     CALL 0x2172                       ;0xde3e:   cd 72 21  ".r!" 
     CP 0x47                           ;0xde41:   fe 47  ".G" 
-    JP nz, 0x20e0                     ;0xde43:   c2 e0 20  ".. " 
+    JP nz,0x20e0                      ;0xde43:   c2 e0 20  ".. " 
     CALL 0x2114                       ;0xde46:   cd 14 21  "..!" 
     POP BC                            ;0xde49:   c1  "." 
     LD B,1                            ;0xde4a:   06 01  ".."  
@@ -3969,7 +3956,7 @@ C_DE8E:                               ; XREF: 0xDE9F
     NOP                               ;0xde95:   00  "." 
     LD C,2                            ;0xde96:   0e 02  ".."  
     LD E,A                            ;0xde98:   5f  "_" 
-    CALL 0x5                          ;0xde99:   cd 05 00  "..." 
+    CALL CPM_BDOS                     ;0xde99:   cd 05 00  "..." 
     POP BC                            ;0xde9c:   c1  "." 
     POP HL                            ;0xde9d:   e1  "." 
     INC HL                            ;0xde9e:   23  "#" 
@@ -4257,7 +4244,7 @@ C_E057:                               ; XREF: 0xE035
     LD HL,1                           ;0xe0b2:   21 01 00  "!.."  
     ADD HL,HL                         ;0xe0b5:   29  ")" 
     LD DE,1                           ;0xe0b6:   11 01 00  "..."  
-    CALL m, 0x53e                     ;0xe0b9:   fc 3e 05  ".>." 
+    CALL m,0x53e                      ;0xe0b9:   fc 3e 05  ".>." 
     CALL 0xc095                       ;0xe0bc:   cd 95 c0  "..." 
     LD HL,1                           ;0xe0bf:   21 01 00  "!.."  
     CPL                               ;0xe0c2:   2f  "/" 
@@ -4299,12 +4286,12 @@ C_E057:                               ; XREF: 0xE035
     NOP                               ;0xe115:   00  "." 
     DI                                ;0xe116:   f3  "." 
     JP 0x1                            ;0xe117:   c3 01 00  "..." 
-    CALL m, 0x125                     ;0xe11a:   fc 25 01  ".%." 
+    CALL m,0x125                      ;0xe11a:   fc 25 01  ".%." 
     ADD A,B                           ;0xe11d:   80  "." 
     LD BC,0xed00                      ;0xe11e:   01 00 ed  "..."  
     OR B                              ;0xe121:   b0  "." 
     DEC A                             ;0xe122:   3d  "=" 
-    JR nz, $-7                        ;0xe123:   20 f7  " ." 
+    JR nz, $+-7                       ;0xe123:   20 f7  " ." 
     RET                               ;0xe125:   c9  "." 
     RET                               ;0xe126:   c9  "." 
     RST 0x38                          ;0xe127:   ff  "." 
@@ -4320,7 +4307,7 @@ C_E135:                               ; XREF: 0xE13C
     LD A,(HL)                         ;0xe135:   7e  "~" 
     INC HL                            ;0xe136:   23  "#" 
     CP 0xff                           ;0xe137:   fe ff  ".." 
-    CALL nz, TXT_OUTPUT               ;0xe139:   c4 5a bb  ".Z." 
+    CALL nz,TXT_OUTPUT                ;0xe139:   c4 5a bb  ".Z." 
     JR nz,C_E135                      ;0xe13c:   20 f7  " ." 
 ;--------------------------------------
 C_E13E:                               ; XREF: 0xE141 
@@ -4471,7 +4458,7 @@ C_E2A1:                               ; XREF: 0xE29E
     LD A,(0xbe41)                     ;0xe2a4:   3a 41 be  ":A."  
     OR A                              ;0xe2a7:   b7  "." 
     LD A,11                           ;0xe2a8:   3e 0b  ">."  
-    CALL nz, 0x572                    ;0xe2aa:   c4 72 05  ".r." 
+    CALL nz,0x572                     ;0xe2aa:   c4 72 05  ".r." 
     LD A,13                           ;0xe2ad:   3e 0d  ">."  
     JP 0xfec0                         ;0xe2af:   c3 c0 fe  "..." 
     LD BC,1                           ;0xe2b2:   01 01 00  "..."  
@@ -4541,7 +4528,7 @@ C_E2A1:                               ; XREF: 0xE29E
     POP HL                            ;0xe30f:   e1  "." 
     INC D                             ;0xe310:   14  "." 
     INC D                             ;0xe311:   14  "." 
-    DJNZ $-25                         ;0xe312:   10 e5  ".." 
+    DJNZ $+-25                        ;0xe312:   10 e5  ".." 
     RET                               ;0xe314:   c9  "." 
     RST 0x38                          ;0xe315:   ff  "." 
     RST 0x38                          ;0xe316:   ff  "." 
@@ -4553,22 +4540,22 @@ C_E2A1:                               ; XREF: 0xE29E
     RST 0x38                          ;0xe31c:   ff  "." 
     LD A,B                            ;0xe31d:   78  "x" 
     OR A                              ;0xe31e:   b7  "." 
-    JP z, KM_WAIT_CHAR                ;0xe31f:   ca 06 bb  "..." 
+    JP z,KM_WAIT_CHAR                 ;0xe31f:   ca 06 bb  "..." 
     CP 2                              ;0xe322:   fe 02  ".." 
-    JP z, 0x329                       ;0xe324:   ca 29 03  ".)." 
+    JP z,0x329                        ;0xe324:   ca 29 03  ".)." 
     XOR A                             ;0xe327:   af  "." 
     RET                               ;0xe328:   c9  "." 
     INC B                             ;0xe329:   04  "." 
     DEC B                             ;0xe32a:   05  "." 
-    JP z, 0x411                       ;0xe32b:   ca 11 04  "..." 
+    JP z,0x411                        ;0xe32b:   ca 11 04  "..." 
     DEC B                             ;0xe32e:   05  "." 
     LD A,C                            ;0xe32f:   79  "y" 
-    JP z, MC_SEND_PRINTER             ;0xe330:   ca 31 bd  ".1." 
+    JP z,MC_SEND_PRINTER              ;0xe330:   ca 31 bd  ".1." 
     JP 0x35c                          ;0xe333:   c3 5c 03  ".\." 
     INC B                             ;0xe336:   04  "." 
     DJNZ C_E344                       ;0xe337:   10 0b  ".." 
     CALL KM_READ_CHAR                 ;0xe339:   cd 09 bb  "..." 
-    CALL c, 0xbb0c                    ;0xe33c:   dc 0c bb  "..." 
+    CALL c,0xbb0c                     ;0xe33c:   dc 0c bb  "..." 
     SBC A,A                           ;0xe33f:   9f  "." 
     LD (D_FFF3),A                     ;0xe340:   32 f3 ff  "2.."  
     RET                               ;0xe343:   c9  "." 
@@ -4576,7 +4563,7 @@ C_E2A1:                               ; XREF: 0xE29E
 C_E344:                               ; XREF: 0xE337 
     LD A,B                            ;0xe344:   78  "x" 
     XOR 1                             ;0xe345:   ee 01  ".." 
-    CALL nz, 0x348                    ;0xe347:   c4 48 03  ".H." 
+    CALL nz,0x348                     ;0xe347:   c4 48 03  ".H." 
     SBC A,A                           ;0xe34a:   9f  "." 
     RET                               ;0xe34b:   c9  "." 
     CALL 0x234                        ;0xe34c:   cd 34 02  ".4." 
@@ -4606,7 +4593,7 @@ C_E35C:                               ; XREF: 0xE355
     JR z,C_E37E                       ;0xe374:   28 08  "(." 
     CALL 0x645                        ;0xe376:   cd 45 06  ".E." 
     CALL 0x27d                        ;0xe379:   cd 7d 02  ".}." 
-    JR $-25                           ;0xe37c:   18 e5  ".." 
+    JR $+-25                          ;0xe37c:   18 e5  ".." 
 ;--------------------------------------
 C_E37E:                               ; XREF: 0xE374 
     OR A                              ;0xe37e:   b7  "." 
@@ -4632,7 +4619,7 @@ C_E39C:                               ; XREF: 0xE394
     RET nz                            ;0xe3a0:   c0  "." 
     CALL 0x1                          ;0xe3a1:   cd 01 00  "..." 
     DEC A                             ;0xe3a4:   3d  "=" 
-    JR $-8                            ;0xe3a5:   18 f6  ".." 
+    JR $+-8                           ;0xe3a5:   18 f6  ".." 
     CP 0x61                           ;0xe3a7:   fe 61  ".a" 
     RET c                             ;0xe3a9:   d8  "." 
     CP 0x7b                           ;0xe3aa:   fe 7b  ".{" 
@@ -4641,13 +4628,13 @@ C_E39C:                               ; XREF: 0xE394
     RET                               ;0xe3af:   c9  "." 
     BIT 0,D                           ;0xe3b0:   cb 42  ".B" 
     LD A,C                            ;0xe3b2:   79  "y" 
-    CALL nz, 0xbb27                   ;0xe3b3:   c4 27 bb  ".'." 
+    CALL nz,0xbb27                    ;0xe3b3:   c4 27 bb  ".'." 
     BIT 1,D                           ;0xe3b6:   cb 4a  ".J" 
     LD A,C                            ;0xe3b8:   79  "y" 
-    CALL nz, KM_SET_SHIFT             ;0xe3b9:   c4 2d bb  ".-." 
+    CALL nz,KM_SET_SHIFT              ;0xe3b9:   c4 2d bb  ".-." 
     BIT 4,D                           ;0xe3bc:   cb 62  ".b" 
     LD A,C                            ;0xe3be:   79  "y" 
-    CALL nz, 0xbb33                   ;0xe3bf:   c4 33 bb  ".3." 
+    CALL nz,0xbb33                    ;0xe3bf:   c4 33 bb  ".3." 
     RET                               ;0xe3c2:   c9  "." 
     JP 0xbb3f                         ;0xe3c3:   c3 3f bb  ".?." 
     CALL 0xbb1b                       ;0xe3c6:   cd 1b bb  "..." 
@@ -4741,7 +4728,7 @@ C_E45B:                               ; XREF: 0xE451
 C_E460:                               ; XREF: 0xE456 
     LD A,D                            ;0xe460:   7a  "z" 
     OR A                              ;0xe461:   b7  "." 
-    CALL nz, 0x387                    ;0xe462:   c4 87 03  "..." 
+    CALL nz,0x387                     ;0xe462:   c4 87 03  "..." 
     DEC C                             ;0xe465:   0d  "." 
     IN A,(C)                          ;0xe466:   ed 78  ".x" 
     RET                               ;0xe468:   c9  "." 
@@ -4828,7 +4815,7 @@ C_E4AF:                               ; XREF: 0xE4AB
     RET                               ;0xe4e5:   c9  "." 
     RST 0x38                          ;0xe4e6:   ff  "." 
     RST 0x38                          ;0xe4e7:   ff  "." 
-    CALL nz, 0x8309                   ;0xe4e8:   c4 09 83  "..." 
+    CALL nz,0x8309                    ;0xe4e8:   c4 09 83  "..." 
     LD B,0x70                         ;0xe4eb:   06 70  ".p"  
     INC B                             ;0xe4ed:   04  "." 
     AND C                             ;0xe4ee:   a1  "." 
@@ -4897,7 +4884,7 @@ C_E565:                               ; XREF: 0xE55A
     LD HL,0x4d5                       ;0xe56f:   21 d5 04  "!.."  
     CALL 0x45a                        ;0xe572:   cd 5a 04  ".Z." 
     LD HL,(0xbee5)                    ;0xe575:   2a e5 be  "*.."  
-    CALL nc, 0x7cf                    ;0xe578:   d4 cf 07  "..." 
+    CALL nc,0x7cf                     ;0xe578:   d4 cf 07  "..." 
 ;--------------------------------------
 C_E57B:                               ; XREF: 0xE53C 
     CALL 0x544                        ;0xe57b:   cd 44 05  ".D." 
@@ -4957,27 +4944,27 @@ C_E5C1:                               ; XREF: 0xE5BE
     LD HL,(0xbe6a)                    ;0xe5c1:   2a 6a be  "*j."  
     LD L,A                            ;0xe5c4:   6f  "o" 
     CALL 0x84d                        ;0xe5c5:   cd 4d 08  ".M." 
-    JR $-76                           ;0xe5c8:   18 b2  ".." 
+    JR $+-76                          ;0xe5c8:   18 b2  ".." 
     CALL 0x455                        ;0xe5ca:   cd 55 04  ".U." 
     SUB 0x20                          ;0xe5cd:   d6 20  ". " 
     AND 0x3f                          ;0xe5cf:   e6 3f  ".?" 
     CALL 0x8fe                        ;0xe5d1:   cd fe 08  "..." 
-    JR $-88                           ;0xe5d4:   18 a6  ".." 
+    JR $+-88                          ;0xe5d4:   18 a6  ".." 
     CALL 0x455                        ;0xe5d6:   cd 55 04  ".U." 
     SUB 0x20                          ;0xe5d9:   d6 20  ". " 
     AND 0x3f                          ;0xe5db:   e6 3f  ".?" 
     CALL 0x8f6                        ;0xe5dd:   cd f6 08  "..." 
-    JR $-100                          ;0xe5e0:   18 9a  ".." 
+    JR $+-100                         ;0xe5e0:   18 9a  ".." 
     CALL 0x455                        ;0xe5e2:   cd 55 04  ".U." 
     AND 7                             ;0xe5e5:   e6 07  ".." 
     CALL 0xa20                        ;0xe5e7:   cd 20 0a  ". ." 
-    JR $-110                          ;0xe5ea:   18 90  ".." 
+    JR $+-110                         ;0xe5ea:   18 90  ".." 
     CALL 0x455                        ;0xe5ec:   cd 55 04  ".U." 
     AND 3                             ;0xe5ef:   e6 03  ".." 
     CALL 0x78b                        ;0xe5f1:   cd 8b 07  "..." 
 ;--------------------------------------
 C_E5F4:                               ; XREF: 0xE658 
-    JR $-120                          ;0xe5f4:   18 86  ".." 
+    JR $+-120                         ;0xe5f4:   18 86  ".." 
     INC B                             ;0xe5f6:   04  "." 
     DEC C                             ;0xe5f7:   0d  "." 
     DEC (HL)                          ;0xe5f8:   35  "5" 
@@ -5174,7 +5161,7 @@ C_E6B9:                               ; XREF: 0xE6C7
     CP 0xff                           ;0xe6bb:   fe ff  ".." 
     RET z                             ;0xe6bd:   c8  "." 
     OR A                              ;0xe6be:   b7  "." 
-    JP p, 0x598                       ;0xe6bf:   f2 98 05  "..." 
+    JP p,0x598                        ;0xe6bf:   f2 98 05  "..." 
     PUSH HL                           ;0xe6c2:   e5  "." 
     CALL 0x59d                        ;0xe6c3:   cd 9d 05  "..." 
     POP HL                            ;0xe6c6:   e1  "." 
@@ -5237,7 +5224,7 @@ C_E724:                               ; XREF: 0xE72B
     LD A,(HL)                         ;0xe724:   7e  "~" 
     INC HL                            ;0xe725:   23  "#" 
     CP 0x20                           ;0xe726:   fe 20  ". " 
-    CALL nz, 0x609                    ;0xe728:   c4 09 06  "..." 
+    CALL nz,0x609                     ;0xe728:   c4 09 06  "..." 
     DJNZ C_E724                       ;0xe72b:   10 f7  ".." 
 ;--------------------------------------
 C_E72D:                               ; XREF: 0xE6D0 
@@ -5288,7 +5275,7 @@ C_E772:                               ; XREF: 0xE765
     CALL 0x696                        ;0xe776:   cd 96 06  "..." 
     CALL 0x691                        ;0xe779:   cd 91 06  "..." 
     LD C,7                            ;0xe77c:   0e 07  ".."  
-    JP z, 0x3d03                      ;0xe77e:   ca 03 3d  "..=" 
+    JP z,0x3d03                       ;0xe77e:   ca 03 3d  "..=" 
     XOR A                             ;0xe781:   af  "." 
     LD (0xbe8a),A                     ;0xe782:   32 8a be  "2.."  
     CALL 0x7fd                        ;0xe785:   cd fd 07  "..." 
@@ -5297,7 +5284,7 @@ C_E772:                               ; XREF: 0xE765
     RET                               ;0xe78d:   c9  "." 
     CALL 0x691                        ;0xe78e:   cd 91 06  "..." 
     LD A,0x10                         ;0xe791:   3e 10  ">."  
-    JP z, 0x572                       ;0xe793:   ca 72 05  ".r." 
+    JP z,0x572                        ;0xe793:   ca 72 05  ".r." 
     XOR A                             ;0xe796:   af  "." 
     LD (0xbe8a),A                     ;0xe797:   32 8a be  "2.."  
     CALL 0x6e9                        ;0xe79a:   cd e9 06  "..." 
@@ -5346,7 +5333,7 @@ C_E7D1:                               ; XREF: 0xE7D4
 C_E7EC:                               ; XREF: 0xE7F6 
     LD A,(HL)                         ;0xe7ec:   7e  "~" 
     CP 0xff                           ;0xe7ed:   fe ff  ".." 
-    CALL nz, 0x734                    ;0xe7ef:   c4 34 07  ".4." 
+    CALL nz,0x734                     ;0xe7ef:   c4 34 07  ".4." 
     RET nc                            ;0xe7f2:   d0  "." 
     CALL 0x716                        ;0xe7f3:   cd 16 07  "..." 
     JR C_E7EC                         ;0xe7f6:   18 f4  ".." 
@@ -5377,7 +5364,7 @@ C_E81D:                               ; XREF: 0xE7B5
 ;--------------------------------------
 C_E82B:                               ; XREF: 0xE831 
     CALL 0x734                        ;0xe82b:   cd 34 07  ".4." 
-    CALL c, 0x716                     ;0xe82e:   dc 16 07  "..." 
+    CALL c,0x716                      ;0xe82e:   dc 16 07  "..." 
     JR c,C_E82B                       ;0xe831:   38 f8  "8." 
     PUSH DE                           ;0xe833:   d5  "." 
     LD C,0x4f                         ;0xe834:   0e 4f  ".O"  
@@ -5546,11 +5533,11 @@ C_E93E:                               ; XREF: 0xE93B
     INC L                             ;0xe94d:   2c  "," 
     JR $+54                           ;0xe94e:   18 34  ".4" 
     DEC H                             ;0xe950:   25  "%" 
-    JP p, 0x85b                       ;0xe951:   f2 5b 08  ".[." 
+    JP p,0x85b                        ;0xe951:   f2 5b 08  ".[." 
     CALL 0x957                        ;0xe954:   cd 57 09  ".W." 
     JR $+62                           ;0xe957:   18 3c  ".<" 
     DEC L                             ;0xe959:   2d  "-" 
-    JP p, 0x85b                       ;0xe95a:   f2 5b 08  ".[." 
+    JP p,0x85b                        ;0xe95a:   f2 5b 08  ".[." 
     INC L                             ;0xe95d:   2c  "," 
     LD A,(0xbee4)                     ;0xe95e:   3a e4 be  ":.."  
     OR A                              ;0xe961:   b7  "." 
@@ -5619,7 +5606,7 @@ C_E996:                               ; XREF: 0xE97B
     INC L                             ;0xe9c5:   2c  "," 
     CP E                              ;0xe9c6:   bb  "." 
     LD A,B                            ;0xe9c7:   78  "x" 
-    CALL c, SCR_FILL_BOX              ;0xe9c8:   dc 44 bc  ".D." 
+    CALL c,SCR_FILL_BOX               ;0xe9c8:   dc 44 bc  ".D." 
     POP HL                            ;0xe9cb:   e1  "." 
     LD A,0x12                         ;0xe9cc:   3e 12  ">."  
     JR C_E9D5                         ;0xe9ce:   18 05  ".." 
@@ -5636,7 +5623,7 @@ C_E9D5:                               ; XREF: 0xE9CE
 C_E9DF:                               ; XREF: 0xE9DB 
     LD A,(0xbee1)                     ;0xe9df:   3a e1 be  ":.."  
     CP H                              ;0xe9e2:   bc  "." 
-    JR z, $-18                        ;0xe9e3:   28 ec  "(." 
+    JR z, $+-18                       ;0xe9e3:   28 ec  "(." 
     LD E,A                            ;0xe9e5:   5f  "_" 
     LD A,(0xbee0)                     ;0xe9e6:   3a e0 be  ":.."  
     LD D,A                            ;0xe9e9:   57  "W" 
@@ -5653,7 +5640,7 @@ C_E9DF:                               ; XREF: 0xE9DB
     PUSH AF                           ;0xe9fd:   f5  "." 
     PUSH HL                           ;0xe9fe:   e5  "." 
     SUB H                             ;0xe9ff:   94  "." 
-    CALL nz, 0x9a7                    ;0xea00:   c4 a7 09  "..." 
+    CALL nz,0x9a7                     ;0xea00:   c4 a7 09  "..." 
     POP HL                            ;0xea03:   e1  "." 
     POP AF                            ;0xea04:   f1  "." 
     LD H,A                            ;0xea05:   67  "g" 
@@ -5762,7 +5749,7 @@ C_EA84:                               ; XREF: 0xEA81
     LD A,(0xbee1)                     ;0xea9e:   3a e1 be  ":.."  
     CP 0x18                           ;0xeaa1:   fe 18  ".." 
     LD B,0xff                         ;0xeaa3:   06 ff  ".."  
-    JR z, $-24                        ;0xeaa5:   28 e6  "(." 
+    JR z, $+-24                       ;0xeaa5:   28 e6  "(." 
     CALL TXT_GET_PAPER                ;0xeaa7:   cd 99 bb  "..." 
     CALL SCR_INK_ENCODE               ;0xeaaa:   cd 2c bc  ".,." 
     LD C,A                            ;0xeaad:   4f  "O" 
@@ -5794,9 +5781,9 @@ C_EAD2:                               ; XREF: 0xEADD
     LD (DE),A                         ;0xead3:   12  "." 
     LD (HL),C                         ;0xead4:   71  "q" 
     INC E                             ;0xead5:   1c  "." 
-    CALL z, 0x9fb                     ;0xead6:   cc fb 09  "..." 
+    CALL z,0x9fb                      ;0xead6:   cc fb 09  "..." 
     INC L                             ;0xead9:   2c  "," 
-    CALL z, 0xa03                     ;0xeada:   cc 03 0a  "..." 
+    CALL z,0xa03                      ;0xeada:   cc 03 0a  "..." 
     DJNZ C_EAD2                       ;0xeadd:   10 f3  ".." 
     POP HL                            ;0xeadf:   e1  "." 
     POP DE                            ;0xeae0:   d1  "." 
@@ -5866,9 +5853,9 @@ C_EB2C:                               ; XREF: 0xEB1E
     LD A,(HL)                         ;0xeb2c:   7e  "~" 
     LD (DE),A                         ;0xeb2d:   12  "." 
     INC E                             ;0xeb2e:   1c  "." 
-    CALL z, 0x9fb                     ;0xeb2f:   cc fb 09  "..." 
+    CALL z,0x9fb                      ;0xeb2f:   cc fb 09  "..." 
     INC L                             ;0xeb32:   2c  "," 
-    CALL z, 0xa03                     ;0xeb33:   cc 03 0a  "..." 
+    CALL z,0xa03                      ;0xeb33:   cc 03 0a  "..." 
     DEC C                             ;0xeb36:   0d  "." 
     JR nz,C_EB17                      ;0xeb37:   20 de  " ." 
     RET                               ;0xeb39:   c9  "." 
@@ -5969,7 +5956,7 @@ C_EB89:                               ; XREF: 0xEB90
     LD A,L                            ;0xebb0:   7d  "}" 
     LD A,(HL)                         ;0xebb1:   7e  "~" 
     INC HL                            ;0xebb2:   23  "#" 
-    JP pe, C_F5A2                     ;0xebb3:   ea a2 f5  "..." 
+    JP pe,C_F5A2                      ;0xebb3:   ea a2 f5  "..." 
     AND (HL)                          ;0xebb6:   a6  "." 
     LD E,(HL)                         ;0xebb7:   5e  "^" 
     LD H,B                            ;0xebb8:   60  "`" 
@@ -5984,7 +5971,7 @@ C_EB89:                               ; XREF: 0xEB90
     LD H,B                            ;0xebc3:   60  "`" 
     RET p                             ;0xebc4:   f0  "." 
     DI                                ;0xebc5:   f3  "." 
-    CALL p, 0xa3ba                    ;0xebc6:   f4 ba a3  "..." 
+    CALL p,0xa3ba                     ;0xebc6:   f4 ba a3  "..." 
     LD B,B                            ;0xebc9:   40  "@" 
     LD E,E                            ;0xebca:   5b  "[" 
     LD E,H                            ;0xebcb:   5c  "\" 
@@ -6008,17 +5995,17 @@ C_EB89:                               ; XREF: 0xEB90
     POP BC                            ;0xebdf:   c1  "." 
     RET nc                            ;0xebe0:   d0  "." 
     OUT (0x00d7),A                    ;0xebe1:   d3 d7  ".." 
-    CALL nc, C_F0E1                   ;0xebe3:   d4 e1 f0  "..." 
+    CALL nc,C_F0E1                    ;0xebe3:   d4 e1 f0  "..." 
     DI                                ;0xebe6:   f3  "." 
     RST 0x30                          ;0xebe7:   f7  "." 
-    CALL p, 0x4023                    ;0xebe8:   f4 23 40  ".#@" 
+    CALL p,0x4023                     ;0xebe8:   f4 23 40  ".#@" 
     AND D                             ;0xebeb:   a2  "." 
     LD E,H                            ;0xebec:   5c  "\" 
     POP HL                            ;0xebed:   e1  "." 
     LD E,(HL)                         ;0xebee:   5e  "^" 
     XOR 0xea                          ;0xebef:   ee ea  ".." 
                                       ;0xebf1:   ed eb  ".." 
-    CALL pe, 0x40ad                   ;0xebf3:   ec ad 40  "..@" 
+    CALL pe,0x40ad                    ;0xebf3:   ec ad 40  "..@" 
     XOR A                             ;0xebf6:   af  "." 
     EXX                               ;0xebf7:   d9  "." 
     XOR (HL)                          ;0xebf8:   ae  "." 
@@ -6060,7 +6047,7 @@ C_EB89:                               ; XREF: 0xEB90
     LD (HL),1                         ;0xec21:   36 01  "6."  
     NOP                               ;0xec23:   00  "." 
     INC HL                            ;0xec24:   23  "#" 
-    DJNZ $-3                          ;0xec25:   10 fb  ".." 
+    DJNZ $+-3                         ;0xec25:   10 fb  ".." 
     CALL 0xeb5                        ;0xec27:   cd b5 0e  "..." 
     LD HL,0xad0                       ;0xec2a:   21 d0 0a  "!.."  
     LD DE,0xb0ed                      ;0xec2d:   11 ed b0  "..."  
@@ -6551,7 +6538,7 @@ C_EF51:                               ; XREF: 0xEF54
     IN A,(C)                          ;0xef51:   ed 78  ".x" 
     ADD A,A                           ;0xef53:   87  "." 
     JR nc,C_EF51                      ;0xef54:   30 fb  "0." 
-    JP p, 0xe02                       ;0xef56:   f2 02 0e  "..." 
+    JP p,0xe02                        ;0xef56:   f2 02 0e  "..." 
     INC BC                            ;0xef59:   03  "." 
     IN A,(C)                          ;0xef5a:   ed 78  ".x" 
     DEC BC                            ;0xef5c:   0b  "." 
@@ -6746,7 +6733,7 @@ C_F071:                               ; XREF: 0xF07D
 ;--------------------------------------
 C_F076:                               ; XREF: 0xF06F 
     IN A,(C)                          ;0xf076:   ed 78  ".x" 
-    JP p, C_FFAF                      ;0xf078:   f2 af ff  "..." 
+    JP p,C_FFAF                       ;0xf078:   f2 af ff  "..." 
 ;--------------------------------------
 C_F07B:                               ; XREF: 0xF0DF 
     AND 0x20                          ;0xf07b:   e6 20  ". " 
@@ -6765,7 +6752,7 @@ C_F08B:                               ; XREF: 0xF097
 ;--------------------------------------
 C_F090:                               ; XREF: 0xF089 
     IN A,(C)                          ;0xf090:   ed 78  ".x" 
-    JP p, C_FFC9                      ;0xf092:   f2 c9 ff  "..." 
+    JP p,C_FFC9                       ;0xf092:   f2 c9 ff  "..." 
     AND 0x20                          ;0xf095:   e6 20  ". " 
     JR nz,C_F08B                      ;0xf097:   20 f2  " ." 
 ;--------------------------------------
@@ -7173,7 +7160,7 @@ C_F336:                               ; XREF: 0xF31C
     SBC A,0x73                        ;0xf338:   de 73  ".s" 
     LD BC,0x7c00                      ;0xf33a:   01 00 7c  "..|"  
     ADD A,0xc6                        ;0xf33d:   c6 c6  ".." 
-    CALL m, S_C6C6                    ;0xf33f:   fc c6 c6  "..." 
+    CALL m,S_C6C6                     ;0xf33f:   fc c6 c6  "..." 
     RET m                             ;0xf342:   f8  "." 
     RET nz                            ;0xf343:   c0  "." 
     DEFB "ff<fff<"                    ;0xf344:   0xf344 to 0xf34b
@@ -7310,7 +7297,7 @@ C_F3DA:                               ; XREF: 0xF3A0
     NOP                               ;0xf3df:   00  "." 
     JR c, $+110                       ;0xf3e0:   38 6c  "8l" 
     JR c,C_F45A                       ;0xf3e2:   38 76  "8v" 
-    CALL c, 0x76cc                    ;0xf3e4:   dc cc 76  "..v" 
+    CALL c,0x76cc                     ;0xf3e4:   dc cc 76  "..v" 
     LD BC,0x1800                      ;0xf3e7:   01 00 18  "..."  
     JR C_F404                         ;0xf3ea:   18 18  ".." 
     DEC B                             ;0xf3ec:   05  "." 
@@ -7399,7 +7386,7 @@ C_F448:                               ; XREF: 0xF42E
     LD L,H                            ;0xf449:   6c  "l" 
 ;--------------------------------------
 C_F44A:                               ; XREF: 0xF430 
-    CALL z, 0xcfe                     ;0xf44a:   cc fe 0c  "..." 
+    CALL z,0xcfe                      ;0xf44a:   cc fe 0c  "..." 
     LD E,1                            ;0xf44d:   1e 01  ".."  
     NOP                               ;0xf44f:   00  "." 
     LD A,(HL)                         ;0xf450:   7e  "~" 
@@ -7503,7 +7490,7 @@ C_F4BC:                               ; XREF: 0xF48A
     LD A,H                            ;0xf4c3:   7c  "|" 
     LD H,(HL)                         ;0xf4c4:   66  "f" 
     LD H,(HL)                         ;0xf4c5:   66  "f" 
-    CALL m, 0x1                       ;0xf4c6:   fc 01 00  "..." 
+    CALL m,0x1                        ;0xf4c6:   fc 01 00  "..." 
     INC A                             ;0xf4c9:   3c  "<" 
     LD H,(HL)                         ;0xf4ca:   66  "f" 
     RET nz                            ;0xf4cb:   c0  "." 
@@ -7593,9 +7580,9 @@ C_F51C:                               ; XREF: 0xF502
     LD BC,0x7c00                      ;0xf545:   01 00 7c  "..|"  
     ADD A,0xc6                        ;0xf548:   c6 c6  ".." 
     ADD A,0xda                        ;0xf54a:   c6 da  ".." 
-    CALL z, 0x176                     ;0xf54c:   cc 76 01  ".v." 
+    CALL z,0x176                      ;0xf54c:   cc 76 01  ".v." 
     NOP                               ;0xf54f:   00  "." 
-    CALL m, 0x6666                    ;0xf550:   fc 66 66  ".ff" 
+    CALL m,0x6666                     ;0xf550:   fc 66 66  ".ff" 
     LD A,H                            ;0xf553:   7c  "|" 
     LD L,H                            ;0xf554:   6c  "l" 
     LD H,(HL)                         ;0xf555:   66  "f" 
@@ -7680,7 +7667,7 @@ C_F5C6:                               ; XREF: 0xF5AC
     LD A,B                            ;0xf5cb:   78  "x" 
     INC C                             ;0xf5cc:   0c  "." 
     LD A,H                            ;0xf5cd:   7c  "|" 
-    CALL z, 0x176                     ;0xf5ce:   cc 76 01  ".v." 
+    CALL z,0x176                      ;0xf5ce:   cc 76 01  ".v." 
     NOP                               ;0xf5d1:   00  "." 
     RET po                            ;0xf5d2:   e0  "." 
     DEFB "`|fff", '\' + 0x80          ;0xf5d3:   0xf5d3 to 0xf5db
@@ -7702,7 +7689,7 @@ C_F5E0:                               ; XREF: 0xF5C6
 ;--------------------------------------
 C_F5E4:                               ; XREF: 0xF5A6 
     LD A,H                            ;0xf5e4:   7c  "|" 
-    CALL z, C_CCCC                    ;0xf5e5:   cc cc cc  "..." 
+    CALL z,C_CCCC                     ;0xf5e5:   cc cc cc  "..." 
     HALT                              ;0xf5e8:   76  "v" 
     INC BC                            ;0xf5e9:   03  "." 
     NOP                               ;0xf5ea:   00  "." 
@@ -7774,7 +7761,7 @@ C_F629:                               ; XREF: 0xF60F
     SUB 0xc6                          ;0xf632:   d6 c6  ".." 
     INC BC                            ;0xf634:   03  "." 
     NOP                               ;0xf635:   00  "." 
-    CALL c, 0x6666                    ;0xf636:   dc 66 66  ".ff" 
+    CALL c,0x6666                     ;0xf636:   dc 66 66  ".ff" 
     DEFB 0x66                         ;0xf639:   
     DEFB 0x66                         ;0xf63a:   
     DEFB 0x3                          ;0xf63b:   0x3
@@ -7786,18 +7773,18 @@ C_F642:                               ; XREF: 0xF628
     NOP                               ;0xf643:   00  "." 
 ;--------------------------------------
 C_F644:                               ; XREF: 0xF62A 
-    CALL c, 0x6666                    ;0xf644:   dc 66 66  ".ff" 
+    CALL c,0x6666                     ;0xf644:   dc 66 66  ".ff" 
     LD A,H                            ;0xf647:   7c  "|" 
     LD H,B                            ;0xf648:   60  "`" 
     RET p                             ;0xf649:   f0  "." 
     LD (BC),A                         ;0xf64a:   02  "." 
     NOP                               ;0xf64b:   00  "." 
     HALT                              ;0xf64c:   76  "v" 
-    CALL z, 0x7ccc                    ;0xf64d:   cc cc 7c  "..|" 
+    CALL z,0x7ccc                     ;0xf64d:   cc cc 7c  "..|" 
     INC C                             ;0xf650:   0c  "." 
     LD E,2                            ;0xf651:   1e 02  ".."  
     NOP                               ;0xf653:   00  "." 
-    CALL c, 0x6076                    ;0xf654:   dc 76 60  ".v`" 
+    CALL c,0x6076                     ;0xf654:   dc 76 60  ".v`" 
     LD H,B                            ;0xf657:   60  "`" 
     RET p                             ;0xf658:   f0  "." 
     INC BC                            ;0xf659:   03  "." 
@@ -7863,7 +7850,7 @@ C_F6A8:                               ; XREF: 0xF6A5
     LD C,0x18                         ;0xf6ab:   0e 18  ".."  
     JR C_F71F                         ;0xf6ad:   18 70  ".p" 
     LD BC,0x7600                      ;0xf6af:   01 00 76  "..v"  
-    CALL c, 0x6                       ;0xf6b2:   dc 06 00  "..." 
+    CALL c,0x6                        ;0xf6b2:   dc 06 00  "..." 
     JR c,C_F723                       ;0xf6b5:   38 6c  "8l" 
     ADD A,0xc6                        ;0xf6b7:   c6 c6  ".." 
 ;--------------------------------------
@@ -7945,13 +7932,13 @@ C_F6FA:                               ; XREF: 0xF6E0
     INC H                             ;0xf6fa:   24  "$" 
     INC H                             ;0xf6fb:   24  "$" 
     INC H                             ;0xf6fc:   24  "$" 
-    CALL po, 0x24e4                   ;0xf6fd:   e4 e4 24  "..$" 
+    CALL po,0x24e4                    ;0xf6fd:   e4 e4 24  "..$" 
     INC H                             ;0xf700:   24  "$" 
     INC H                             ;0xf701:   24  "$" 
     INC H                             ;0xf702:   24  "$" 
     INC H                             ;0xf703:   24  "$" 
-    CALL po, 0x404                    ;0xf704:   e4 04 04  "..." 
-    CALL m, 0x4                       ;0xf707:   fc 04 00  "..." 
+    CALL po,0x404                     ;0xf704:   e4 04 04  "..." 
+    CALL m,0x4                        ;0xf707:   fc 04 00  "..." 
     RST 0x38                          ;0xf70a:   ff  "." 
     LD (BC),A                         ;0xf70b:   02  "." 
     NOP                               ;0xf70c:   00  "." 
@@ -7970,16 +7957,16 @@ C_F70F:                               ; XREF: 0xF6ED
 ;--------------------------------------
 C_F717:                               ; XREF: 0xF6F5 
     NOP                               ;0xf717:   00  "." 
-    CALL m, 0x404                     ;0xf718:   fc 04 04  "..." 
-    CALL po, 0x2424                   ;0xf71b:   e4 24 24  ".$$" 
+    CALL m,0x404                      ;0xf718:   fc 04 04  "..." 
+    CALL po,0x2424                    ;0xf71b:   e4 24 24  ".$$" 
     INC H                             ;0xf71e:   24  "$" 
 ;--------------------------------------
 C_F71F:                               ; XREF: 0xF6AD 
     INC H                             ;0xf71f:   24  "$" 
-    CALL po, 0x404                    ;0xf720:   e4 04 04  "..." 
+    CALL po,0x404                     ;0xf720:   e4 04 04  "..." 
 ;--------------------------------------
 C_F723:                               ; XREF: 0xF6B5 
-    CALL po, 0x2424                   ;0xf723:   e4 24 24  ".$$" 
+    CALL po,0x2424                    ;0xf723:   e4 24 24  ".$$" 
     LD (BC),A                         ;0xf726:   02  "." 
     NOP                               ;0xf727:   00  "." 
     RST 0x38                          ;0xf728:   ff  "." 
@@ -8102,7 +8089,7 @@ C_F795:                               ; XREF: 0xF77B
 ;--------------------------------------
 C_F7A0:                               ; XREF: 0xF786 
     LD A,H                            ;0xf7a0:   7c  "|" 
-    CALL z, 0x176                     ;0xf7a1:   cc 76 01  ".v." 
+    CALL z,0x176                      ;0xf7a1:   cc 76 01  ".v." 
     NOP                               ;0xf7a4:   00  "." 
     CP 1                              ;0xf7a5:   fe 01  ".." 
     NOP                               ;0xf7a7:   00  "." 
@@ -8134,7 +8121,7 @@ C_F7BB:                               ; XREF: 0xF7B4
 ;--------------------------------------
 C_F7C9:                               ; XREF: 0xF7C6 
     LD A,(HL)                         ;0xf7c9:   7e  "~" 
-    CALL p, 0x74f4                    ;0xf7ca:   f4 f4 74  "..t" 
+    CALL p,0x74f4                     ;0xf7ca:   f4 f4 74  "..t" 
     INC (HL)                          ;0xf7cd:   34  "4" 
     INC (HL)                          ;0xf7ce:   34  "4" 
     INC (HL)                          ;0xf7cf:   34  "4" 
@@ -8182,9 +8169,9 @@ D_F800:                               ; XREF: 0xF4D0
     DEFB 0x0                          ;0xf805:   0x0
 ;--------------------------------------
 C_F806:                               ; XREF: 0xF7C0 
-    CALL z, 0x3366                    ;0xf806:   cc 66 33  ".f3" 
+    CALL z,0x3366                     ;0xf806:   cc 66 33  ".f3" 
     LD H,(HL)                         ;0xf809:   66  "f" 
-    CALL z, 0x2                       ;0xf80a:   cc 02 00  "..." 
+    CALL z,0x2                        ;0xf80a:   cc 02 00  "..." 
 ;--------------------------------------
 C_F80D:                               ; XREF: 0xF7D3 
     RET po                            ;0xf80d:   e0  "." 
@@ -8206,7 +8193,7 @@ C_F817:                               ; XREF: 0xF79D
     JR C_F840                         ;0xf826:   18 18  ".." 
     LD BC,0x1c00                      ;0xf828:   01 00 1c  "..."  
     LD (HL),0x30                      ;0xf82b:   36 30  "60"  
-    CALL m, 0x3030                    ;0xf82d:   fc 30 30  ".00" 
+    CALL m,0x3030                     ;0xf82d:   fc 30 30  ".00" 
     RET po                            ;0xf830:   e0  "." 
     LD (BC),A                         ;0xf831:   02  "." 
     NOP                               ;0xf832:   00  "." 
@@ -8272,7 +8259,7 @@ C_F872:                               ; XREF: 0xF840
     ADD HL,BC                         ;0xf872:   09  "." 
     LD B,1                            ;0xf873:   06 01  ".."  
     NOP                               ;0xf875:   00  "." 
-    JR c, $-56                        ;0xf876:   38 c6  "8." 
+    JR c, $+-56                       ;0xf876:   38 c6  "8." 
     ADD A,0xf8                        ;0xf878:   c6 f8  ".." 
     ADD A,0xc6                        ;0xf87a:   c6 c6  ".." 
     RET m                             ;0xf87c:   f8  "." 
@@ -8472,7 +8459,7 @@ C_F97E:                               ; XREF: 0xF97B
     LD A,(HL)                         ;0xf981:   7e  "~" 
     LD H,(HL)                         ;0xf982:   66  "f" 
     LD BC,0x7a00                      ;0xf983:   01 00 7a  "..z"  
-    CALL z, 0xd6ce                    ;0xf986:   cc ce d6  "..." 
+    CALL z,0xd6ce                     ;0xf986:   cc ce d6  "..." 
     AND 0x66                          ;0xf989:   e6 66  ".f" 
     CP H                              ;0xf98b:   bc  "." 
     LD BC,0x3200                      ;0xf98c:   01 00 32  "..2"  
@@ -8524,7 +8511,7 @@ C_F9C0:                               ; XREF: 0xFE58
 ;--------------------------------------
 C_F9D1:                               ; XREF: 0xF951 
     LD A,H                            ;0xf9d1:   7c  "|" 
-    CALL z, 0x176                     ;0xf9d2:   cc 76 01  ".v." 
+    CALL z,0x176                      ;0xf9d2:   cc 76 01  ".v." 
     NOP                               ;0xf9d5:   00  "." 
 ;--------------------------------------
 D_F9D6:                               ; XREF: 0xFE26 
@@ -8567,7 +8554,7 @@ C_F9FD:                               ; XREF: 0xF9E3
     LD A,B                            ;0xf9ff:   78  "x" 
     INC C                             ;0xfa00:   0c  "." 
     LD A,H                            ;0xfa01:   7c  "|" 
-    CALL z, 0x176                     ;0xfa02:   cc 76 01  ".v." 
+    CALL z,0x176                      ;0xfa02:   cc 76 01  ".v." 
     NOP                               ;0xfa05:   00  "." 
     JR $+104                          ;0xfa06:   18 66  ".f" 
     INC A                             ;0xfa08:   3c  "<" 
@@ -8655,7 +8642,7 @@ C_FA65:                               ; XREF: 0xF9FD
     LD BC,0x7800                      ;0xfa67:   01 00 78  "..x"  
     INC C                             ;0xfa6a:   0c  "." 
     LD A,H                            ;0xfa6b:   7c  "|" 
-    CALL z, 0x176                     ;0xfa6c:   cc 76 01  ".v." 
+    CALL z,0x176                      ;0xfa6c:   cc 76 01  ".v." 
     NOP                               ;0xfa6f:   00  "." 
     LD H,(HL)                         ;0xfa70:   66  "f" 
     LD BC,0x3c00                      ;0xfa71:   01 00 3c  "..<"  
@@ -8706,10 +8693,10 @@ C_FA98:                               ; XREF: 0xFA7E
     LD BC,0x7800                      ;0xfaa7:   01 00 78  "..x"  
     INC C                             ;0xfaaa:   0c  "." 
     LD A,H                            ;0xfaab:   7c  "|" 
-    CALL z, 0x376                     ;0xfaac:   cc 76 03  ".v." 
+    CALL z,0x376                      ;0xfaac:   cc 76 03  ".v." 
     NOP                               ;0xfaaf:   00  "." 
     LD A,D                            ;0xfab0:   7a  "z" 
-    CALL z, 0x66d6                    ;0xfab1:   cc d6 66  "..f" 
+    CALL z,0x66d6                     ;0xfab1:   cc d6 66  "..f" 
     CP H                              ;0xfab4:   bc  "." 
     LD BC,0x3200                      ;0xfab5:   01 00 32  "..2"  
     LD C,H                            ;0xfab8:   4c  "L" 
@@ -8720,7 +8707,7 @@ C_FA98:                               ; XREF: 0xFA7E
     LD A,B                            ;0xfac3:   78  "x" 
     INC C                             ;0xfac4:   0c  "." 
     LD A,H                            ;0xfac5:   7c  "|" 
-    CALL z, 0x176                     ;0xfac6:   cc 76 01  ".v." 
+    CALL z,0x176                      ;0xfac6:   cc 76 01  ".v." 
     NOP                               ;0xfac9:   00  "." 
     LD (0x14c),A                      ;0xfaca:   32 4c 01  "2L."  
     NOP                               ;0xfacd:   00  "." 
@@ -8898,7 +8885,7 @@ C_FB9E:                               ; XREF: 0xFB8E
     INC E                             ;0xfb9f:   1c  "." 
     ADD IY,DE                         ;0xfba0:   fd 19  ".." 
     LD A,0x2a                         ;0xfba2:   3e 2a  ">*"  
-    JP nz, 0x18fb                     ;0xfba4:   c2 fb 18  "..." 
+    JP nz,0x18fb                      ;0xfba4:   c2 fb 18  "..." 
     INC BC                            ;0xfba7:   03  "." 
     LD HL,(C_fbbe)                    ;0xfba8:   2a be fb  "*.."  
     CALL 0xfd1c                       ;0xfbab:   cd 1c fd  "..." 
@@ -9146,7 +9133,7 @@ C_FCC0:                               ; XREF: 0xFD02
     DEC B                             ;0xfd50:   05  "." 
     NOP                               ;0xfd51:   00  "." 
     LD L,D                            ;0xfd52:   6a  "j" 
-    JP m, 0x224                       ;0xfd53:   fa 24 02  ".$." 
+    JP m,0x224                        ;0xfd53:   fa 24 02  ".$." 
     NOP                               ;0xfd56:   00  "." 
     SBC A,H                           ;0xfd57:   9c  "." 
     EI                                ;0xfd58:   fb  "." 
@@ -9245,19 +9232,19 @@ C_FDCB:                               ; XREF: 0xFCF0
     AND 0x10                          ;0xfdce:   e6 10  ".." 
 ;--------------------------------------
 C_FDD0:                               ; XREF: 0xFCE4 
-    JP z, C_F937                      ;0xfdd0:   ca 37 f9  ".7." 
+    JP z,C_F937                       ;0xfdd0:   ca 37 f9  ".7." 
     LD A,(DE)                         ;0xfdd3:   1a  "." 
     XOR (HL)                          ;0xfdd4:   ae  "." 
 ;--------------------------------------
 C_FDD5:                               ; XREF: 0xFCEA 
     AND 15                            ;0xfdd5:   e6 0f  ".." 
-    JP nz, C_F937                     ;0xfdd7:   c2 37 f9  ".7." 
+    JP nz,C_F937                      ;0xfdd7:   c2 37 f9  ".7." 
     JP 0xf9b8                         ;0xfdda:   c3 b8 f9  "..." 
 ;--------------------------------------
 C_FDDD:                               ; XREF: 0xFCED 
     LD A,(HL)                         ;0xfddd:   7e  "~" 
     CP 0xf5                           ;0xfdde:   fe f5  ".." 
-    JP nz, C_F937                     ;0xfde0:   c2 37 f9  ".7." 
+    JP nz,C_F937                      ;0xfde0:   c2 37 f9  ".7." 
     EX DE,HL                          ;0xfde3:   eb  "." 
     POP HL                            ;0xfde4:   e1  "." 
     LD (D_F617),HL                    ;0xfde5:   22 17 f6  "".."  
@@ -9358,13 +9345,13 @@ C_FE15:                               ; XREF: 0xFD05
     LD A,(DE)                         ;0xfe51:   1a  "." 
     XOR (HL)                          ;0xfe52:   ae  "." 
     AND 0x1f                          ;0xfe53:   e6 1f  ".." 
-    JP nz, C_F948                     ;0xfe55:   c2 48 f9  ".H." 
+    JP nz,C_F948                      ;0xfe55:   c2 48 f9  ".H." 
 ;--------------------------------------
 C_fe58:                               ; XREF: 0xE10A 0xFBB3 0xFB52 0xFBDB 
     CALL C_F9C0                       ;0xfe58:   cd c0 f9  "..." 
 ;--------------------------------------
 C_FE5B:                               ; XREF: 0xFCA9 0xFC9B 
-    JP z, C_F97E                      ;0xfe5b:   ca 7e f9  ".~." 
+    JP z,C_F97E                       ;0xfe5b:   ca 7e f9  ".~." 
     EX DE,HL                          ;0xfe5e:   eb  "." 
     POP HL                            ;0xfe5f:   e1  "." 
     INC HL                            ;0xfe60:   23  "#" 
@@ -9375,37 +9362,37 @@ C_FE5B:                               ; XREF: 0xFCA9 0xFC9B
     EX (SP),HL                        ;0xfe65:   e3  "." 
     PUSH HL                           ;0xfe66:   e5  "." 
     EX DE,HL                          ;0xfe67:   eb  "." 
-    JP nz, C_F923                     ;0xfe68:   c2 23 f9  ".#." 
+    JP nz,C_F923                      ;0xfe68:   c2 23 f9  ".#." 
     INC A                             ;0xfe6b:   3c  "<" 
     POP HL                            ;0xfe6c:   e1  "." 
     POP HL                            ;0xfe6d:   e1  "." 
     RET                               ;0xfe6e:   c9  "." 
     LD A,(D_F618)                     ;0xfe6f:   3a 18 f6  ":.."  
     INC A                             ;0xfe72:   3c  "<" 
-    JP z, C_F9B2                      ;0xfe73:   ca b2 f9  "..." 
+    JP z,C_F9B2                       ;0xfe73:   ca b2 f9  "..." 
     INC A                             ;0xfe76:   3c  "<" 
-    JP nz, C_F937                     ;0xfe77:   c2 37 f9  ".7." 
+    JP nz,C_F937                      ;0xfe77:   c2 37 f9  ".7." 
     PUSH DE                           ;0xfe7a:   d5  "." 
     CALL C_F9C0                       ;0xfe7b:   cd c0 f9  "..." 
     POP DE                            ;0xfe7e:   d1  "." 
-    JP nz, C_F937                     ;0xfe7f:   c2 37 f9  ".7." 
+    JP nz,C_F937                      ;0xfe7f:   c2 37 f9  ".7." 
     LD A,(D_F616)                     ;0xfe82:   3a 16 f6  ":.."  
     INC A                             ;0xfe85:   3c  "<" 
-    JP z, 0xf9a2                      ;0xfe86:   ca a2 f9  "..." 
+    JP z,0xf9a2                       ;0xfe86:   ca a2 f9  "..." 
     INC A                             ;0xfe89:   3c  "<" 
-    JP z, C_F96F                      ;0xfe8a:   ca 6f f9  ".o." 
+    JP z,C_F96F                       ;0xfe8a:   ca 6f f9  ".o." 
     LD A,(HL)                         ;0xfe8d:   7e  "~" 
     AND 0x1f                          ;0xfe8e:   e6 1f  ".." 
-    JP nz, C_F937                     ;0xfe90:   c2 37 f9  ".7." 
+    JP nz,C_F937                      ;0xfe90:   c2 37 f9  ".7." 
     JP C_F97E                         ;0xfe93:   c3 7e f9  ".~." 
     LD A,(DE)                         ;0xfe96:   1a  "." 
     XOR (HL)                          ;0xfe97:   ae  "." 
     AND 15                            ;0xfe98:   e6 0f  ".." 
-    JP nz, C_F937                     ;0xfe9a:   c2 37 f9  ".7." 
+    JP nz,C_F937                      ;0xfe9a:   c2 37 f9  ".7." 
     LD A,(HL)                         ;0xfe9d:   7e  "~" 
     AND 0x30                          ;0xfe9e:   e6 30  ".0" 
     CP 0x30                           ;0xfea0:   fe 30  ".0" 
-    JP z, C_F937                      ;0xfea2:   ca 37 f9  ".7." 
+    JP z,C_F937                       ;0xfea2:   ca 37 f9  ".7." 
     LD HL,(0xc5e1)                    ;0xfea5:   2a e1 c5  "*.."  
     PUSH DE                           ;0xfea8:   d5  "." 
     LD (D_FA2C),HL                    ;0xfea9:   22 2c fa  "",."  
@@ -9422,11 +9409,11 @@ C_FE5B:                               ; XREF: 0xFCA9 0xFC9B
     POP BC                            ;0xfec4:   c1  "." 
     LD A,L                            ;0xfec5:   7d  "}" 
     OR H                              ;0xfec6:   b4  "." 
-    JP z, C_F8B4                      ;0xfec7:   ca b4 f8  "..." 
+    JP z,C_F8B4                       ;0xfec7:   ca b4 f8  "..." 
     LD A,L                            ;0xfeca:   7d  "}" 
     AND H                             ;0xfecb:   a4  "." 
     INC A                             ;0xfecc:   3c  "<" 
-    JP z, C_F8B4                      ;0xfecd:   ca b4 f8  "..." 
+    JP z,C_F8B4                       ;0xfecd:   ca b4 f8  "..." 
     LD DE,D_FA2E                      ;0xfed0:   11 2e fa  "..."  
     LD A,L                            ;0xfed3:   7d  "}" 
     SUB E                             ;0xfed4:   93  "." 
@@ -9446,11 +9433,11 @@ C_FEDF:                               ; XREF: 0xFB4C 0xFD24
     NOP                               ;0xfee2:   00  "." 
     JP C_FC4B                         ;0xfee3:   c3 4b fc  ".K." 
     CP 0x98                           ;0xfee6:   fe 98  ".." 
-    JP z, 0xf874                      ;0xfee8:   ca 74 f8  ".t." 
+    JP z,0xf874                       ;0xfee8:   ca 74 f8  ".t." 
     RLA                               ;0xfeeb:   17  "." 
     LD A,1                            ;0xfeec:   3e 01  ">."  
     NOP                               ;0xfeee:   00  "." 
-    JP c, C_F8C8                      ;0xfeef:   da c8 f8  "..." 
+    JP c,C_F8C8                       ;0xfeef:   da c8 f8  "..." 
     DEC A                             ;0xfef2:   3d  "=" 
     LD (D_FA28),A                     ;0xfef3:   32 28 fa  "2(."  
     LD HL,(D_FB66)                    ;0xfef6:   2a 66 fb  "*f."  

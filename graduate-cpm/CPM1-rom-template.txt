@@ -38,7 +38,7 @@
 0xc3c7,0xc3c7,w,RST8_data_c3c7
 0xc824,0xc824,w,RST18_data_c824
 0xc930,0xc930,w,RST20_data_c930
-0
+
 
 ;Random disassembler fixups
 0xc0fa,0xc11e,c,C_C0FA
@@ -55,6 +55,7 @@
 ;maybe code, or maybe data?
 ;Problem is that ROM relocates things in CPM so none of the code is at the right location
 ;These defines fix that.
+0xd4ca,0xd4ec,c,D_d4ca_todo
 0xc32b,0xc357,c,D_C32B
 0xcc1c,0xcc2d,c,D_CC1C
 0xccee,0xcdc6,c,D_CCEE
@@ -149,8 +150,8 @@
 ;db "OWNER         : "
 0xc4f0,0xc502,s,OWNER_MSG
 ;----
-;db "CP/M PLUS" etc
-0xc56c,0xc58f,s,S_c56c
+;db "CP/M PLUS2" etc
+0xc56c,0xc58f,s,CPM_ROM_2_LOOKUP_DATA
 ;----
 ;db "Second CPM PLUS ROM not installed"
 0xc621,0xc642,s,SECOND_ROM_NOT_INSTALLED_MSG
@@ -190,10 +191,10 @@
 0xcabc,0xcad7,s,WRONG_PASSWORD_MSG
 ;----
 ;db "CPM PLUS : Accessory Roms attached"
-0xcb3e,0xcb60,s,ACC_ROMS_MSG
+0xcb3e,0xcb62,s,ACC_ROMS_MSG
 ;----
 ;db "$ROM $: $"
-0xcb63,0xcb6c,s,S_cb63
+0xcb64,0xcb6c,s,S_ROM_MSG
 ;----
 ;db "          $"
 0xcc0c,0xcc16,s,STR_SEVERAL_SPACES
